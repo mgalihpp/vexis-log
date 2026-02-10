@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Trade {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // 1. General Info
+  date      DateTime @default(now())
+  time      String?
+  market    String
+  pair      String
+  timeframe String
+  session   String?
+  tradeType String?
+  type      String
+
+  // 2. Pre-Trade Analysis
+  marketCondition         String?
+  marketBias              String?
+  strategy                String?
+  setup                   String?
+  technicalConfirmation   String?
+  fundamentalConfirmation String?
+  entryReason             String?
+
+  // 3. Trading Plan
+  entry           String?
+  entryPrice      Float?
+  stopLoss        Float?
+  takeProfit      Float?
+  riskPercent     Float?
+  riskRewardRatio Float?
+  rrRatio         String?
+  positionSize    Float?
+
+  // 4. Execution
+  entryValid      Boolean? @default(true)
+  entryOnPlan     Boolean?
+  slippage        String?
+  planChange      String?
+  tradeManagement String?
+  executionNotes  String?
+  managementNotes String?
+
+  // 5. Psychology
+  emotionBefore        String?
+  emotionalDisruption  String?
+  confidenceLevel      Int?
+  confidence           Int?
+  disturbances         String?
+  disciplineScore      Int?
+  discipline           Int?
+
+  // 6. Result
+  exitPrice  Float?
+  profitLoss Float?
+  outcome    String?
+  result     String?
+  actualRR   Float?
+
+  // 7. Post-Trade Review
+  whatWentRight  String?
+  mistakes       String?
+  setupValid     Boolean?
+  validSetup     Boolean?
+  timingReview   String?
+  entryTiming    String?
+  lessonsLearned String?
+  lesson         String?
+
+  // 8. Documentation
+  screenshotBefore String?
+  screenshotAfter  String?
+  notes            String?
+  tags             String[]
+
+  // 9. Evaluation
+  improvementPlan String?
+  improvement     String?
+  rulesToTighten   String?
+  actionPlan      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
