@@ -1,24 +1,45 @@
-import { prisma } from '../lib/db'
+import type { PeriodTrend, TrendValue } from '@/features/trade/types'
+import { prisma } from '@/lib/db'
+
+const DAY_MS = 24 * 60 * 60 * 1000
 
 export async function getAllTrades() {
   return prisma.trade.findMany()
 }
 
-type TrendDirection = 'up' | 'down' | 'neutral'
+export async function getTradeById(id: string) {
+  const trade = await prisma.trade.findUnique({
+    where: {
+      id,
+    },
+  })
 
-type TrendValue = {
-  value: number
-  direction: TrendDirection
+  if (!trade) {
+    throw new Error('Trade not found')
+  }
+
+  return trade
 }
 
-type PeriodTrend = {
-  winRate: TrendValue
-  totalTrades: TrendValue
-  profitFactor: TrendValue
-  netPnL: TrendValue
-}
+export async function deleteTradeById(id: string) {
+  const trade = await prisma.trade.findUnique({
+    where: {
+      id,
+    },
+  })
 
-const dayMs = 24 * 60 * 60 * 1000
+  if (!trade) {
+    throw new Error('Trade not found')
+  }
+
+  const deletedTrade = await prisma.trade.delete({
+    where: {
+      id,
+    },
+  })
+
+  return deletedTrade
+}
 
 function calculateTrend(current: number, previous: number): TrendValue {
   if (previous === 0) {
@@ -102,13 +123,13 @@ async function buildStats(where?: { date?: { gte: Date; lt: Date } }) {
 
 export async function getTradeStats() {
   const now = new Date()
-  const dayStart = new Date(now.getTime() - dayMs)
-  const weekStart = new Date(now.getTime() - dayMs * 7)
-  const monthStart = new Date(now.getTime() - dayMs * 30)
+  const dayStart = new Date(now.getTime() - DAY_MS)
+  const weekStart = new Date(now.getTime() - DAY_MS * 7)
+  const monthStart = new Date(now.getTime() - DAY_MS * 30)
 
-  const previousDayStart = new Date(dayStart.getTime() - dayMs)
-  const previousWeekStart = new Date(weekStart.getTime() - dayMs * 7)
-  const previousMonthStart = new Date(monthStart.getTime() - dayMs * 30)
+  const previousDayStart = new Date(dayStart.getTime() - DAY_MS)
+  const previousWeekStart = new Date(weekStart.getTime() - DAY_MS * 7)
+  const previousMonthStart = new Date(monthStart.getTime() - DAY_MS * 30)
 
   const [
     overall,
