@@ -1,5 +1,8 @@
 import { Edit, Filter, MoreHorizontal, Search, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
+import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
+import { DeleteTradeDialog } from './dialog/DeleteTradeDialog'
 import type { DashboardTrade } from '@/features/dashboard/types'
 import { Button } from '@/components/ui/button'
 import {
@@ -35,8 +38,6 @@ type TradesTableProps = {
   filterMarket: string
   onSearchChange: (value: string) => void
   onFilterMarketChange: (value: string) => void
-  onEdit?: (trade: DashboardTrade) => void
-  onDelete?: (tradeId: string) => void
 }
 
 export function TradesTable({
@@ -45,9 +46,20 @@ export function TradesTable({
   filterMarket,
   onSearchChange,
   onFilterMarketChange,
-  onEdit,
-  onDelete,
 }: TradesTableProps) {
+  const [open, setOpen] = useState(false)
+  const [selectedTradeId, setSelectedTradeId] = useState<string | null>(null)
+
+  const handleOpen = (tradeId: string) => {
+    setSelectedTradeId(tradeId)
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setSelectedTradeId(null)
+    setOpen(false)
+  }
+
   return (
     <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden">
       <div className="p-4 border-b border-border/50 flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -179,14 +191,20 @@ export function TradesTable({
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => onEdit?.(trade)}>
-                          <Edit className="w-4 h-4 mr-2" /> Edit
+                        <DropdownMenuItem asChild>
+                          <Link
+                            to="/dashboard/trade/$tradeId/edit"
+                            params={{ tradeId: trade.id }}
+                          >
+                            <Edit className="w-4 h-4 mr-2" /> Edit
+                          </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => onDelete?.(trade.id)}
+                          onClick={() => handleOpen(trade.id)}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Trash2 className="w-4 h-4 mr-2" /> Delete
+                          <Trash2 className="w-4 h-4 mr-2 text-destructive" />{' '}
+                          Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -197,6 +215,12 @@ export function TradesTable({
           </TableBody>
         </Table>
       </div>
+
+      <DeleteTradeDialog
+        id={selectedTradeId!}
+        open={open}
+        onClose={handleClose}
+      />
     </div>
   )
 }
