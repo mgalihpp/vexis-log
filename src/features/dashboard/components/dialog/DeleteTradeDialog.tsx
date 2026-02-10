@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { deleteTradeById } from '@/utils/dashboard.server'
+import { deleteTrade } from '@/utils/dashboard.functions'
 
 type Props = {
   id: string
@@ -26,7 +26,7 @@ export const DeleteTradeDialog = ({ id, open, onClose }: Props) => {
   const handleSubmit = async () => {
     setIsSubmitting(true)
     try {
-      await deleteTradeById(id)
+      await deleteTrade({ data: { id } })
       router.invalidate()
       setIsSubmitting(false)
     } catch (error) {
