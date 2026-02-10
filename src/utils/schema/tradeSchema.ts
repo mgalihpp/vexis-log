@@ -1,17 +1,18 @@
 import { z } from 'zod'
 
 export const tradeSchema = z.object({
-  date: z.string().min(1, 'Tanggal wajib diisi'),
-  time: z.string().min(1, 'Waktu wajib diisi'),
-  market: z.string().min(1, 'Market wajib diisi'),
-  pair: z.string().min(1, 'Pair/Asset wajib diisi'),
-  timeframe: z.string().min(1, 'Timeframe wajib diisi'),
-  session: z.string().min(1, 'Session wajib diisi'),
-  tradeType: z.string().min(1, 'Tipe Trade wajib diisi'),
-  marketCondition: z.string().min(1, 'Kondisi Market wajib diisi'),
+  date: z.string().min(1, 'Please enter a date.'),
+  time: z.string().min(1, 'Please enter a time.'),
+  market: z.string().min(1, 'Please select a market.'),
+  pair: z.string().min(1, 'Please enter a pair/asset.'),
+  timeframe: z.string().min(1, 'Please select a timeframe.'),
+  session: z.string().min(1, 'Please select a session.'),
+  tradeType: z.string().min(1, 'Please select a trade type.'),
+  direction: z.string().min(1, 'Please select a direction.'),
+  marketCondition: z.string().min(1, 'Please select a market condition.'),
   marketBias: z.string().optional(),
   strategy: z.string().optional(),
-  setup: z.string().min(1, 'Setup wajib diisi'),
+  setup: z.string().min(1, 'Please describe the setup.'),
   technicalConfirmation: z.string().optional(),
   fundamentalConfirmation: z.string().optional(),
   entryReason: z.string().optional(),
@@ -31,19 +32,44 @@ export const tradeSchema = z.object({
   discipline: z.number().min(1),
   exitPrice: z.string().optional(),
   profitLoss: z.string().optional(),
-  result: z.string().min(1, 'Result wajib diisi'),
+  result: z.string().min(1, 'Please select a result.').default('Pending'),
   actualRR: z.string().optional(),
   whatWentRight: z.string().optional(),
   mistakes: z.string().optional(),
   validSetup: z.boolean().optional(),
   entryTiming: z.string().optional(),
   lesson: z.string().optional(),
-  notes: z.string().min(1, 'Notes wajib diisi'),
+  notes: z.string().min(1, 'Please add notes.'),
   tags: z.array(z.string()).optional().default([]),
   improvement: z.string().optional(),
   rulesToTighten: z.string().optional(),
   actionPlan: z.string().optional(),
 })
 
+export const quickAddTradeSchema = tradeSchema.partial().extend({
+  date: z.string().min(1, 'Please enter a date.'),
+  time: z.string().min(1, 'Please enter a time.'),
+  market: z.string().min(1, 'Please select a market.'),
+  pair: z.string().min(1, 'Please enter a pair/asset.'),
+  timeframe: z.string().min(1, 'Please select a timeframe.'),
+  tradeType: z.string().min(1, 'Please select a trade type.'),
+  direction: z.string().min(1, 'Please select a direction.'),
+  result: z.string().min(1, 'Please select a result.').default('Pending'),
+  confidence: z.number().min(1).optional().default(5),
+  discipline: z.number().min(1).optional().default(5),
+})
+
+export const updateTradeSchema = z
+  .object({})
+  .passthrough()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update.',
+  })
+  .pipe(tradeSchema.partial())
+
 export type TradeFormInput = z.input<typeof tradeSchema>
 export type TradeFormValues = z.infer<typeof tradeSchema>
+export type QuickAddTradeFormInput = z.input<typeof quickAddTradeSchema>
+export type QuickAddTradeFormValues = z.infer<typeof quickAddTradeSchema>
+export type UpdateTradeFormInput = Partial<z.input<typeof tradeSchema>>
+export type UpdateTradeFormValues = z.infer<typeof updateTradeSchema>
