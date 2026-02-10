@@ -16,11 +16,13 @@ import { Route as DashboardTradeIndexRouteImport } from './routes/dashboard/trad
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
+import { Route as DashboardTradeQuickAddRouteImport } from './routes/dashboard/trade.quick-add'
 import { Route as DashboardTradeNewRouteImport } from './routes/dashboard/trade.new'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
+import { Route as DashboardTradeTradeIdEditRouteImport } from './routes/dashboard/trade.$tradeId.edit'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -57,6 +59,11 @@ const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
   path: '/demo/api/names',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardTradeQuickAddRoute = DashboardTradeQuickAddRouteImport.update({
+  id: '/trade/quick-add',
+  path: '/trade/quick-add',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardTradeNewRoute = DashboardTradeNewRouteImport.update({
   id: '/trade/new',
   path: '/trade/new',
@@ -82,16 +89,24 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
   path: '/demo/start/ssr/data-only',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardTradeTradeIdEditRoute =
+  DashboardTradeTradeIdEditRouteImport.update({
+    id: '/trade/$tradeId/edit',
+    path: '/trade/$tradeId/edit',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/trade/new': typeof DashboardTradeNewRoute
+  '/dashboard/trade/quick-add': typeof DashboardTradeQuickAddRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
   '/dashboard/trade/': typeof DashboardTradeIndexRoute
+  '/dashboard/trade/$tradeId/edit': typeof DashboardTradeTradeIdEditRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -101,10 +116,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/trade/new': typeof DashboardTradeNewRoute
+  '/dashboard/trade/quick-add': typeof DashboardTradeQuickAddRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
   '/dashboard/trade': typeof DashboardTradeIndexRoute
+  '/dashboard/trade/$tradeId/edit': typeof DashboardTradeTradeIdEditRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -116,10 +133,12 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/trade/new': typeof DashboardTradeNewRoute
+  '/dashboard/trade/quick-add': typeof DashboardTradeQuickAddRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
   '/dashboard/trade/': typeof DashboardTradeIndexRoute
+  '/dashboard/trade/$tradeId/edit': typeof DashboardTradeTradeIdEditRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -132,10 +151,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/'
     | '/dashboard/trade/new'
+    | '/dashboard/trade/quick-add'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
     | '/dashboard/trade/'
+    | '/dashboard/trade/$tradeId/edit'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -145,10 +166,12 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/dashboard/trade/new'
+    | '/dashboard/trade/quick-add'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
     | '/dashboard/trade'
+    | '/dashboard/trade/$tradeId/edit'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -159,10 +182,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/'
     | '/dashboard/trade/new'
+    | '/dashboard/trade/quick-add'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
     | '/dashboard/trade/'
+    | '/dashboard/trade/$tradeId/edit'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -232,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoApiNamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/trade/quick-add': {
+      id: '/dashboard/trade/quick-add'
+      path: '/trade/quick-add'
+      fullPath: '/dashboard/trade/quick-add'
+      preLoaderRoute: typeof DashboardTradeQuickAddRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/trade/new': {
       id: '/dashboard/trade/new'
       path: '/trade/new'
@@ -267,19 +299,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/trade/$tradeId/edit': {
+      id: '/dashboard/trade/$tradeId/edit'
+      path: '/trade/$tradeId/edit'
+      fullPath: '/dashboard/trade/$tradeId/edit'
+      preLoaderRoute: typeof DashboardTradeTradeIdEditRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardTradeNewRoute: typeof DashboardTradeNewRoute
+  DashboardTradeQuickAddRoute: typeof DashboardTradeQuickAddRoute
   DashboardTradeIndexRoute: typeof DashboardTradeIndexRoute
+  DashboardTradeTradeIdEditRoute: typeof DashboardTradeTradeIdEditRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardTradeNewRoute: DashboardTradeNewRoute,
+  DashboardTradeQuickAddRoute: DashboardTradeQuickAddRoute,
   DashboardTradeIndexRoute: DashboardTradeIndexRoute,
+  DashboardTradeTradeIdEditRoute: DashboardTradeTradeIdEditRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
