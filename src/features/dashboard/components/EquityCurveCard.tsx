@@ -15,7 +15,7 @@ type EquityPoint = {
 }
 
 type EquityCurveCardProps = {
-  chartData: EquityPoint[]
+  chartData: Array<EquityPoint>
   hasTrades: boolean
 }
 

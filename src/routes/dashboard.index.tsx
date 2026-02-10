@@ -29,7 +29,7 @@ function DashboardIndex() {
   const hasTrades = trades.length > 0
 
   // Prepare chart data (cumulative PnL)
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
   const chartData = trades
     .slice()
     .reverse()

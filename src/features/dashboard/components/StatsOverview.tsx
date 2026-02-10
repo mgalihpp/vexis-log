@@ -1,6 +1,6 @@
 import { CandlestickChart, DollarSign, LineChart, Target } from 'lucide-react'
-import { StatCard } from '@/features/dashboard/components/StatCard'
 import type { DashboardStats } from '@/features/dashboard/types'
+import { StatCard } from '@/features/dashboard/components/StatCard'
 
 type StatsOverviewProps = {
   stats: DashboardStats
