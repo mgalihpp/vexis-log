@@ -10,6 +10,7 @@
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",
+    "prepare": "husky install",
     "postinstall": "prisma generate",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
@@ -63,7 +64,9 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
+    "husky": "^9.1.7",
     "jsdom": "^27.0.0",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.5.3",
     "prisma": "^6.19.2",
     "shadcn": "^3.8.4",
@@ -72,5 +75,14 @@
     "vite": "^7.1.7",
     "vitest": "^3.0.5",
     "web-vitals": "^5.1.0"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{css,md,json}": [
+      "prettier --write"
+    ]
   }
 }
