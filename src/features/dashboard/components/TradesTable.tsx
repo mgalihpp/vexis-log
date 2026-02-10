@@ -1,5 +1,6 @@
-import { Edit, MoreHorizontal, Trash2, Filter, Search } from 'lucide-react'
+import { Edit, Filter, MoreHorizontal, Search, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
+import type { DashboardTrade } from '@/features/dashboard/types'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -27,10 +28,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import type { DashboardTrade } from '@/features/dashboard/types'
 
 type TradesTableProps = {
-  trades: DashboardTrade[]
+  trades: Array<DashboardTrade>
   search: string
   filterMarket: string
   onSearchChange: (value: string) => void

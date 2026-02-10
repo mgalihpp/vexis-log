@@ -29,7 +29,8 @@ export const Route = createRootRouteWithContext<{
       },
       {
         name: 'description',
-        content: 'Vexis Log - Trading Journal that help you track your trades and improve your trading performance.',
+        content:
+          'Vexis Log - Trading Journal that help you track your trades and improve your trading performance.',
       },
       {
         name: 'keywords',

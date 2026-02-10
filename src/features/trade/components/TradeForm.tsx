@@ -3,7 +3,10 @@ import { ChevronDown, ChevronUp, Save } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useRouter } from '@tanstack/react-router'
-import type { TradeFormInput, TradeFormValues } from '@/utils/schema/tradeSchema'
+import type {
+  TradeFormInput,
+  TradeFormValues,
+} from '@/utils/schema/tradeSchema'
 import { tradeSchema } from '@/utils/schema/tradeSchema'
 import { createTrade } from '@/utils/dashboard.functions'
 import { Card } from '@/components/ui/card'
