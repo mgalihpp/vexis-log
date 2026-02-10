@@ -69,10 +69,10 @@ function DashboardIndex() {
           </p>
         </div>
 
-        <Link to="/dashboard/trade/new">
+        <Link to="/dashboard/trade/quick-add">
           <Button>
             <Plus />
-            Add Trade
+            Quick Add Trade
           </Button>
         </Link>
       </div>
