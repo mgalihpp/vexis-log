@@ -58,7 +58,7 @@ export const login = createServerFn({
 
 export const logout = createServerFn({
   method: 'POST',
-}).handler(async () => {
+}).handler(() => {
   deleteCookie(COOKIE_NAME, COOKIE_OPTIONS)
   return { success: true }
 })
