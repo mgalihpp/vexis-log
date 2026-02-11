@@ -69,7 +69,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <ThemeProvider>
+          <FeedbackToastProvider>
+            {children}
+            <FeedbackToastHost />
+          </FeedbackToastProvider>
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
