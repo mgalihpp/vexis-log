@@ -12,6 +12,7 @@ import {
   tradeSchema,
   updateTradeSchema,
 } from '@/utils/schema/tradeSchema'
+import { normalizeRrRatio } from '@/utils/rr-ratio'
 
 export const getTrades = createServerFn({
   method: 'GET',
@@ -60,12 +61,169 @@ const parseRatio = (value?: string) => {
   return parseNumber(value)
 }
 
+const withFallback = (value: string | undefined, fallback: string) => {
+  if (value === undefined) {
+    return fallback
+  }
+
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : fallback
+}
+
+const parsePositiveFiniteNumber = (value?: string) => {
+  const parsed = parseNumber(value)
+  if (parsed === undefined || !Number.isFinite(parsed) || parsed <= 0) {
+    return null
+  }
+
+  return parsed
+}
+
+const parseFiniteNumber = (value?: string) => {
+  const parsed = parseNumber(value)
+  if (parsed === undefined || !Number.isFinite(parsed)) {
+    return null
+  }
+
+  return parsed
+}
+
+const deriveTradeValues = (
+  data:
+    | z.infer<typeof tradeSchema>
+    | z.infer<typeof quickAddTradeSchema>
+    | Partial<z.infer<typeof tradeSchema>>,
+) => {
+  const direction = data.direction
+  if (direction !== 'Long' && direction !== 'Short') {
+    return {
+      rrRatio: null,
+      positionSize: null,
+      actualRR: null,
+      profitLoss: null,
+      result: null,
+    }
+  }
+
+  const entry = parseFiniteNumber(data.entryPrice)
+  const stopLoss = parseFiniteNumber(data.stopLoss)
+  if (entry === null || stopLoss === null) {
+    return {
+      rrRatio: null,
+      positionSize: null,
+      actualRR: null,
+      profitLoss: null,
+      result: null,
+    }
+  }
+
+  const stopLossDistance = Math.abs(entry - stopLoss)
+  if (stopLossDistance <= 0) {
+    return {
+      rrRatio: null,
+      positionSize: null,
+      actualRR: null,
+      profitLoss: null,
+      result: null,
+    }
+  }
+
+  const riskPercent = parsePositiveFiniteNumber(data.riskPercent)
+  const accountBalance = parsePositiveFiniteNumber(data.accountBalance)
+  const fee = parsePositiveFiniteNumber(data.fee) ?? 0
+  const riskAmount =
+    riskPercent !== null && accountBalance !== null
+      ? accountBalance * (riskPercent / 100)
+      : null
+
+  let rrRatio: string | null = null
+  const takeProfit = parseFiniteNumber(data.takeProfit)
+  if (takeProfit !== null) {
+    const rawRr =
+      direction === 'Long'
+        ? (takeProfit - entry) / (entry - stopLoss)
+        : (entry - takeProfit) / (stopLoss - entry)
+
+    if (Number.isFinite(rawRr) && rawRr > 0) {
+      rrRatio = normalizeRrRatio(rawRr)
+    }
+  }
+
+  let positionSize: string | null = null
+  if (riskAmount !== null) {
+    positionSize = (riskAmount / stopLossDistance).toFixed(2)
+  }
+
+  let actualRR: string | null = null
+  let profitLoss: string | null = null
+  let result: z.infer<typeof tradeSchema>['result'] | null = null
+
+  const parsedExit = parseFiniteNumber(data.exitPrice)
+  let effectiveExit: number | null = parsedExit
+
+  if (effectiveExit === null) {
+    if (data.result === 'Win' && takeProfit !== null) {
+      effectiveExit = takeProfit
+    } else if (data.result === 'Loss') {
+      effectiveExit = stopLoss
+    } else if (data.result === 'Breakeven') {
+      effectiveExit = entry
+    }
+  }
+
+  if (effectiveExit !== null) {
+    const rawActualRr =
+      direction === 'Long'
+        ? (effectiveExit - entry) / (entry - stopLoss)
+        : (entry - effectiveExit) / (stopLoss - entry)
+
+    if (Number.isFinite(rawActualRr)) {
+      actualRR = rawActualRr.toFixed(2)
+
+      if (data.result === 'Partial') {
+        result = 'Partial'
+      } else if (rawActualRr >= 0.1) {
+        result = 'Win'
+      } else if (rawActualRr <= -0.9) {
+        result = 'Loss'
+      } else {
+        result = 'Breakeven'
+      }
+
+      const manualPositionSize = parsePositiveFiniteNumber(data.positionSize)
+      const effectivePositionSize =
+        manualPositionSize ??
+        (positionSize !== null ? parsePositiveFiniteNumber(positionSize) : null)
+
+      const directionalMove =
+        direction === 'Long' ? effectiveExit - entry : entry - effectiveExit
+
+      if (effectivePositionSize !== null) {
+        profitLoss = (directionalMove * effectivePositionSize - fee).toFixed(2)
+      } else if (riskAmount !== null) {
+        profitLoss = (riskAmount * rawActualRr - fee).toFixed(2)
+      }
+    }
+  }
+
+  return {
+    rrRatio,
+    positionSize,
+    actualRR,
+    profitLoss,
+    result,
+  }
+}
+
 const mapTradeInputToData = (
   data:
     | z.infer<typeof tradeSchema>
     | z.infer<typeof quickAddTradeSchema>
     | Partial<z.infer<typeof tradeSchema>>,
 ) => {
+  const derived = deriveTradeValues(data)
+  const normalizedRrRatio = normalizeRrRatio(derived.rrRatio ?? data.rrRatio)
+
   const dateValue =
     data.date !== undefined
       ? data.time
@@ -89,13 +247,14 @@ const mapTradeInputToData = (
     technicalConfirmation: data.technicalConfirmation,
     fundamentalConfirmation: data.fundamentalConfirmation,
     entryReason: data.entryReason,
+    accountBalance: parseNumber(data.accountBalance),
     entryPrice: parseNumber(data.entryPrice),
     stopLoss: parseNumber(data.stopLoss),
     takeProfit: parseNumber(data.takeProfit),
     riskPercent: parseNumber(data.riskPercent),
-    riskRewardRatio: parseRatio(data.rrRatio),
-    rrRatio: data.rrRatio,
-    positionSize: parseNumber(data.positionSize),
+    riskRewardRatio: parseRatio(normalizedRrRatio),
+    rrRatio: normalizedRrRatio,
+    positionSize: parseNumber(derived.positionSize ?? data.positionSize),
     entryOnPlan: data.entryOnPlan,
     slippage: data.slippage,
     planChange: data.planChange,
@@ -108,10 +267,11 @@ const mapTradeInputToData = (
     disciplineScore: data.discipline,
     discipline: data.discipline,
     exitPrice: parseNumber(data.exitPrice),
-    profitLoss: parseNumber(data.profitLoss),
-    outcome: data.result,
-    result: data.result,
-    actualRR: parseNumber(data.actualRR),
+    fee: parseNumber(data.fee),
+    profitLoss: parseNumber(derived.profitLoss ?? data.profitLoss),
+    outcome: derived.result ?? data.result,
+    result: derived.result ?? data.result,
+    actualRR: parseNumber(derived.actualRR ?? data.actualRR),
     whatWentRight: data.whatWentRight,
     mistakes: data.mistakes,
     setupValid: data.validSetup,
@@ -126,6 +286,27 @@ const mapTradeInputToData = (
   }
 }
 
+const UPDATE_FIELD_BATCH_SIZE = 40
+
+const chunkTradeUpdateData = (
+  updateData: Parameters<typeof prisma.trade.update>[0]['data'],
+) => {
+  const entries = Object.entries(updateData)
+  const chunks: Array<Parameters<typeof prisma.trade.update>[0]['data']> = []
+
+  for (
+    let index = 0;
+    index < entries.length;
+    index += UPDATE_FIELD_BATCH_SIZE
+  ) {
+    chunks.push(
+      Object.fromEntries(entries.slice(index, index + UPDATE_FIELD_BATCH_SIZE)),
+    )
+  }
+
+  return chunks
+}
+
 export const createTrade = createServerFn({
   method: 'POST',
 })
@@ -133,11 +314,17 @@ export const createTrade = createServerFn({
     tradeSchema.or(quickAddTradeSchema).parse(data),
   )
   .handler(async ({ data }) => {
-    // Validator guarantees full data via tradeSchema | quickAddTradeSchema
+    const mapped = mapTradeInputToData(data)
+
     return prisma.trade.create({
-      data: mapTradeInputToData(data) as Parameters<
-        typeof prisma.trade.create
-      >[0]['data'],
+      data: {
+        ...mapped,
+        date: mapped.date ?? new Date(),
+        market: withFallback(mapped.market, 'Forex'),
+        pair: withFallback(mapped.pair, 'N/A'),
+        timeframe: withFallback(mapped.timeframe, ''),
+        type: withFallback(mapped.type, 'Long'),
+      } as Parameters<typeof prisma.trade.create>[0]['data'],
     })
   })
 
@@ -149,13 +336,40 @@ export const updateTrade = createServerFn({
     const mapped = mapTradeInputToData(data.data)
     // Strip undefined fields so Prisma only updates provided values
     const updateData = Object.fromEntries(
-      Object.entries(mapped).filter(([, v]) => v !== undefined),
-    )
-    return prisma.trade.update({
-      where: {
-        id: data.id,
-      },
-      data: updateData,
+      Object.entries(mapped).filter(([, value]) => value !== undefined),
+    ) as Parameters<typeof prisma.trade.update>[0]['data']
+
+    const updateChunks = chunkTradeUpdateData(updateData)
+    if (updateChunks.length === 0) {
+      return prisma.trade.findUniqueOrThrow({
+        where: {
+          id: data.id,
+        },
+      })
+    }
+
+    return prisma.$transaction(async (tx) => {
+      let updatedTrade: Awaited<ReturnType<typeof tx.trade.update>> | null =
+        null
+
+      for (const chunk of updateChunks) {
+        updatedTrade = await tx.trade.update({
+          where: {
+            id: data.id,
+          },
+          data: chunk,
+        })
+      }
+
+      if (!updatedTrade) {
+        return tx.trade.findUniqueOrThrow({
+          where: {
+            id: data.id,
+          },
+        })
+      }
+
+      return updatedTrade
     })
   })
 

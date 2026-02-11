@@ -1,9 +1,21 @@
+import {
+  RR_RATIO_OPTIONS,
+  TECHNICAL_CONFIRMATION_OPTIONS,
+} from '../../constants/options'
 import type { UseFormReturn } from 'react-hook-form'
 import type {
   TradeFormInput,
   TradeFormValues,
 } from '@/utils/schema/tradeSchema'
 import { Input } from '@/components/ui/input'
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '@/components/ui/combobox'
 import {
   FormControl,
   FormField,
@@ -25,9 +37,25 @@ export function TradeStepPlan({ form }: TradeStepPlanProps) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Technical Confirmation</FormLabel>
-            <FormControl>
-              <Input placeholder="Break of structure" {...field} />
-            </FormControl>
+            <Combobox
+              items={TECHNICAL_CONFIRMATION_OPTIONS}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
+            >
+              <FormControl>
+                <ComboboxInput placeholder="Select confirmation" />
+              </FormControl>
+              <ComboboxContent>
+                <ComboboxEmpty>No results.</ComboboxEmpty>
+                <ComboboxList>
+                  {(option) => (
+                    <ComboboxItem key={option} value={option}>
+                      {option}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
             <FormMessage />
           </FormItem>
         )}
@@ -53,6 +81,19 @@ export function TradeStepPlan({ form }: TradeStepPlanProps) {
             <FormLabel>Entry Reason</FormLabel>
             <FormControl>
               <Input placeholder="Liquidity sweep" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="accountBalance"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Account Balance</FormLabel>
+            <FormControl>
+              <Input placeholder="10000" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -116,9 +157,25 @@ export function TradeStepPlan({ form }: TradeStepPlanProps) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>RR Ratio</FormLabel>
-            <FormControl>
-              <Input placeholder="1:2" {...field} />
-            </FormControl>
+            <Combobox
+              items={RR_RATIO_OPTIONS}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
+            >
+              <FormControl>
+                <ComboboxInput placeholder="Select or enter RR" />
+              </FormControl>
+              <ComboboxContent>
+                <ComboboxEmpty>No results.</ComboboxEmpty>
+                <ComboboxList>
+                  {(option) => (
+                    <ComboboxItem key={option} value={option}>
+                      {option}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
             <FormMessage />
           </FormItem>
         )}
@@ -130,7 +187,7 @@ export function TradeStepPlan({ form }: TradeStepPlanProps) {
           <FormItem>
             <FormLabel>Position Size</FormLabel>
             <FormControl>
-              <Input placeholder="0.5 lot" {...field} />
+              <Input placeholder="0.5 lot" {...field} className="bg-muted/30" />
             </FormControl>
             <FormMessage />
           </FormItem>

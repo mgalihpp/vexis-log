@@ -17,6 +17,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -38,7 +39,7 @@ import {
   TRADE_TYPE_OPTIONS,
 } from '@/features/trade/components/tradeFormFields'
 
-const defaultValues: QuickAddTradeFormInput = {
+const getDefaultValues = (): QuickAddTradeFormInput => ({
   date: new Date().toISOString().slice(0, 10),
   time: new Date().toTimeString().slice(0, 5),
   market: '',
@@ -47,10 +48,10 @@ const defaultValues: QuickAddTradeFormInput = {
   session: '',
   tradeType: '',
   direction: '',
-  marketCondition: '-',
+  marketCondition: '',
   marketBias: '',
   strategy: '',
-  setup: '-',
+  setup: '',
   technicalConfirmation: '',
   fundamentalConfirmation: '',
   entryReason: '',
@@ -69,25 +70,27 @@ const defaultValues: QuickAddTradeFormInput = {
   confidence: 5,
   discipline: 5,
   exitPrice: '',
+  fee: '',
   profitLoss: '',
-  result: 'Pending',
+  result: '',
   actualRR: '',
   whatWentRight: '',
   mistakes: '',
   validSetup: false,
   entryTiming: '',
   lesson: '',
-  notes: '-',
+  notes: '',
   tags: [],
   improvement: '',
   rulesToTighten: '',
   actionPlan: '',
-}
+})
 
 export function QuickAddTradeCard() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast, showToast, dismissToast } = useFeedbackToast()
   const router = useRouter()
+  const defaultValues = getDefaultValues()
   const form = useForm<
     QuickAddTradeFormInput,
     unknown,
@@ -97,18 +100,23 @@ export function QuickAddTradeCard() {
     defaultValues,
   })
 
+  const resultValue = form.watch('result')
+  const requiresFullForm = resultValue !== '' && resultValue !== 'Pending'
+
   const handleSubmit = async (data: QuickAddTradeFormValues) => {
+    if (data.result && data.result !== 'Pending') {
+      showToast(
+        'error',
+        'Outcome selain Pending butuh detail Entry/SL/TP/Exit. Lanjutkan di Full Trade Form.',
+      )
+      return
+    }
+
     setIsSubmitting(true)
     try {
       await createTrade({ data })
       router.invalidate()
-      form.reset({
-        ...defaultValues,
-        result: 'Pending',
-        confidence: 5,
-        discipline: 5,
-        tags: [],
-      })
+      form.reset(getDefaultValues())
       showToast('success', 'Trade saved successfully.')
       router.navigate({ to: '/dashboard' })
     } catch (error) {
@@ -162,7 +170,7 @@ export function QuickAddTradeCard() {
                   <Combobox
                     items={MARKET_OPTIONS}
                     value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
+                    onValueChange={(value) => field.onChange(value ?? '')}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select market" />
@@ -200,11 +208,11 @@ export function QuickAddTradeCard() {
               name="timeframe"
               render={({ field }) => (
                 <FormItem>
-                  <RequiredLabel text="Timeframe" />
+                  <FormLabel>Timeframe</FormLabel>
                   <Combobox
                     items={TIMEFRAME_OPTIONS}
-                    value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
+                    value={field.value ?? ''}
+                    onValueChange={(value) => field.onChange(value ?? '')}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select timeframe" />
@@ -229,11 +237,11 @@ export function QuickAddTradeCard() {
               name="session"
               render={({ field }) => (
                 <FormItem>
-                  <RequiredLabel text="Session" />
+                  <FormLabel>Session</FormLabel>
                   <Combobox
                     items={SESSION_OPTIONS}
-                    value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
+                    value={field.value ?? ''}
+                    onValueChange={(value) => field.onChange(value ?? '')}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select session" />
@@ -258,11 +266,11 @@ export function QuickAddTradeCard() {
               name="tradeType"
               render={({ field }) => (
                 <FormItem>
-                  <RequiredLabel text="Trade Type" />
+                  <FormLabel>Trade Type</FormLabel>
                   <Combobox
                     items={TRADE_TYPE_OPTIONS}
-                    value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
+                    value={field.value ?? ''}
+                    onValueChange={(value) => field.onChange(value ?? '')}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select trade type" />
@@ -291,7 +299,7 @@ export function QuickAddTradeCard() {
                   <Combobox
                     items={DIRECTION_OPTIONS}
                     value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
+                    onValueChange={(value) => field.onChange(value ?? '')}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select direction" />
@@ -316,10 +324,10 @@ export function QuickAddTradeCard() {
               name="result"
               render={({ field }) => (
                 <FormItem>
-                  <RequiredLabel text="Result" />
+                  <FormLabel>Result</FormLabel>
                   <Combobox
                     items={RESULT_OPTIONS}
-                    value={field.value ?? 'Pending'}
+                    value={field.value}
                     onValueChange={(value) => field.onChange(value ?? '')}
                   >
                     <FormControl>
@@ -340,10 +348,41 @@ export function QuickAddTradeCard() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="fee"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fee</FormLabel>
+                  <FormControl>
+                    <Input placeholder="0.00" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {requiresFullForm ? (
+              <div className="md:col-span-3 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
+                <p className="text-amber-800 dark:text-amber-300">
+                  Outcome final butuh detail eksekusi (Entry, SL, TP, Exit
+                  Price).
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="mt-2"
+                  onClick={() =>
+                    router.navigate({ to: '/dashboard/trade/new' })
+                  }
+                >
+                  Open Full Trade Form
+                </Button>
+              </div>
+            ) : null}
           </div>
 
           <div className="flex items-center justify-end gap-2">
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || requiresFullForm}>
               {isSubmitting ? 'Saving…' : 'Save trade'}
             </Button>
           </div>

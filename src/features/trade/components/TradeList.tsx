@@ -25,6 +25,10 @@ const resultConfig = {
     icon: TrendingDown,
     class: 'bg-destructive/15 text-destructive border-destructive/30',
   },
+  Pending: {
+    icon: Minus,
+    class: 'bg-muted/15 text-foreground border-border',
+  },
   BE: { icon: Minus, class: 'bg-warning/15 text-warning border-warning/30' },
 }
 
@@ -129,7 +133,7 @@ export function TradeList({
                         ? 'text-success'
                         : profitLossPercent < 0
                           ? 'text-destructive'
-                          : 'text-warning'
+                          : 'text-foreground'
                     }`}
                   >
                     {profitLossPercent > 0 ? '+' : ''}

@@ -8,6 +8,9 @@ import { TradeStepInfo } from './steps/TradeStepInfo'
 import { TradeStepPlan } from './steps/TradeStepPlan'
 import { TradeStepPsychology } from './steps/TradeStepPsychology'
 import { TradeStepReview } from './steps/TradeStepReview'
+import { TradeStepEvaluation } from './steps/TradeStepEvaluation'
+import { TradeDerivedFieldsSync } from './TradeDerivedFieldsSync'
+import type { FieldErrors } from 'react-hook-form'
 import type {
   TradeFormInput,
   TradeFormValues,
@@ -43,60 +46,23 @@ const steps = [
   },
   {
     id: 'review',
-    title: 'Review',
+    title: 'Post-Trade Review',
+    description: 'Evaluate what went right and mistakes made.',
+  },
+  {
+    id: 'evaluation',
+    title: 'Improvement & Evaluation',
     description: 'Capture lessons and improvement plan.',
   },
 ]
 
 export const stepFields: Array<Array<keyof TradeFormInput>> = [
-  [
-    'date',
-    'time',
-    'market',
-    'pair',
-    'timeframe',
-    'session',
-    'tradeType',
-    'direction',
-    'marketCondition',
-    'marketBias',
-    'strategy',
-    'setup',
-  ],
-  [
-    'technicalConfirmation',
-    'fundamentalConfirmation',
-    'entryReason',
-    'entryPrice',
-    'stopLoss',
-    'takeProfit',
-    'riskPercent',
-    'rrRatio',
-    'positionSize',
-  ],
-  [
-    'entryOnPlan',
-    'slippage',
-    'planChange',
-    'tradeManagement',
-    'result',
-    'exitPrice',
-    'profitLoss',
-    'actualRR',
-  ],
-  ['emotionBefore', 'emotionalDisruption', 'confidence', 'discipline'],
-  [
-    'whatWentRight',
-    'mistakes',
-    'validSetup',
-    'entryTiming',
-    'lesson',
-    'notes',
-    'tags',
-    'improvement',
-    'rulesToTighten',
-    'actionPlan',
-  ],
+  ['date', 'market', 'pair', 'direction'],
+  [],
+  [],
+  [],
+  [],
+  [],
 ]
 
 const baseDefaultValues: TradeFormInput = {
@@ -115,6 +81,7 @@ const baseDefaultValues: TradeFormInput = {
   technicalConfirmation: '',
   fundamentalConfirmation: '',
   entryReason: '',
+  accountBalance: '',
   entryPrice: '',
   stopLoss: '',
   takeProfit: '',
@@ -130,6 +97,7 @@ const baseDefaultValues: TradeFormInput = {
   confidence: 5,
   discipline: 5,
   exitPrice: '',
+  fee: '',
   profitLoss: '',
   result: 'Pending',
   actualRR: '',
@@ -152,23 +120,24 @@ type TradeFormProps = {
 
 export default function TradeForm({ tradeId, initialValues }: TradeFormProps) {
   const [stepIndex, setStepIndex] = useState(0)
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast, showToast, dismissToast } = useFeedbackToast()
 
   const router = useRouter()
   const form = useForm<TradeFormInput, unknown, TradeFormValues>({
     resolver: zodResolver(tradeSchema),
+    shouldUnregister: false,
     defaultValues: {
       ...baseDefaultValues,
       ...initialValues,
     },
   })
 
+  const isSubmitting = form.formState.isSubmitting
+
   const resultValue = form.watch('result')
   const isPending = resultValue === 'Pending'
 
   const handleSubmit = async (data: TradeFormValues) => {
-    setIsSubmitting(true)
     try {
       if (tradeId) {
         await updateTrade({ data: { id: tradeId, data } })
@@ -188,9 +157,44 @@ export default function TradeForm({ tradeId, initialValues }: TradeFormProps) {
           ? error.message
           : 'Unable to save the trade. Please check required fields.'
       showToast('error', message)
-    } finally {
-      setIsSubmitting(false)
     }
+  }
+
+  const handleInvalidSubmit = (errors: FieldErrors<TradeFormInput>) => {
+    form.clearErrors()
+
+    const invalidFields = Object.keys(errors) as Array<keyof TradeFormInput>
+    if (invalidFields.length > 0) {
+      const firstInvalidField = invalidFields[0]
+      const targetStep = stepFields.findIndex((fields) =>
+        fields.includes(firstInvalidField),
+      )
+
+      if (targetStep >= 0 && targetStep !== stepIndex) {
+        setStepIndex(targetStep)
+      }
+    }
+
+    const requiredFieldLabels: Partial<Record<keyof TradeFormInput, string>> = {
+      date: 'Date',
+      market: 'Market',
+      pair: 'Pair',
+      direction: 'Direction',
+    }
+
+    const missingLabels = invalidFields
+      .map((field) => requiredFieldLabels[field])
+      .filter((label): label is string => Boolean(label))
+
+    if (missingLabels.length > 0) {
+      showToast(
+        'error',
+        `Please fill required fields: ${missingLabels.join(', ')}.`,
+      )
+      return
+    }
+
+    showToast('error', 'Please check highlighted fields before saving.')
   }
 
   const progress = Math.round(((stepIndex + 1) / steps.length) * 100)
@@ -212,7 +216,8 @@ export default function TradeForm({ tradeId, initialValues }: TradeFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <TradeDerivedFieldsSync form={form} />
+      <form onSubmit={(event) => event.preventDefault()} className="space-y-6">
         <Card className="border-border bg-card p-6 space-y-4">
           <div className="space-y-1">
             <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">
@@ -231,18 +236,21 @@ export default function TradeForm({ tradeId, initialValues }: TradeFormProps) {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground md:grid-cols-5">
+          <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground md:grid-cols-6 md:text-xs">
             {steps.map((step, index) => (
-              <div
+              <button
                 key={step.id}
+                type="button"
+                onClick={() => setStepIndex(index)}
+                disabled={isSubmitting}
                 className={`rounded-md border px-2 py-1 text-center ${
                   index === stepIndex
                     ? 'border-primary/60 text-primary'
-                    : 'border-border'
+                    : 'border-border hover:border-primary/40 hover:text-foreground'
                 }`}
               >
                 {step.title}
-              </div>
+              </button>
             ))}
           </div>
         </Card>
@@ -255,6 +263,7 @@ export default function TradeForm({ tradeId, initialValues }: TradeFormProps) {
           )}
           {stepIndex === 3 && <TradeStepPsychology form={form} />}
           {stepIndex === 4 && <TradeStepReview form={form} />}
+          {stepIndex === 5 && <TradeStepEvaluation form={form} />}
         </Card>
 
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -272,7 +281,9 @@ export default function TradeForm({ tradeId, initialValues }: TradeFormProps) {
               type="button"
               className="w-full md:w-auto gradient-primary text-primary-foreground font-semibold"
               disabled={isSubmitting}
-              onClick={() => form.handleSubmit(handleSubmit)()}
+              onClick={() =>
+                form.handleSubmit(handleSubmit, handleInvalidSubmit)()
+              }
             >
               <Save className="mr-2 h-4 w-4" />
               {tradeId ? 'Update Trade' : 'Save Trade'}

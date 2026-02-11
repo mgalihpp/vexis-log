@@ -23,6 +23,8 @@ import { TradeStepPlan } from './steps/TradeStepPlan'
 import { TradeStepExecution } from './steps/TradeStepExecution'
 import { TradeStepPsychology } from './steps/TradeStepPsychology'
 import { TradeStepReview } from './steps/TradeStepReview'
+import { TradeStepEvaluation } from './steps/TradeStepEvaluation'
+import { TradeDerivedFieldsSync } from './TradeDerivedFieldsSync'
 import type { TradeEntry } from '@/types/trade'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
@@ -148,7 +150,7 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
 
   const handleSave = async (data: any) => {
     await updateTrade({ data: { id: trade.id, data } })
-    router.invalidate()
+    await router.invalidate({ sync: true })
   }
 
   return (
@@ -226,7 +228,12 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           defaultValues={defaultValues}
           schema={updateTradeSchema}
           onSave={handleSave}
-          renderEdit={(form) => <TradeStepInfo form={form} />}
+          renderEdit={(form) => (
+            <>
+              <TradeDerivedFieldsSync form={form} />
+              <TradeStepInfo form={form} showRequiredIndicators={false} />
+            </>
+          )}
           renderView={() => (
             <>
               {/* 1. General Information */}
@@ -267,7 +274,12 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           defaultValues={defaultValues}
           schema={updateTradeSchema}
           onSave={handleSave}
-          renderEdit={(form) => <TradeStepPlan form={form} />}
+          renderEdit={(form) => (
+            <>
+              <TradeDerivedFieldsSync form={form} />
+              <TradeStepPlan form={form} />
+            </>
+          )}
           renderView={() => (
             <>
               {/* 2. Pre-Trade Analysis (Part 2: Confirmations) */}
@@ -318,7 +330,16 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           renderEdit={(form) => {
             const result = form.watch('result')
             const isPending = result === 'Pending'
-            return <TradeStepExecution form={form} isPending={isPending} />
+            return (
+              <>
+                <TradeDerivedFieldsSync form={form} />
+                <TradeStepExecution
+                  form={form}
+                  isPending={isPending}
+                  showRequiredIndicators={false}
+                />
+              </>
+            )
           }}
           renderView={() => (
             <>
@@ -343,6 +364,7 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
                 <SectionTitle icon={BarChart3} title="Trade Result" />
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <Field label="Exit Price" value={trade.exitPrice} mono />
+                  <Field label="Fee" value={trade.fee} mono />
                   <Field label="P&L" value={trade.profitLoss} mono />
                   <Field label="P&L %" value={`${profitLossPercent}%`} mono />
                 </div>
@@ -360,7 +382,12 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           defaultValues={defaultValues}
           schema={updateTradeSchema}
           onSave={handleSave}
-          renderEdit={(form) => <TradeStepPsychology form={form} />}
+          renderEdit={(form) => (
+            <>
+              <TradeDerivedFieldsSync form={form} />
+              <TradeStepPsychology form={form} />
+            </>
+          )}
           renderView={() => (
             <>
               {/* 5. Psychology */}
@@ -396,12 +423,17 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
 
         {/* Block 5: Review */}
         <EditableSection
-          title="Review & Evaluation"
+          title="Post-Trade Review"
           icon={Lightbulb}
           defaultValues={defaultValues}
           schema={updateTradeSchema}
           onSave={handleSave}
-          renderEdit={(form) => <TradeStepReview form={form} />}
+          renderEdit={(form) => (
+            <>
+              <TradeDerivedFieldsSync form={form} />
+              <TradeStepReview form={form} />
+            </>
+          )}
           renderView={() => (
             <>
               {/* 7. Post-Trade Review */}
@@ -411,13 +443,33 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
                   <Field label="What went right" value={trade.whatWentRight} />
                   <Field label="Mistakes" value={trade.mistakes} />
                   <div className="grid grid-cols-2 gap-4">
-                    <Field label="Valid Setup?" value={trade.setupValid} />
+                    <Field label="Valid Setup?" value={trade.validSetup} />
                     <Field label="Entry timing" value={trade.entryTiming} />
                   </div>
-                  <Field label="Lessons Learned" value={trade.lessonsLearned} />
+                  <Field label="Lessons Learned" value={trade.lesson} />
                 </div>
               </div>
+            </>
+          )}
+        />
 
+        <Separator className="bg-border/50" />
+
+        {/* Block 6: Evaluation */}
+        <EditableSection
+          title="Improvement & Evaluation"
+          icon={AlertTriangle}
+          defaultValues={defaultValues}
+          schema={updateTradeSchema}
+          onSave={handleSave}
+          renderEdit={(form) => (
+            <>
+              <TradeDerivedFieldsSync form={form} />
+              <TradeStepEvaluation form={form} />
+            </>
+          )}
+          renderView={() => (
+            <>
               {/* 9. Evaluation */}
               <div>
                 <SectionTitle
@@ -425,10 +477,19 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
                   title="Evaluation & Improvement"
                 />
                 <div className="space-y-3">
-                  <Field
-                    label="What to improve"
-                    value={trade.improvementPlan}
-                  />
+                  <Field label="Notes" value={trade.notes} />
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {trade.tags.map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="text-[10px] py-0 h-4"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                  <Field label="What to improve" value={trade.improvement} />
                   <Field
                     label="Rules to tighten"
                     value={trade.rulesToTighten}

@@ -18,7 +18,9 @@ export const Route = createFileRoute('/dashboard/trade/')({
 
 function RouteComponent() {
   const { trades } = Route.useLoaderData()
-  const [selectedTrade, setSelectedTrade] = useState<TradeEntry | null>(null)
+  const [selectedTradeId, setSelectedTradeId] = useState<string | null>(null)
+  const selectedTrade =
+    trades.find((trade: TradeEntry) => trade.id === selectedTradeId) ?? null
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -43,15 +45,15 @@ function RouteComponent() {
         <div className={selectedTrade ? 'lg:col-span-2' : 'lg:col-span-5'}>
           <TradeList
             trades={trades}
-            onSelectTrade={setSelectedTrade}
-            selectedId={selectedTrade?.id}
+            onSelectTrade={(trade) => setSelectedTradeId(trade.id)}
+            selectedId={selectedTradeId ?? undefined}
           />
         </div>
         {selectedTrade && (
           <div className="lg:col-span-3">
             <TradeDetail
               trade={selectedTrade}
-              onClose={() => setSelectedTrade(null)}
+              onClose={() => setSelectedTradeId(null)}
             />
           </div>
         )}

@@ -91,89 +91,10 @@ export function TradeStepReview({ form }: TradeStepReviewProps) {
         control={form.control}
         name="lesson"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="md:col-span-2">
             <FormLabel>Lesson</FormLabel>
             <FormControl>
               <Textarea placeholder="Be more disciplined" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="notes"
-        render={({ field }) => (
-          <FormItem>
-            <RequiredLabel text="Notes" />
-            <FormControl>
-              <Textarea placeholder="Additional notes" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="tags"
-        render={({ field }) => {
-          const tagsValue = field.value ?? []
-
-          return (
-            <FormItem>
-              <FormLabel>Tags</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="breakout, london, news"
-                  value={tagsValue.join(', ')}
-                  onChange={(event) => {
-                    const nextTags = event.target.value
-                      .split(',')
-                      .map((tag) => tag.trim())
-                      .filter(Boolean)
-                    field.onChange(nextTags)
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )
-        }}
-      />
-      <FormField
-        control={form.control}
-        name="improvement"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Improvement</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Primary improvement" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="rulesToTighten"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Rules to Tighten</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Limit overtrading" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="actionPlan"
-        render={({ field }) => (
-          <FormItem className="md:col-span-2">
-            <FormLabel>Action Plan</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Improvement plan" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

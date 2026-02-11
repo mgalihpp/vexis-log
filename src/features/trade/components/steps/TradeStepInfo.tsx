@@ -8,13 +8,13 @@ import {
   TIMEFRAME_OPTIONS,
   TRADE_TYPE_OPTIONS,
 } from '../tradeFormFields'
+import { MARKET_BIAS_OPTIONS, SETUP_OPTIONS } from '../../constants/options'
 import type { UseFormReturn } from 'react-hook-form'
 import type {
   TradeFormInput,
   TradeFormValues,
 } from '@/utils/schema/tradeSchema'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Combobox,
   ComboboxContent,
@@ -33,9 +33,13 @@ import {
 
 type TradeStepInfoProps = {
   form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>
+  showRequiredIndicators?: boolean
 }
 
-export function TradeStepInfo({ form }: TradeStepInfoProps) {
+export function TradeStepInfo({
+  form,
+  showRequiredIndicators = true,
+}: TradeStepInfoProps) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
       <FormField
@@ -43,7 +47,11 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="date"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Date" />
+            {showRequiredIndicators ? (
+              <RequiredLabel text="Date" />
+            ) : (
+              <FormLabel>Date</FormLabel>
+            )}
             <FormControl>
               <Input type="date" {...field} className="font-mono" />
             </FormControl>
@@ -56,7 +64,7 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="time"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Time" />
+            <FormLabel>Time</FormLabel>
             <FormControl>
               <Input type="time" {...field} className="font-mono" />
             </FormControl>
@@ -69,11 +77,15 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="market"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Market" />
+            {showRequiredIndicators ? (
+              <RequiredLabel text="Market" />
+            ) : (
+              <FormLabel>Market</FormLabel>
+            )}
             <Combobox
               items={MARKET_OPTIONS}
               value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select market" />
@@ -98,7 +110,11 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="pair"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Pair / Asset" />
+            {showRequiredIndicators ? (
+              <RequiredLabel text="Pair / Asset" />
+            ) : (
+              <FormLabel>Pair / Asset</FormLabel>
+            )}
             <FormControl>
               <Input placeholder="EURUSD / BTCUSDT" {...field} />
             </FormControl>
@@ -111,11 +127,11 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="timeframe"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Timeframe" />
+            <FormLabel>Timeframe</FormLabel>
             <Combobox
               items={TIMEFRAME_OPTIONS}
-              value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select timeframe" />
@@ -140,11 +156,11 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="session"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Session" />
+            <FormLabel>Session</FormLabel>
             <Combobox
               items={SESSION_OPTIONS}
-              value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select session" />
@@ -169,11 +185,11 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="tradeType"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Trade Type" />
+            <FormLabel>Trade Type</FormLabel>
             <Combobox
               items={TRADE_TYPE_OPTIONS}
-              value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select trade type" />
@@ -198,11 +214,15 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="direction"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Direction" />
+            {showRequiredIndicators ? (
+              <RequiredLabel text="Direction" />
+            ) : (
+              <FormLabel>Direction</FormLabel>
+            )}
             <Combobox
               items={DIRECTION_OPTIONS}
               value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select direction" />
@@ -227,11 +247,11 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         name="marketCondition"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Market Condition" />
+            <FormLabel>Market Condition</FormLabel>
             <Combobox
               items={MARKET_CONDITION_OPTIONS}
-              value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select condition" />
@@ -257,9 +277,25 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Market Bias</FormLabel>
-            <FormControl>
-              <Input placeholder="Bullish / Bearish" {...field} />
-            </FormControl>
+            <Combobox
+              items={MARKET_BIAS_OPTIONS}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
+            >
+              <FormControl>
+                <ComboboxInput placeholder="Select bias" />
+              </FormControl>
+              <ComboboxContent>
+                <ComboboxEmpty>No results.</ComboboxEmpty>
+                <ComboboxList>
+                  {(option) => (
+                    <ComboboxItem key={option} value={option}>
+                      {option}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
             <FormMessage />
           </FormItem>
         )}
@@ -272,8 +308,8 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
             <FormLabel>Strategy</FormLabel>
             <Combobox
               items={STRATEGY_OPTIONS}
-              value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select strategy" />
@@ -297,11 +333,27 @@ export function TradeStepInfo({ form }: TradeStepInfoProps) {
         control={form.control}
         name="setup"
         render={({ field }) => (
-          <FormItem className="md:col-span-3">
-            <RequiredLabel text="Setup" />
-            <FormControl>
-              <Textarea placeholder="Setup used" {...field} />
-            </FormControl>
+          <FormItem>
+            <FormLabel>Setup</FormLabel>
+            <Combobox
+              items={SETUP_OPTIONS}
+              value={field.value ?? ''}
+              onValueChange={(value) => field.onChange(value ?? '')}
+            >
+              <FormControl>
+                <ComboboxInput placeholder="Select setup" />
+              </FormControl>
+              <ComboboxContent>
+                <ComboboxEmpty>No results.</ComboboxEmpty>
+                <ComboboxList>
+                  {(option) => (
+                    <ComboboxItem key={option} value={option}>
+                      {option}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
             <FormMessage />
           </FormItem>
         )}

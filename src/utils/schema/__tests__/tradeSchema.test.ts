@@ -41,23 +41,27 @@ describe('tradeSchema (create)', () => {
     expect(result.success).toBe(false)
   })
 
-  it('requires date, time, market, pair, setup, notes, and other required fields', () => {
+  it('requires date, market, pair, and direction', () => {
     const result = tradeSchema.safeParse({
       date: '2025-01-15',
-      time: '14:30',
       market: 'Forex',
       pair: 'EUR/USD',
-      timeframe: '1H',
-      session: 'London',
-      tradeType: 'Swing',
       direction: 'Long',
-      marketCondition: 'Trending',
-      setup: 'Breakout above resistance',
-      confidence: 7,
-      discipline: 8,
       result: 'Win',
-      notes: 'Clean breakout entry',
     })
     expect(result.success).toBe(true)
+  })
+
+  it('accepts minimal payload with only mandatory fields', () => {
+    const result = tradeSchema.safeParse({
+      date: '2025-01-15',
+      market: 'Forex',
+      pair: 'EUR/USD',
+      direction: 'Long',
+    })
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.result).toBe('Pending')
+    }
   })
 })

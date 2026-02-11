@@ -35,6 +35,7 @@ model Trade {
   stopLoss        Float?
   takeProfit      Float?
   riskPercent     Float?
+  accountBalance  Float?
   riskRewardRatio Float?
   rrRatio         String?
   positionSize    Float?
@@ -59,6 +60,7 @@ model Trade {
 
   // 6. Result
   exitPrice  Float?
+  fee        Float?
   profitLoss Float?
   outcome    String?
   result     String?

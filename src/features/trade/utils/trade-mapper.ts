@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import type { TradeFormInput } from '@/utils/schema/tradeSchema'
 import type { TradeEntry } from '@/types/trade'
+import { normalizeRrRatio } from '@/utils/rr-ratio'
 
 export function mapTradeToFormValues(trade: TradeEntry): TradeFormInput {
   const dateValue =
@@ -23,11 +24,12 @@ export function mapTradeToFormValues(trade: TradeEntry): TradeFormInput {
     technicalConfirmation: trade.technicalConfirmation ?? '',
     fundamentalConfirmation: trade.fundamentalConfirmation ?? '',
     entryReason: trade.entryReason ?? '',
+    accountBalance: trade.accountBalance?.toString() ?? '',
     entryPrice: trade.entryPrice?.toString() ?? '',
     stopLoss: trade.stopLoss?.toString() ?? '',
     takeProfit: trade.takeProfit?.toString() ?? '',
     riskPercent: trade.riskPercent?.toString() ?? '',
-    rrRatio: trade.rrRatio ?? trade.riskRewardRatio?.toString() ?? '',
+    rrRatio: normalizeRrRatio(trade.rrRatio ?? trade.riskRewardRatio),
     positionSize: trade.positionSize?.toString() ?? '',
     entryOnPlan: trade.entryOnPlan ?? false,
     slippage: trade.slippage ?? '',
@@ -38,6 +40,7 @@ export function mapTradeToFormValues(trade: TradeEntry): TradeFormInput {
     confidence: trade.confidenceLevel ?? 5,
     discipline: trade.disciplineScore ?? 5,
     exitPrice: trade.exitPrice?.toString() ?? '',
+    fee: trade.fee?.toString() ?? '',
     profitLoss: trade.profitLoss?.toString() ?? '',
     result: trade.result ?? 'Pending',
     actualRR: trade.actualRR?.toString() ?? '',

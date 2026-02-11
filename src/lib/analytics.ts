@@ -21,6 +21,33 @@ const createBreakdownItem = (name: string): BreakdownItem => ({
   avgRR: 0,
 })
 
+const classifyTradeOutcome = (trade: TradeEntry) => {
+  const status = trade.result ?? trade.outcome
+
+  if (status === 'Win') {
+    return 'win' as const
+  }
+
+  if (status === 'Loss') {
+    return 'loss' as const
+  }
+
+  if (status === 'Breakeven' || status === 'Pending') {
+    return 'neutral' as const
+  }
+
+  const pnl = trade.profitLoss || 0
+  if (pnl > 0) {
+    return 'win' as const
+  }
+
+  if (pnl < 0) {
+    return 'loss' as const
+  }
+
+  return 'neutral' as const
+}
+
 const calculateBreakdownStats = (
   items: Record<string, BreakdownItem | undefined>,
 ) => {
@@ -37,11 +64,14 @@ const calculateBreakdownStats = (
 
 const processTrade = (trade: TradeEntry, item: BreakdownItem) => {
   item.trades++
-  if ((trade.profitLoss || 0) > 0) {
+
+  const outcomeType = classifyTradeOutcome(trade)
+  if (outcomeType === 'win') {
     item.wins++
-  } else {
+  } else if (outcomeType === 'loss') {
     item.losses++
   }
+
   item.totalPL += trade.profitLoss || 0
   item.avgRR += trade.actualRR || 0
 }
@@ -268,8 +298,15 @@ export const calculateStats = (trades: Array<TradeEntry>) => {
     }
   }
 
-  const wins = trades.filter((t) => (t.profitLoss || 0) > 0).length
-  const winrate = (wins / totalTrades) * 100
+  const decisiveTrades = trades.filter((trade) => {
+    const outcomeType = classifyTradeOutcome(trade)
+    return outcomeType === 'win' || outcomeType === 'loss'
+  })
+  const wins = decisiveTrades.filter(
+    (trade) => classifyTradeOutcome(trade) === 'win',
+  ).length
+  const winrate =
+    decisiveTrades.length === 0 ? 0 : (wins / decisiveTrades.length) * 100
   const totalProfitLoss = trades.reduce(
     (acc, t) => acc + (t.profitLoss || 0),
     0,

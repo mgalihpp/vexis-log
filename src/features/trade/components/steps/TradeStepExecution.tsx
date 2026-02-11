@@ -26,11 +26,13 @@ import {
 type TradeStepExecutionProps = {
   form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>
   isPending: boolean
+  showRequiredIndicators?: boolean
 }
 
 export function TradeStepExecution({
   form,
   isPending,
+  showRequiredIndicators = true,
 }: TradeStepExecutionProps) {
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -41,7 +43,7 @@ export function TradeStepExecution({
           <FormItem className="md:col-span-3">
             <div className="flex items-center justify-between rounded-md border border-border px-4 py-3">
               <div>
-                <RequiredLabel text="Entry followed the plan" />
+                <FormLabel>Entry followed the plan</FormLabel>
                 <p className="text-xs text-muted-foreground">
                   If still open, set the outcome to Pending.
                 </p>
@@ -62,7 +64,7 @@ export function TradeStepExecution({
         name="slippage"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Slippage" />
+            <FormLabel>Slippage</FormLabel>
             <FormControl>
               <Input placeholder="0.2 pip" {...field} />
             </FormControl>
@@ -101,11 +103,15 @@ export function TradeStepExecution({
         name="result"
         render={({ field }) => (
           <FormItem>
-            <RequiredLabel text="Outcome" />
+            {showRequiredIndicators ? (
+              <RequiredLabel text="Outcome" />
+            ) : (
+              <FormLabel>Outcome</FormLabel>
+            )}
             <Combobox
               items={RESULT_OPTIONS}
               value={field.value}
-              onValueChange={(value) => field.onChange(value)}
+              onValueChange={(value) => field.onChange(value ?? '')}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select outcome" />
@@ -142,12 +148,30 @@ export function TradeStepExecution({
           />
           <FormField
             control={form.control}
+            name="fee"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fee</FormLabel>
+                <FormControl>
+                  <Input placeholder="0.00" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="profitLoss"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Profit / Loss</FormLabel>
                 <FormControl>
-                  <Input placeholder="+2R" {...field} />
+                  <Input
+                    placeholder="Auto calculated"
+                    readOnly
+                    className="bg-muted/40"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -160,7 +184,12 @@ export function TradeStepExecution({
               <FormItem>
                 <FormLabel>Actual RR</FormLabel>
                 <FormControl>
-                  <Input placeholder="1.8" {...field} />
+                  <Input
+                    placeholder="Auto calculated"
+                    readOnly
+                    className="bg-muted/40"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

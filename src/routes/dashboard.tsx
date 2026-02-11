@@ -20,12 +20,6 @@ export const Route = createFileRoute('/dashboard')({
 })
 
 function DashboardLayout() {
-  const aa = useRouteContext({
-    from: '/dashboard',
-  })
-
-  console.log(aa)
-
   return (
     <main className="flex h-screen bg-background">
       <Sidebar />

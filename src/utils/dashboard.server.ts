@@ -65,51 +65,67 @@ function calculateTrend(current: number, previous: number): TrendValue {
 async function buildStats(where?: { date?: { gte: Date; lt: Date } }) {
   const baseWhere = where ?? {}
 
-  const [totalTrades, winningTrades, netPnL, grossProfit, grossLoss] =
-    await Promise.all([
-      prisma.trade.count({ where: baseWhere }),
-      prisma.trade.count({
-        where: {
-          ...baseWhere,
-          profitLoss: {
-            gt: 0,
-          },
+  const [
+    totalTrades,
+    winningTrades,
+    losingTrades,
+    netPnL,
+    grossProfit,
+    grossLoss,
+  ] = await Promise.all([
+    prisma.trade.count({ where: baseWhere }),
+    prisma.trade.count({
+      where: {
+        ...baseWhere,
+        profitLoss: {
+          gt: 0,
         },
-      }),
-      prisma.trade.aggregate({
-        _sum: {
-          profitLoss: true,
+      },
+    }),
+    prisma.trade.count({
+      where: {
+        ...baseWhere,
+        profitLoss: {
+          lt: 0,
         },
-        where: baseWhere,
-      }),
-      prisma.trade.aggregate({
-        _sum: {
-          profitLoss: true,
+      },
+    }),
+    prisma.trade.aggregate({
+      _sum: {
+        profitLoss: true,
+      },
+      where: baseWhere,
+    }),
+    prisma.trade.aggregate({
+      _sum: {
+        profitLoss: true,
+      },
+      where: {
+        ...baseWhere,
+        profitLoss: {
+          gt: 0,
         },
-        where: {
-          ...baseWhere,
-          profitLoss: {
-            gt: 0,
-          },
+      },
+    }),
+    prisma.trade.aggregate({
+      _sum: {
+        profitLoss: true,
+      },
+      where: {
+        ...baseWhere,
+        profitLoss: {
+          lt: 0,
         },
-      }),
-      prisma.trade.aggregate({
-        _sum: {
-          profitLoss: true,
-        },
-        where: {
-          ...baseWhere,
-          profitLoss: {
-            lt: 0,
-          },
-        },
-      }),
-    ])
+      },
+    }),
+  ])
 
   const netPnLValue = netPnL._sum.profitLoss ?? 0
   const grossProfitValue = grossProfit._sum.profitLoss ?? 0
   const grossLossValue = Math.abs(grossLoss._sum.profitLoss ?? 0)
-  const winRate = totalTrades === 0 ? 0 : (winningTrades / totalTrades) * 100
+  const resolvedTrades = winningTrades + losingTrades
+  const winRate =
+    resolvedTrades === 0 ? 0 : (winningTrades / resolvedTrades) * 100
   const profitFactor =
     grossLossValue === 0 ? 0 : grossProfitValue / grossLossValue
 
