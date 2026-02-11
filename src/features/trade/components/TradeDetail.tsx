@@ -89,8 +89,8 @@ function Field({
   const display =
     typeof value === 'boolean'
       ? value
-        ? 'Ya ✓'
-        : 'Tidak ✗'
+        ? 'Yes ✓'
+        : 'No ✗'
       : String(value ?? '')
   return (
     <div>
@@ -229,21 +229,24 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           renderEdit={(form) => <TradeStepInfo form={form} />}
           renderView={() => (
             <>
-              {/* 1. Informasi Umum */}
+              {/* 1. General Information */}
               <div className="mb-4">
-                <SectionTitle icon={FileText} title="Informasi Umum" />
+                <SectionTitle icon={FileText} title="General Information" />
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <Field label="Market" value={trade.market} />
                   <Field label="Timeframe" value={trade.timeframe} mono />
                   <Field label="Session" value={trade.session} />
-                  <Field label="Tipe Trade" value={trade.tradeType} />
+                  <Field label="Trade Type" value={trade.tradeType} />
                 </div>
               </div>
 
-              {/* 2. Pra-Trade Analysis (Part 1: Context) */}
+              {/* 2. Pre-Trade Analysis (Part 1: Context) */}
               <div>
                 <div className="grid grid-cols-2 gap-4">
-                  <Field label="Kondisi Market" value={trade.marketCondition} />
+                  <Field
+                    label="Market Condition"
+                    value={trade.marketCondition}
+                  />
                   <Field label="Market Bias" value={trade.marketBias} />
                   <Field label="Strategy" value={trade.strategy} />
                 </div>
@@ -267,19 +270,19 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           renderEdit={(form) => <TradeStepPlan form={form} />}
           renderView={() => (
             <>
-              {/* 2. Pra-Trade Analysis (Part 2: Confirmations) */}
+              {/* 2. Pre-Trade Analysis (Part 2: Confirmations) */}
               <div className="mb-4">
-                <SectionTitle icon={Target} title="Pra-Trade Analysis" />
+                <SectionTitle icon={Target} title="Pre-Trade Analysis" />
                 <div className="space-y-3">
                   <Field
-                    label="Konfirmasi Teknis"
+                    label="Technical Confirmation"
                     value={trade.technicalConfirmation}
                   />
                   <Field
-                    label="Konfirmasi Fundamental"
+                    label="Fundamental Confirmation"
                     value={trade.fundamentalConfirmation}
                   />
-                  <Field label="Alasan Entry" value={trade.entryReason} />
+                  <Field label="Entry Reason" value={trade.entryReason} />
                 </div>
               </div>
 
@@ -319,25 +322,25 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           }}
           renderView={() => (
             <>
-              {/* 4. Eksekusi */}
+              {/* 4. Execution */}
               <div className="mb-4">
-                <SectionTitle icon={Activity} title="Eksekusi Trade" />
+                <SectionTitle icon={Activity} title="Trade Execution" />
                 <div className="grid grid-cols-2 gap-4">
-                  <Field label="Entry sesuai plan?" value={trade.entryOnPlan} />
+                  <Field label="Entry on plan?" value={trade.entryOnPlan} />
                   <Field label="Slippage" value={trade.slippage} />
                 </div>
                 <div className="mt-3 space-y-3">
-                  <Field label="Perubahan Plan" value={trade.planChange} />
+                  <Field label="Plan Change" value={trade.planChange} />
                   <Field
-                    label="Manajemen Trade"
+                    label="Trade Management"
                     value={trade.tradeManagement}
                   />
                 </div>
               </div>
 
-              {/* 6. Hasil (Moved here to match Edit Step) */}
+              {/* 6. Result (Moved here to match Edit Step) */}
               <div>
-                <SectionTitle icon={BarChart3} title="Hasil Trade" />
+                <SectionTitle icon={BarChart3} title="Trade Result" />
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <Field label="Exit Price" value={trade.exitPrice} mono />
                   <Field label="P&L" value={trade.profitLoss} mono />
@@ -352,7 +355,7 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
 
         {/* Block 4: Psychology */}
         <EditableSection
-          title="Psikologi Trading"
+          title="Trading Psychology"
           icon={Brain}
           defaultValues={defaultValues}
           schema={updateTradeSchema}
@@ -360,27 +363,27 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           renderEdit={(form) => <TradeStepPsychology form={form} />}
           renderView={() => (
             <>
-              {/* 5. Psikologi */}
+              {/* 5. Psychology */}
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <Field
-                  label="Emosi Sebelum Entry"
+                  label="Emotion Before Entry"
                   value={trade.emotionBefore}
                 />
                 <Field
-                  label="Gangguan Emosi"
+                  label="Emotional Disruption"
                   value={trade.emotionalDisruption}
                 />
               </div>
               <div className="space-y-3">
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">
-                    Tingkat Keyakinan
+                    Confidence Level
                   </div>
                   <RatingBar value={trade.confidenceLevel ?? 0} />
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground mb-1">
-                    Disiplin terhadap Rules
+                    Discipline
                   </div>
                   <RatingBar value={trade.disciplineScore ?? 0} />
                 </div>
@@ -405,35 +408,29 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
               <div className="mb-4">
                 <SectionTitle icon={Lightbulb} title="Post-Trade Review" />
                 <div className="space-y-3">
-                  <Field
-                    label="Apa yang dilakukan dengan benar"
-                    value={trade.whatWentRight}
-                  />
-                  <Field label="Kesalahan" value={trade.mistakes} />
+                  <Field label="What went right" value={trade.whatWentRight} />
+                  <Field label="Mistakes" value={trade.mistakes} />
                   <div className="grid grid-cols-2 gap-4">
-                    <Field label="Setup valid?" value={trade.setupValid} />
+                    <Field label="Valid Setup?" value={trade.setupValid} />
                     <Field label="Entry timing" value={trade.entryTiming} />
                   </div>
-                  <Field
-                    label="Pelajaran penting"
-                    value={trade.lessonsLearned}
-                  />
+                  <Field label="Lessons Learned" value={trade.lessonsLearned} />
                 </div>
               </div>
 
-              {/* 9. Evaluasi */}
+              {/* 9. Evaluation */}
               <div>
                 <SectionTitle
                   icon={AlertTriangle}
-                  title="Evaluasi & Improvement"
+                  title="Evaluation & Improvement"
                 />
                 <div className="space-y-3">
                   <Field
-                    label="Apa yang harus diperbaiki"
+                    label="What to improve"
                     value={trade.improvementPlan}
                   />
                   <Field
-                    label="Rule yang perlu diperketat"
+                    label="Rules to tighten"
                     value={trade.rulesToTighten}
                   />
                   <Field label="Action plan" value={trade.actionPlan} />

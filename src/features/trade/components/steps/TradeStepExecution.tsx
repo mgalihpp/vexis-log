@@ -77,7 +77,7 @@ export function TradeStepExecution({
           <FormItem>
             <FormLabel>Plan Changes</FormLabel>
             <FormControl>
-              <Input placeholder="Tidak ada" {...field} />
+              <Input placeholder="None" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

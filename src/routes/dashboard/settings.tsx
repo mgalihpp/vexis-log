@@ -31,7 +31,7 @@ function RouteComponent() {
       {/* Sidebar */}
       <nav className="hidden md:flex flex-col gap-1 w-52 shrink-0 glass-card border-border/50 p-3 rounded-lg self-start sticky top-15">
         <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium px-2 mb-2">
-          Pengaturan
+          Settings
         </span>
         {SECTIONS.map((sec) => {
           const isActive = activeSection === sec.value

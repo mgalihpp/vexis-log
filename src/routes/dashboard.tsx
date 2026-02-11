@@ -1,4 +1,9 @@
-import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
+import {
+  Outlet,
+  createFileRoute,
+  redirect,
+  useRouteContext,
+} from '@tanstack/react-router'
 import { Sidebar } from '@/features/dashboard/components/Sidebar'
 import { Splash } from '@/components/Splash'
 import { NotFound } from '@/components/NotFound'
@@ -15,6 +20,12 @@ export const Route = createFileRoute('/dashboard')({
 })
 
 function DashboardLayout() {
+  const aa = useRouteContext({
+    from: '/dashboard',
+  })
+
+  console.log(aa)
+
   return (
     <main className="flex h-screen bg-background">
       <Sidebar />

@@ -62,7 +62,7 @@ export function EditableSection<T extends FieldValues>({
     <section className={className}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2 text-primary">
-          <Icon className="h-4 w-4" />
+          {/* <Icon className="h-4 w-4" />*/}
           <h3 className="font-semibold text-foreground">{title}</h3>
         </div>
         {!isEditing ? (

@@ -27,7 +27,7 @@ export function TradeStepPsychology({ form }: TradeStepPsychologyProps) {
           <FormItem>
             <FormLabel>Emotion Before Entry</FormLabel>
             <FormControl>
-              <Input placeholder="Tenang, anxious" {...field} />
+              <Input placeholder="Calm, anxious" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

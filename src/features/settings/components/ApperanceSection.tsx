@@ -80,9 +80,9 @@ export const AppearanceSection = () => {
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Palette className="h-4 w-4 text-primary" />
-            Tema & Display
+            Theme & Display
           </CardTitle>
-          <CardDescription>Sesuaikan tampilan aplikasi</CardDescription>
+          <CardDescription>Customize application appearance</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
           <div className="flex items-center justify-between">
@@ -91,7 +91,7 @@ export const AppearanceSection = () => {
               <div>
                 <p className="text-sm font-medium">Dark Mode</p>
                 <p className="text-xs text-muted-foreground">
-                  Tema gelap untuk mata
+                  Dark theme for your eyes
                 </p>
               </div>
             </div>
@@ -104,7 +104,7 @@ export const AppearanceSection = () => {
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Globe className="h-4 w-4 text-primary" />
-            Bahasa
+            Language
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -116,7 +116,7 @@ export const AppearanceSection = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="id">Bahasa Indonesia</SelectItem>
+              <SelectItem value="id">Indonesian</SelectItem>
               <SelectItem value="en">English</SelectItem>
             </SelectContent>
           </Select>

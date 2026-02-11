@@ -85,8 +85,8 @@ export function TradesTable({
               <SelectItem value="all">All Markets</SelectItem>
               <SelectItem value="Forex">Forex</SelectItem>
               <SelectItem value="Crypto">Crypto</SelectItem>
-              <SelectItem value="Indices">Indices</SelectItem>
-              <SelectItem value="Stocks">Stocks</SelectItem>
+              <SelectItem value="Index">Index</SelectItem>
+              <SelectItem value="Stock">Stock</SelectItem>
             </SelectContent>
           </Select>
         </div>

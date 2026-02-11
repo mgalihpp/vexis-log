@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, Loader2 } from 'lucide-react'
@@ -16,9 +16,18 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Splash } from '@/components/Splash'
 
 export const Route = createFileRoute('/signup')({
   component: SignupPage,
+  beforeLoad: async ({ context }) => {
+    if (context.auth.user) {
+      throw redirect({
+        to: '/dashboard',
+      })
+    }
+  },
+  pendingComponent: Splash,
 })
 
 function SignupPage() {

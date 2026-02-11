@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertCircle, Loader2 } from 'lucide-react'
@@ -18,9 +18,18 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { useAuth } from '@/hooks/useAuth'
 import { loginSchema } from '@/utils/schema/authSchema'
+import { Splash } from '@/components/Splash'
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
+  beforeLoad: async ({ context }) => {
+    if (context.auth.user) {
+      throw redirect({
+        to: '/dashboard',
+      })
+    }
+  },
+  pendingComponent: Splash,
 })
 
 function LoginPage() {

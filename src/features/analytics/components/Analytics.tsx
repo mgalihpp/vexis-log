@@ -75,17 +75,17 @@ const COLORS = [
 ]
 
 const CATEGORIES = [
-  { value: 'dayofweek', label: 'Hari', icon: Calendar },
-  { value: 'monthly', label: 'Bulanan', icon: Calendar },
-  { value: 'weekly', label: 'Mingguan', icon: Calendar },
-  { value: 'yearly', label: 'Tahunan', icon: Calendar },
+  { value: 'dayofweek', label: 'Day', icon: Calendar },
+  { value: 'monthly', label: 'Monthly', icon: Calendar },
+  { value: 'weekly', label: 'Weekly', icon: Calendar },
+  { value: 'yearly', label: 'Yearly', icon: Calendar },
   { value: 'symbol', label: 'Symbol', icon: Globe },
-  { value: 'direction', label: 'Arah', icon: TrendingUp },
-  { value: 'session', label: 'Sesi', icon: Globe },
+  { value: 'direction', label: 'Direction', icon: TrendingUp },
+  { value: 'session', label: 'Session', icon: Globe },
   { value: 'market', label: 'Market', icon: BarChart3 },
   { value: 'setup', label: 'Setup', icon: Target },
-  { value: 'tradetype', label: 'Tipe Trade', icon: Zap },
-  { value: 'emotion', label: 'Emosi', icon: Brain },
+  { value: 'tradetype', label: 'Trade Type', icon: Zap },
+  { value: 'emotion', label: 'Emotion', icon: Brain },
 ] as const
 
 type CategoryValue = (typeof CATEGORIES)[number]['value']
@@ -96,7 +96,7 @@ function BreakdownTable({ data }: { data: Array<BreakdownItem> }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Nama</TableHead>
+            <TableHead>Name</TableHead>
             <TableHead className="text-right">Trades</TableHead>
             <TableHead className="text-right">Win</TableHead>
             <TableHead className="text-right">Loss</TableHead>
@@ -255,7 +255,7 @@ function DateRangePicker({
             )}
           >
             <CalendarIcon className="h-3.5 w-3.5" />
-            {dateFrom ? format(dateFrom, 'dd MMM yyyy') : 'Dari'}
+            {dateFrom ? format(dateFrom, 'dd MMM yyyy') : 'From'}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -280,7 +280,7 @@ function DateRangePicker({
             )}
           >
             <CalendarIcon className="h-3.5 w-3.5" />
-            {dateTo ? format(dateTo, 'dd MMM yyyy') : 'Sampai'}
+            {dateTo ? format(dateTo, 'dd MMM yyyy') : 'To'}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -363,7 +363,7 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
       {/* Sidebar Navigation */}
       <nav className="hidden md:flex flex-col gap-1 w-52 shrink-0 glass-card border-border/50 p-3 rounded-lg self-start sticky top-20">
         <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium px-2 mb-2">
-          Kategori
+          Category
         </span>
         {CATEGORIES.map((cat) => {
           const isActive = activeCategory === cat.value
@@ -411,14 +411,8 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
 
       {/* Main Content */}
       <div className="flex-1 min-w-0 space-y-6">
-        {/* Header with Title and Date Picker */}
+        {/* Header with Date Picker */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Analytics</h1>
-            <p className="text-sm text-muted-foreground">
-              Analisa performa tradingmu secara detail
-            </p>
-          </div>
           <DateRangePicker
             dateFrom={dateFrom}
             dateTo={dateTo}
@@ -549,7 +543,7 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
             <Card className="glass-card border-border/50 lg:col-span-2">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Detail Tabel
+                  Table Detail
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -560,7 +554,7 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
             <Card className="glass-card border-border/50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Distribusi Trade
+                  Trade Distribution
                 </CardTitle>
               </CardHeader>
               <CardContent>

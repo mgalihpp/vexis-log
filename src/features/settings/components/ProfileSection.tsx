@@ -58,13 +58,13 @@ export const ProfileSection = () => {
     mutationFn: (data: UpdateProfileInput) => updateProfile({ data }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['auth', 'session'] })
-      showToast('success', 'Profil berhasil diperbarui')
+      showToast('success', 'Profile updated successfully')
     },
     onError: (error) => {
       const message =
         error instanceof Error
           ? error.message
-          : 'Gagal memperbarui profil. Coba lagi.'
+          : 'Failed to update profile. Please try again.'
       showToast('error', message)
     },
   })
@@ -73,13 +73,13 @@ export const ProfileSection = () => {
     mutationFn: (data: ChangePasswordInput) => changePassword({ data }),
     onSuccess: () => {
       passwordForm.reset()
-      showToast('success', 'Password berhasil diubah')
+      showToast('success', 'Password changed successfully')
     },
     onError: (error) => {
       const message =
         error instanceof Error
           ? error.message
-          : 'Gagal mengubah password. Coba lagi.'
+          : 'Failed to change password. Please try again.'
       showToast('error', message)
     },
   })
@@ -98,9 +98,9 @@ export const ProfileSection = () => {
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <User className="h-4 w-4 text-primary" />
-            Informasi Profil
+            Profile Information
           </CardTitle>
-          <CardDescription>Atur nama dan email akun kamu</CardDescription>
+          <CardDescription>Manage your name and email address</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -108,11 +108,11 @@ export const ProfileSection = () => {
             className="space-y-4"
           >
             <div className="space-y-2">
-              <Label htmlFor="name">Nama</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
                 className="trade-input"
-                placeholder="Nama kamu"
+                placeholder="Your name"
                 {...profileForm.register('name')}
                 aria-invalid={!!profileForm.formState.errors.name}
               />
@@ -147,10 +147,10 @@ export const ProfileSection = () => {
               {updateProfileMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Menyimpan...
+                  Saving...
                 </>
               ) : (
-                'Simpan'
+                'Save Changes'
               )}
             </Button>
           </form>
@@ -161,9 +161,9 @@ export const ProfileSection = () => {
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
-            Keamanan
+            Security
           </CardTitle>
-          <CardDescription>Ubah password akun</CardDescription>
+          <CardDescription>Change your password</CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -171,7 +171,7 @@ export const ProfileSection = () => {
             className="space-y-4"
           >
             <div className="space-y-2">
-              <Label htmlFor="current-pw">Password Saat Ini</Label>
+              <Label htmlFor="current-pw">Current Password</Label>
               <Input
                 id="current-pw"
                 type="password"
@@ -187,7 +187,7 @@ export const ProfileSection = () => {
               ) : null}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="new-pw">Password Baru</Label>
+              <Label htmlFor="new-pw">New Password</Label>
               <Input
                 id="new-pw"
                 type="password"
@@ -203,7 +203,7 @@ export const ProfileSection = () => {
               ) : null}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirm-pw">Konfirmasi Password</Label>
+              <Label htmlFor="confirm-pw">Confirm Password</Label>
               <Input
                 id="confirm-pw"
                 type="password"
@@ -227,10 +227,10 @@ export const ProfileSection = () => {
               {changePasswordMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Mengubah...
+                  Changing...
                 </>
               ) : (
-                'Ubah Password'
+                'Change Password'
               )}
             </Button>
           </form>

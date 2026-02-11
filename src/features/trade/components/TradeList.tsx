@@ -32,8 +32,8 @@ const marketColors: Record<string, string> = {
   Forex: 'bg-primary/15 text-primary border-primary/30',
   Crypto:
     'bg-[hsl(262,60%,52%)]/15 text-[hsl(262,60%,52%)] border-[hsl(262,60%,52%)]/30',
-  Saham: 'bg-success/15 text-success border-success/30',
-  Indeks: 'bg-warning/15 text-warning border-warning/30',
+  Stock: 'bg-success/15 text-success border-success/30',
+  Index: 'bg-warning/15 text-warning border-warning/30',
 }
 
 export function TradeList({
