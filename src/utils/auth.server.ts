@@ -11,6 +11,8 @@ const userSelect = {
   id: true,
   email: true,
   name: true,
+  theme: true,
+  language: true,
   createdAt: true,
 } as const
 
@@ -18,6 +20,8 @@ export type SafeUser = {
   id: string
   email: string
   name: string | null
+  theme: string | null
+  language: string | null
   createdAt: Date
 }
 
@@ -72,6 +76,8 @@ export async function authenticateUser(data: LoginInput): Promise<SafeUser> {
     id: user.id,
     email: user.email,
     name: user.name,
+    theme: user.theme,
+    language: user.language,
     createdAt: user.createdAt,
   }
 }
