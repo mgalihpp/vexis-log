@@ -12,8 +12,8 @@ export function Sidebar() {
   return (
     <div className="hidden md:flex flex-col w-64 min-h-screen bg-card border-r border-border sticky top-0 h-screen">
       <div className="p-6 border-b border-border/50 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/20">
-          <Logo className="w-6 h-6 text-white" />
+        <div className="w-10 h-10 rounded-xl">
+          <Logo className=" text-white" />
         </div>
         <div>
           <h1 className="font-display font-bold text-lg tracking-tight">

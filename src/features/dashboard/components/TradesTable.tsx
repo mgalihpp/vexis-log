@@ -38,6 +38,7 @@ type TradesTableProps = {
   filterMarket: string
   onSearchChange: (value: string) => void
   onFilterMarketChange: (value: string) => void
+  title?: string
 }
 
 export function TradesTable({
@@ -46,6 +47,7 @@ export function TradesTable({
   filterMarket,
   onSearchChange,
   onFilterMarketChange,
+  title = 'Recent Trades',
 }: TradesTableProps) {
   const [open, setOpen] = useState(false)
   const [selectedTradeId, setSelectedTradeId] = useState<string | null>(null)
@@ -63,7 +65,7 @@ export function TradesTable({
   return (
     <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden">
       <div className="p-4 border-b border-border/50 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <h3 className="text-lg font-bold font-display">Recent Trades</h3>
+        <h3 className="text-lg font-bold font-display">{title}</h3>
         <div className="flex gap-2 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -110,7 +112,15 @@ export function TradesTable({
                   colSpan={7}
                   className="h-48 text-center text-muted-foreground"
                 >
-                  No trades found. Log your first trade!
+                  <div className="flex flex-col items-center justify-center p-6">
+                    <div className="flex items-center justify-center w-12 h-12 mb-3 rounded-full bg-muted/50">
+                      <Search className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                    <p className="font-medium">No trades found</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Try adjusting your search or filter.
+                    </p>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (

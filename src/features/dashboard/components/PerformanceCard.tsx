@@ -39,6 +39,7 @@ export function PerformanceCard({
     },
   ]
   const performanceTotal = performanceData[0].value + performanceData[1].value
+  const chartData = performanceData.filter((d) => d.value > 0)
 
   return (
     <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col">
@@ -50,14 +51,15 @@ export function PerformanceCard({
               <ChartContainer config={chartConfig} className="h-full w-full">
                 <PieChart>
                   <Pie
-                    data={performanceData}
+                    data={chartData}
                     dataKey="value"
                     nameKey="name"
-                    innerRadius={58}
-                    outerRadius={90}
-                    paddingAngle={4}
+                    innerRadius={60}
+                    strokeWidth={0}
+                    outerRadius={85}
+                    paddingAngle={chartData.length > 1 ? 4 : 0}
                   >
-                    {performanceData.map((entry) => (
+                    {chartData.map((entry) => (
                       <Cell key={entry.name} fill={entry.fill} />
                     ))}
                   </Pie>
@@ -90,8 +92,8 @@ export function PerformanceCard({
             </div>
           </div>
         ) : (
-          <div className="h-full w-full flex items-center justify-center text-sm text-muted-foreground border border-dashed border-border/60 rounded-xl">
-            No trades yet. Add a trade to see performance.
+          <div className="h-full w-full flex text-center items-center justify-center text-sm text-muted-foreground border border-dashed border-border/60 rounded-xl">
+            No trades yet. <br /> Add a trade to see performance.
           </div>
         )}
       </div>

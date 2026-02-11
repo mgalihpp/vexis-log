@@ -75,8 +75,8 @@ export function EquityCurveCard({
             </AreaChart>
           </ChartContainer>
         ) : (
-          <div className="h-full flex items-center justify-center text-sm text-muted-foreground border border-dashed border-border/60 rounded-xl">
-            No trades yet. Add a trade to see the equity curve.
+          <div className="h-full flex text-center items-center justify-center text-sm text-muted-foreground border border-dashed border-border/60 rounded-xl">
+            No trades yet. <br /> Add a trade to see the equity curve.
           </div>
         )}
       </div>

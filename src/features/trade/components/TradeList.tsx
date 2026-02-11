@@ -1,6 +1,14 @@
-import { ChevronRight, Minus, TrendingDown, TrendingUp } from 'lucide-react'
+import {
+  ChevronRight,
+  ClipboardList,
+  Minus,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import type { TradeEntry } from '@/types/trade'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 interface TradeListProps {
   trades: Array<TradeEntry>
@@ -33,6 +41,26 @@ export function TradeList({
   onSelectTrade,
   selectedId,
 }: TradeListProps) {
+  if (trades.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed rounded-lg border-border/50 bg-muted/5 animate-fade-in">
+        <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-muted/20">
+          <ClipboardList className="w-8 h-8 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-semibold font-display">
+          Trade Journal Empty
+        </h3>
+        <p className="max-w-xs mb-6 text-sm text-muted-foreground">
+          You haven't logged any trades yet. Start your journey by adding your
+          first trade.
+        </p>
+        <Link to="/dashboard/trade/new">
+          <Button>Add First Trade</Button>
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-2">
       {trades.map((trade, i) => {

@@ -13,6 +13,7 @@ export const getRouter = () => {
     routeTree,
     context: {
       queryClient,
+      auth: undefined!, // This will be set in the root route
     },
     defaultPreload: 'intent',
 

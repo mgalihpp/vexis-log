@@ -1,15 +1,17 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
-import { getAuthSession } from '@/utils/auth.functions'
 import { Sidebar } from '@/features/dashboard/components/Sidebar'
+import { Splash } from '@/components/Splash'
+import { NotFound } from '@/components/NotFound'
 
 export const Route = createFileRoute('/dashboard')({
-  beforeLoad: async () => {
-    const user = await getAuthSession()
-    if (!user) {
+  beforeLoad: ({ context }) => {
+    if (!context.auth.user) {
       throw redirect({ to: '/login' })
     }
   },
   component: DashboardLayout,
+  pendingComponent: Splash,
+  notFoundComponent: NotFound,
 })
 
 function DashboardLayout() {

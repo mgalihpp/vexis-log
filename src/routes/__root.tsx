@@ -11,10 +11,26 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import '@fontsource/geist-sans'
 import '@fontsource/geist-mono'
+import type { SafeUser } from '@/utils/auth.server'
+import { ThemeProvider } from '@/components/Theme-Provider'
+import {
+  FeedbackToastHost,
+  FeedbackToastProvider,
+} from '@/hooks/use-feedback-toast'
+import { NotFound } from '@/components/NotFound'
+import { getAuthSession } from '@/utils/auth.functions'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
+  auth: { user: SafeUser | null }
 }>()({
+  beforeLoad: async () => {
+    const user = await getAuthSession()
+    return {
+      auth: { user },
+    }
+  },
+  notFoundComponent: NotFound,
   head: () => ({
     meta: [
       {
@@ -59,7 +75,7 @@ export const Route = createRootRouteWithContext<{
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

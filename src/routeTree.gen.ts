@@ -15,6 +15,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardHistoryRouteImport } from './routes/dashboard/history'
 import { Route as DashboardTradeIndexRouteImport } from './routes/dashboard/trade.index'
 import { Route as DashboardTradeQuickAddRouteImport } from './routes/dashboard/trade.quick-add'
 import { Route as DashboardTradeNewRouteImport } from './routes/dashboard/trade.new'
@@ -50,6 +51,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardHistoryRoute = DashboardHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardTradeIndexRoute = DashboardTradeIndexRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/dashboard/history': typeof DashboardHistoryRoute
   '/dashboard/settings': typeof DashboardSettingsRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/settings/appearance': typeof DashboardSettingsAppearanceRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/dashboard/history': typeof DashboardHistoryRoute
   '/dashboard/settings': typeof DashboardSettingsRouteWithChildren
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/settings/appearance': typeof DashboardSettingsAppearanceRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/dashboard/history': typeof DashboardHistoryRoute
   '/dashboard/settings': typeof DashboardSettingsRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/settings/appearance': typeof DashboardSettingsAppearanceRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/dashboard/history'
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/settings/appearance'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/dashboard/history'
     | '/dashboard/settings'
     | '/dashboard'
     | '/dashboard/settings/appearance'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/signup'
+    | '/dashboard/history'
     | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/settings/appearance'
@@ -223,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/history': {
+      id: '/dashboard/history'
+      path: '/history'
+      fullPath: '/dashboard/history'
+      preLoaderRoute: typeof DashboardHistoryRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/trade/': {
       id: '/dashboard/trade/'
       path: '/trade'
@@ -282,6 +301,7 @@ const DashboardSettingsRouteWithChildren =
   DashboardSettingsRoute._addFileChildren(DashboardSettingsRouteChildren)
 
 interface DashboardRouteChildren {
+  DashboardHistoryRoute: typeof DashboardHistoryRoute
   DashboardSettingsRoute: typeof DashboardSettingsRouteWithChildren
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardTradeNewRoute: typeof DashboardTradeNewRoute
@@ -291,6 +311,7 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardHistoryRoute: DashboardHistoryRoute,
   DashboardSettingsRoute: DashboardSettingsRouteWithChildren,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardTradeNewRoute: DashboardTradeNewRoute,
