@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   Route as RouteIcon,
   Server,
@@ -15,39 +15,39 @@ function App() {
   const features = [
     {
       icon: <Zap className="w-12 h-12 text-cyan-400" />,
-      title: 'Powerful Server Functions',
+      title: 'Quick Trade Entry',
       description:
-        'Write server-side code that seamlessly integrates with your client components. Type-safe, secure, and simple.',
+        'Log your trades in seconds with smart forms. Auto-calculate risk/reward, position sizing, and more.',
     },
     {
       icon: <Server className="w-12 h-12 text-cyan-400" />,
-      title: 'Flexible Server Side Rendering',
+      title: 'Detailed Analytics',
       description:
-        'Full-document SSR, streaming, and progressive enhancement out of the box. Control exactly what renders where.',
+        'Track win rate, profit factor, equity curve, and performance metrics. All calculated automatically.',
     },
     {
       icon: <RouteIcon className="w-12 h-12 text-cyan-400" />,
-      title: 'API Routes',
+      title: 'Trade Review',
       description:
-        'Build type-safe API endpoints alongside your application. No separate backend needed.',
+        'Review each trade with pre and post analysis. Identify patterns and improve your strategy.',
     },
     {
       icon: <Shield className="w-12 h-12 text-cyan-400" />,
-      title: 'Strongly Typed Everything',
+      title: 'Secure & Private',
       description:
-        'End-to-end type safety from server to client. Catch errors before they reach production.',
+        'Your data is encrypted and stored securely. Only you can access your trading journal.',
     },
     {
       icon: <Waves className="w-12 h-12 text-cyan-400" />,
-      title: 'Full Streaming Support',
+      title: 'Multi-Market Support',
       description:
-        'Stream data from server to client progressively. Perfect for AI applications and real-time updates.',
+        'Track stocks, forex, crypto, and futures. All in one place with market-specific fields.',
     },
     {
       icon: <Sparkles className="w-12 h-12 text-cyan-400" />,
-      title: 'Next Generation Ready',
+      title: 'Dark Mode Ready',
       description:
-        'Built from the ground up for modern web applications. Deploy anywhere JavaScript runs.',
+        'Beautiful dark and light themes. Comfortable trading journal for any time of day.',
     },
   ]
 
@@ -60,40 +60,31 @@ function App() {
           <div className="relative max-w-5xl mx-auto">
             <div className="flex items-center justify-center gap-6 mb-6">
               <img
-                src="/tanstack-circle-logo.png"
-                alt="TanStack Logo"
-                className="w-24 h-24 md:w-32 md:h-32"
+                src="/logo.png"
+                alt="Vexis Log"
+                className="w-24 h-24 md:w-32 md:h-32 rounded-2xl"
               />
               <h1 className="text-6xl md:text-7xl font-black text-white [letter-spacing:-0.08em]">
-                <span className="text-gray-300">TANSTACK</span>{' '}
+                <span className="text-gray-300">VEXIS</span>{' '}
                 <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                  START
+                  LOG
                 </span>
               </h1>
             </div>
             <p className="text-2xl md:text-3xl text-gray-300 mb-4 font-light">
-              The framework for next generation AI applications
+              Your Trading Journal for Better Performance
             </p>
             <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
-              Full-stack framework powered by TanStack Router for React and
-              Solid. Build modern applications with server functions, streaming,
-              and type safety.
+              Track, analyze, and improve your trades with a professional
+              journal that helps you identify patterns and grow as a trader.
             </p>
             <div className="flex flex-col items-center gap-4">
-              <a
-                href="https://tanstack.com/start"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/login"
                 className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-500/50"
               >
-                Documentation
-              </a>
-              <p className="text-gray-400 text-sm mt-2">
-                Begin your TanStack Start journey by editing{' '}
-                <code className="px-2 py-1 bg-slate-700 rounded text-cyan-400">
-                  /src/routes/index.tsx
-                </code>
-              </p>
+                Get Started
+              </Link>
             </div>
           </div>
         </section>
