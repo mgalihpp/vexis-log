@@ -48,7 +48,7 @@ const steps = [
   },
 ]
 
-const stepFields: Array<Array<keyof TradeFormInput>> = [
+export const stepFields: Array<Array<keyof TradeFormInput>> = [
   [
     'date',
     'time',
