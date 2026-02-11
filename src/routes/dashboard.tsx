@@ -1,9 +1,16 @@
-import { Outlet, createFileRoute } from '@tanstack/react-router'
+import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
+import { getAuthSession } from '@/utils/auth.functions'
 import { Sidebar } from '@/features/dashboard/components/Sidebar'
 import { FeedbackToastProvider } from '@/hooks/use-feedback-toast'
 import { ThemeProvider } from '@/components/Theme-Provider'
 
 export const Route = createFileRoute('/dashboard')({
+  beforeLoad: async () => {
+    const user = await getAuthSession()
+    if (!user) {
+      throw redirect({ to: '/login' })
+    }
+  },
   component: DashboardLayout,
 })
 

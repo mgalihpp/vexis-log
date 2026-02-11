@@ -3,9 +3,11 @@ import { LogOut } from 'lucide-react'
 import { SIDEBAR_LINKS } from '../constants/nav'
 import { cn } from '@/lib/utils'
 import { Logo } from '@/components/ui/logo'
+import { useAuth } from '@/hooks/useAuth'
 
 export function Sidebar() {
   const location = useLocation()
+  const { logout, isLogoutPending } = useAuth()
 
   return (
     <div className="hidden md:flex flex-col w-64 min-h-screen bg-card border-r border-border sticky top-0 h-screen">
@@ -57,9 +59,13 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-border/50">
-        <button className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-200 text-sm font-medium">
+        <button
+          onClick={() => logout()}
+          disabled={isLogoutPending}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <LogOut className="w-5 h-5" />
-          Sign Out
+          {isLogoutPending ? 'Signing out...' : 'Sign Out'}
         </button>
       </div>
     </div>

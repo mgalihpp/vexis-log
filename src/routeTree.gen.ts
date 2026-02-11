@@ -9,18 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardTradeIndexRouteImport } from './routes/dashboard/trade.index'
 import { Route as DashboardTradeQuickAddRouteImport } from './routes/dashboard/trade.quick-add'
 import { Route as DashboardTradeNewRouteImport } from './routes/dashboard/trade.new'
+import { Route as DashboardSettingsProfileRouteImport } from './routes/dashboard/settings.profile'
+import { Route as DashboardSettingsAppearanceRouteImport } from './routes/dashboard/settings.appearance'
 import { Route as DashboardTradeTradeIdEditRouteImport } from './routes/dashboard/trade.$tradeId.edit'
 
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -38,6 +47,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardTradeIndexRoute = DashboardTradeIndexRouteImport.update({
   id: '/trade/',
   path: '/trade/',
@@ -53,6 +67,18 @@ const DashboardTradeNewRoute = DashboardTradeNewRouteImport.update({
   path: '/trade/new',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardSettingsProfileRoute =
+  DashboardSettingsProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => DashboardSettingsRoute,
+  } as any)
+const DashboardSettingsAppearanceRoute =
+  DashboardSettingsAppearanceRouteImport.update({
+    id: '/appearance',
+    path: '/appearance',
+    getParentRoute: () => DashboardSettingsRoute,
+  } as any)
 const DashboardTradeTradeIdEditRoute =
   DashboardTradeTradeIdEditRouteImport.update({
     id: '/trade/$tradeId/edit',
@@ -63,8 +89,12 @@ const DashboardTradeTradeIdEditRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/settings': typeof SettingsRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/settings': typeof DashboardSettingsRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/settings/appearance': typeof DashboardSettingsAppearanceRoute
+  '/dashboard/settings/profile': typeof DashboardSettingsProfileRoute
   '/dashboard/trade/new': typeof DashboardTradeNewRoute
   '/dashboard/trade/quick-add': typeof DashboardTradeQuickAddRoute
   '/dashboard/trade/': typeof DashboardTradeIndexRoute
@@ -72,8 +102,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/settings': typeof SettingsRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/settings': typeof DashboardSettingsRouteWithChildren
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/settings/appearance': typeof DashboardSettingsAppearanceRoute
+  '/dashboard/settings/profile': typeof DashboardSettingsProfileRoute
   '/dashboard/trade/new': typeof DashboardTradeNewRoute
   '/dashboard/trade/quick-add': typeof DashboardTradeQuickAddRoute
   '/dashboard/trade': typeof DashboardTradeIndexRoute
@@ -83,8 +117,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
-  '/settings': typeof SettingsRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/dashboard/settings': typeof DashboardSettingsRouteWithChildren
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/settings/appearance': typeof DashboardSettingsAppearanceRoute
+  '/dashboard/settings/profile': typeof DashboardSettingsProfileRoute
   '/dashboard/trade/new': typeof DashboardTradeNewRoute
   '/dashboard/trade/quick-add': typeof DashboardTradeQuickAddRoute
   '/dashboard/trade/': typeof DashboardTradeIndexRoute
@@ -95,8 +133,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/settings'
+    | '/login'
+    | '/signup'
+    | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/settings/appearance'
+    | '/dashboard/settings/profile'
     | '/dashboard/trade/new'
     | '/dashboard/trade/quick-add'
     | '/dashboard/trade/'
@@ -104,8 +146,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/settings'
+    | '/login'
+    | '/signup'
+    | '/dashboard/settings'
     | '/dashboard'
+    | '/dashboard/settings/appearance'
+    | '/dashboard/settings/profile'
     | '/dashboard/trade/new'
     | '/dashboard/trade/quick-add'
     | '/dashboard/trade'
@@ -114,8 +160,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/settings'
+    | '/login'
+    | '/signup'
+    | '/dashboard/settings'
     | '/dashboard/'
+    | '/dashboard/settings/appearance'
+    | '/dashboard/settings/profile'
     | '/dashboard/trade/new'
     | '/dashboard/trade/quick-add'
     | '/dashboard/trade/'
@@ -125,16 +175,24 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
-  SettingsRoute: typeof SettingsRoute
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -158,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/trade/': {
       id: '/dashboard/trade/'
       path: '/trade'
@@ -179,6 +244,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardTradeNewRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/settings/profile': {
+      id: '/dashboard/settings/profile'
+      path: '/profile'
+      fullPath: '/dashboard/settings/profile'
+      preLoaderRoute: typeof DashboardSettingsProfileRouteImport
+      parentRoute: typeof DashboardSettingsRoute
+    }
+    '/dashboard/settings/appearance': {
+      id: '/dashboard/settings/appearance'
+      path: '/appearance'
+      fullPath: '/dashboard/settings/appearance'
+      preLoaderRoute: typeof DashboardSettingsAppearanceRouteImport
+      parentRoute: typeof DashboardSettingsRoute
+    }
     '/dashboard/trade/$tradeId/edit': {
       id: '/dashboard/trade/$tradeId/edit'
       path: '/trade/$tradeId/edit'
@@ -189,7 +268,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardSettingsRouteChildren {
+  DashboardSettingsAppearanceRoute: typeof DashboardSettingsAppearanceRoute
+  DashboardSettingsProfileRoute: typeof DashboardSettingsProfileRoute
+}
+
+const DashboardSettingsRouteChildren: DashboardSettingsRouteChildren = {
+  DashboardSettingsAppearanceRoute: DashboardSettingsAppearanceRoute,
+  DashboardSettingsProfileRoute: DashboardSettingsProfileRoute,
+}
+
+const DashboardSettingsRouteWithChildren =
+  DashboardSettingsRoute._addFileChildren(DashboardSettingsRouteChildren)
+
 interface DashboardRouteChildren {
+  DashboardSettingsRoute: typeof DashboardSettingsRouteWithChildren
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardTradeNewRoute: typeof DashboardTradeNewRoute
   DashboardTradeQuickAddRoute: typeof DashboardTradeQuickAddRoute
@@ -198,6 +291,7 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardSettingsRoute: DashboardSettingsRouteWithChildren,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardTradeNewRoute: DashboardTradeNewRoute,
   DashboardTradeQuickAddRoute: DashboardTradeQuickAddRoute,
@@ -212,7 +306,8 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
-  SettingsRoute: SettingsRoute,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
