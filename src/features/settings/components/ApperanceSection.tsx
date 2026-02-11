@@ -1,8 +1,8 @@
-import { Bell, Globe, Moon, Palette, Sun, TrendingUp } from 'lucide-react'
+import { Globe, Moon, Palette } from 'lucide-react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTheme } from 'next-themes'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Switch } from '@/components/ui/switch'
-import { Separator } from '@/components/ui/separator'
 import {
   Card,
   CardContent,
@@ -17,21 +17,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useAuth } from '@/hooks/useAuth'
+import { updatePreferences } from '@/utils/settings.functions'
+
+type ThemePreference = 'dark' | 'light' | 'system'
+type LanguagePreference = 'id' | 'en'
 
 export const AppearanceSection = () => {
   const { theme, setTheme } = useTheme()
-  const [compactMode, setCompactMode] = useState(false)
-  const [showPnlColor, setShowPnlColor] = useState(true)
-  const [notifications, setNotifications] = useState(true)
-  const [language, setLanguage] = useState('id')
+  const { user } = useAuth()
+  const queryClient = useQueryClient()
+
+  const userTheme = (user?.theme as ThemePreference | null) ?? null
+  const userLanguage = (user?.language as LanguagePreference | null) ?? null
+
+  useEffect(() => {
+    if (userTheme) {
+      setTheme(userTheme)
+    }
+  }, [setTheme, userTheme])
+
+  const currentTheme =
+    theme === 'dark' || theme === 'light' || theme === 'system'
+      ? theme
+      : (userTheme ?? 'dark')
+  const currentLanguage = userLanguage ?? 'id'
+
+  const preferencesMutation = useMutation({
+    mutationFn: (data: {
+      theme: ThemePreference
+      language: LanguagePreference
+    }) => updatePreferences({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['auth', 'session'] })
+    },
+  })
 
   const isDarkMode = theme === 'dark'
 
   const toggleDarkMode = (checked: boolean) => {
-    setTheme(checked ? 'dark' : 'light')
+    const newTheme: ThemePreference = checked ? 'dark' : 'light'
+    setTheme(newTheme)
+
+    preferencesMutation.mutate({
+      theme: newTheme,
+      language: currentLanguage,
+    })
   }
 
-  console.log(isDarkMode)
+  const handleLanguageChange = (value: string) => {
+    const nextLanguage = value as LanguagePreference
+
+    preferencesMutation.mutate({
+      theme: currentTheme,
+      language: nextLanguage,
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -54,52 +95,7 @@ export const AppearanceSection = () => {
                 </p>
               </div>
             </div>
-            <Switch
-              checked={isDarkMode}
-              onCheckedChange={() => toggleDarkMode(!isDarkMode)}
-            />
-          </div>
-          <Separator className="bg-border/50" />
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Sun className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium">Compact Mode</p>
-                <p className="text-xs text-muted-foreground">
-                  Tampilan lebih padat
-                </p>
-              </div>
-            </div>
-            <Switch checked={compactMode} onCheckedChange={setCompactMode} />
-          </div>
-          <Separator className="bg-border/50" />
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium">Warna P&L</p>
-                <p className="text-xs text-muted-foreground">
-                  Hijau untuk profit, merah untuk loss
-                </p>
-              </div>
-            </div>
-            <Switch checked={showPnlColor} onCheckedChange={setShowPnlColor} />
-          </div>
-          <Separator className="bg-border/50" />
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Bell className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-sm font-medium">Notifikasi</p>
-                <p className="text-xs text-muted-foreground">
-                  Reminder & alert
-                </p>
-              </div>
-            </div>
-            <Switch
-              checked={notifications}
-              onCheckedChange={setNotifications}
-            />
+            <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
           </div>
         </CardContent>
       </Card>
@@ -112,7 +108,10 @@ export const AppearanceSection = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Select value={language} onValueChange={setLanguage}>
+          <Select
+            defaultValue={currentLanguage}
+            onValueChange={handleLanguageChange}
+          >
             <SelectTrigger className="trade-input">
               <SelectValue />
             </SelectTrigger>
