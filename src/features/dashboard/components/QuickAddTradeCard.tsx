@@ -107,7 +107,7 @@ export function QuickAddTradeCard() {
     if (data.result && data.result !== 'Pending') {
       showToast(
         'error',
-        'Outcome selain Pending butuh detail Entry/SL/TP/Exit. Lanjutkan di Full Trade Form.',
+        'Final outcomes need full execution details (Entry, SL, TP, Exit, Fee). Continue in the Full Trade Form.',
       )
       return
     }
@@ -348,24 +348,11 @@ export function QuickAddTradeCard() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="fee"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fee</FormLabel>
-                  <FormControl>
-                    <Input placeholder="0.00" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             {requiresFullForm ? (
               <div className="md:col-span-3 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
                 <p className="text-amber-800 dark:text-amber-300">
-                  Outcome final butuh detail eksekusi (Entry, SL, TP, Exit
-                  Price).
+                  Final outcomes need execution details (Entry, SL, TP, Exit
+                  Price, Fee).
                 </p>
                 <Button
                   type="button"
