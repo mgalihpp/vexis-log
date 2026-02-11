@@ -1,9 +1,26 @@
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { Cell, Pie, PieChart } from 'recharts'
+import type { ChartConfig } from '@/components/ui/chart'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
 
 type PerformanceCardProps = {
   bestWinTrade: number
   worstLossTrade: number
 }
+
+const COLORS = {
+  win: '#34d399',
+  loss: '#fb7185',
+}
+
+const chartConfig = {
+  value: { label: 'Amount' },
+  'Best Win': { label: 'Best Win', color: COLORS.win },
+  'Worst Loss': { label: 'Worst Loss', color: COLORS.loss },
+} satisfies ChartConfig
 
 export function PerformanceCard({
   bestWinTrade,
@@ -13,12 +30,12 @@ export function PerformanceCard({
     {
       name: 'Best Win',
       value: bestWinTrade,
-      color: '#10b981',
+      fill: COLORS.win,
     },
     {
       name: 'Worst Loss',
       value: Math.abs(worstLossTrade),
-      color: '#f43f5e',
+      fill: COLORS.loss,
     },
   ]
   const performanceTotal = performanceData[0].value + performanceData[1].value
@@ -30,7 +47,7 @@ export function PerformanceCard({
         {performanceTotal > 0 ? (
           <div className="w-full flex flex-col items-center gap-4">
             <div className="h-[220px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer config={chartConfig} className="h-full w-full">
                 <PieChart>
                   <Pie
                     data={performanceData}
@@ -41,32 +58,32 @@ export function PerformanceCard({
                     paddingAngle={4}
                   >
                     {performanceData.map((entry) => (
-                      <Cell key={entry.name} fill={entry.color} />
+                      <Cell key={entry.name} fill={entry.fill} />
                     ))}
                   </Pie>
-                  <Tooltip
-                    formatter={(value: number) => `$${value.toFixed(2)}`}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      borderColor: 'hsl(var(--border))',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    }}
-                    itemStyle={{ color: 'hsl(var(--foreground))' }}
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        nameKey="name"
+                        formatter={(value) =>
+                          `$${(value as number).toFixed(2)}`
+                        }
+                      />
+                    }
                   />
                 </PieChart>
-              </ResponsiveContainer>
+              </ChartContainer>
             </div>
             <div className="flex flex-col gap-2 w-full">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-muted-foreground">Best Trade</span>
-                <span className="text-emerald-500 font-bold font-mono">
+                <span className="text-emerald-400 font-bold font-mono">
                   +${bestWinTrade.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-muted-foreground">Worst Trade</span>
-                <span className="text-rose-500 font-bold font-mono">
+                <span className="text-rose-400 font-bold font-mono">
                   -${Math.abs(worstLossTrade).toFixed(2)}
                 </span>
               </div>

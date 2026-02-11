@@ -36,8 +36,9 @@ export function TradeList({
   return (
     <div className="space-y-2">
       {trades.map((trade, i) => {
-        const outcomeKey = (trade.outcome ?? 'BE') as keyof typeof resultConfig
-        const cfg = resultConfig[outcomeKey]
+        const outcomeKey = trade.outcome ?? 'BE'
+        const cfg =
+          (resultConfig as Record<string, any>)[outcomeKey] ?? resultConfig.BE
         const ResultIcon = cfg.icon
         const isSelected = trade.id === selectedId
 

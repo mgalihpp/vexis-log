@@ -1,12 +1,10 @@
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import type { ChartConfig } from '@/components/ui/chart'
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
 
 type EquityPoint = {
   date: string
@@ -19,6 +17,13 @@ type EquityCurveCardProps = {
   hasTrades: boolean
 }
 
+const chartConfig = {
+  value: {
+    label: 'Equity',
+    color: 'oklch(0.72 0.19 277)',
+  },
+} satisfies ChartConfig
+
 export function EquityCurveCard({
   chartData,
   hasTrades,
@@ -28,61 +33,47 @@ export function EquityCurveCard({
       <h3 className="text-lg font-bold font-display mb-6">Equity Curve</h3>
       <div className="h-[300px] w-full">
         {hasTrades ? (
-          <ResponsiveContainer width="100%" height="100%">
+          <ChartContainer config={chartConfig} className="h-full w-full">
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
-                    stopColor="hsl(var(--primary))"
-                    stopOpacity={0.3}
+                    stopColor="var(--color-value)"
+                    stopOpacity={0.4}
                   />
                   <stop
                     offset="95%"
-                    stopColor="hsl(var(--primary))"
-                    stopOpacity={0}
+                    stopColor="var(--color-value)"
+                    stopOpacity={0.05}
                   />
                 </linearGradient>
               </defs>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="hsl(var(--border))"
-              />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis
                 dataKey="date"
-                stroke="hsl(var(--muted-foreground))"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
               />
               <YAxis
-                stroke="hsl(var(--muted-foreground))"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => `$${value}`}
               />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  borderColor: 'hsl(var(--border))',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                }}
-                itemStyle={{ color: 'hsl(var(--foreground))' }}
-              />
+              <ChartTooltip content={<ChartTooltipContent />} />
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="hsl(var(--primary))"
+                stroke="var(--color-value)"
                 fillOpacity={1}
                 fill="url(#colorValue)"
-                strokeWidth={2}
+                strokeWidth={2.5}
               />
             </AreaChart>
-          </ResponsiveContainer>
+          </ChartContainer>
         ) : (
           <div className="h-full flex items-center justify-center text-sm text-muted-foreground border border-dashed border-border/60 rounded-xl">
             No trades yet. Add a trade to see the equity curve.
