@@ -1,9 +1,4 @@
-import {
-  Outlet,
-  createFileRoute,
-  redirect,
-  useRouteContext,
-} from '@tanstack/react-router'
+import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { Sidebar } from '@/features/dashboard/components/Sidebar'
 import { Splash } from '@/components/Splash'
 import { NotFound } from '@/components/NotFound'

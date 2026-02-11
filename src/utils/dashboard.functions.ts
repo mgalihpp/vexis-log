@@ -182,9 +182,9 @@ const deriveTradeValues = (
 
       if (data.result === 'Partial') {
         result = 'Partial'
-      } else if (rawActualRr >= 0.1) {
+      } else if (rawActualRr > 0) {
         result = 'Win'
-      } else if (rawActualRr <= -0.9) {
+      } else if (rawActualRr < 0) {
         result = 'Loss'
       } else {
         result = 'Breakeven'

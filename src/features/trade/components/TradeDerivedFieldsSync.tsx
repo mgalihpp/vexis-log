@@ -39,24 +39,29 @@ export function TradeDerivedFieldsSync<
   })
 
   useEffect(() => {
-    if (!entryPrice || !stopLoss || !direction) return
+    if (!entryPrice || !direction) return
 
     const entry = parseFloat(entryPrice)
-    const sl = parseFloat(stopLoss)
+    const sl = stopLoss ? parseFloat(stopLoss) : null
     const tp = takeProfit ? parseFloat(takeProfit) : null
     const exit = exitPrice ? parseFloat(exitPrice) : null
     const parsedFee = fee ? parseFloat(fee) : 0
     const risk = riskPercent ? parseFloat(riskPercent.replace('%', '')) : null
     const balance = accountBalance ? parseFloat(accountBalance) : null
 
-    if (isNaN(entry) || isNaN(sl)) return
+    if (isNaN(entry)) return
 
-    if (tp && !isNaN(tp)) {
+    const parsedStopLoss = sl !== null && !isNaN(sl) ? sl : null
+    const stopLossDistance =
+      parsedStopLoss !== null ? Math.abs(entry - parsedStopLoss) : null
+    const hasValidStopLoss = stopLossDistance !== null && stopLossDistance > 0
+
+    if (tp && !isNaN(tp) && hasValidStopLoss && parsedStopLoss !== null) {
       let rr = 0
       if (direction === 'Long') {
-        rr = (tp - entry) / (entry - sl)
+        rr = (tp - entry) / (entry - parsedStopLoss)
       } else {
-        rr = (entry - tp) / (sl - entry)
+        rr = (entry - tp) / (parsedStopLoss - entry)
       }
 
       if (!isNaN(rr) && isFinite(rr) && rr > 0) {
@@ -67,10 +72,15 @@ export function TradeDerivedFieldsSync<
       }
     }
 
-    if (balance && risk && !isNaN(balance) && !isNaN(risk)) {
+    if (
+      balance &&
+      risk &&
+      !isNaN(balance) &&
+      !isNaN(risk) &&
+      hasValidStopLoss
+    ) {
       const riskAmount = balance * (risk / 100)
-      const stopLossDistance = Math.abs(entry - sl)
-      if (stopLossDistance > 0) {
+      if (stopLossDistance) {
         const nextPositionSize = (riskAmount / stopLossDistance).toFixed(2)
         if (form.getValues('positionSize') !== nextPositionSize) {
           form.setValue('positionSize', nextPositionSize, {
@@ -87,22 +97,31 @@ export function TradeDerivedFieldsSync<
     if (effectiveExit === null) {
       if (result === 'Win') {
         effectiveExit = parsedTakeProfit
-      } else if (result === 'Loss') {
-        effectiveExit = sl
+      } else if (result === 'Loss' && parsedStopLoss !== null) {
+        effectiveExit = parsedStopLoss
       } else if (result === 'Breakeven') {
         effectiveExit = entry
       }
     }
 
     if (effectiveExit !== null) {
-      let actualRRValue = 0
-      if (direction === 'Long') {
-        actualRRValue = (effectiveExit - entry) / (entry - sl)
-      } else {
-        actualRRValue = (entry - effectiveExit) / (sl - entry)
+      const directionalMove =
+        direction === 'Long' ? effectiveExit - entry : entry - effectiveExit
+
+      let actualRRValue: number | null = null
+      if (hasValidStopLoss && parsedStopLoss !== null) {
+        if (direction === 'Long') {
+          actualRRValue = (effectiveExit - entry) / (entry - parsedStopLoss)
+        } else {
+          actualRRValue = (entry - effectiveExit) / (parsedStopLoss - entry)
+        }
       }
 
-      if (!isNaN(actualRRValue) && isFinite(actualRRValue)) {
+      if (
+        actualRRValue !== null &&
+        !isNaN(actualRRValue) &&
+        isFinite(actualRRValue)
+      ) {
         const nextActualRr = actualRRValue.toFixed(2)
         if (form.getValues('actualRR') !== nextActualRr) {
           form.setValue('actualRR', nextActualRr, { shouldValidate: true })
@@ -111,51 +130,57 @@ export function TradeDerivedFieldsSync<
         let nextResult: TradeFormInput['result'] | null = null
         if (result === 'Partial') {
           nextResult = 'Partial'
-        } else if (actualRRValue >= 0.1) {
+        } else if (actualRRValue > 0) {
           nextResult = 'Win'
-        } else if (actualRRValue <= -0.9) {
+        } else if (actualRRValue < 0) {
           nextResult = 'Loss'
-        } else if (actualRRValue > -0.9 && actualRRValue < 0.1) {
+        } else {
           nextResult = 'Breakeven'
         }
 
         if (nextResult && form.getValues('result') !== nextResult) {
           form.setValue('result', nextResult)
         }
+      } else if (form.getValues('actualRR') !== '') {
+        form.setValue('actualRR', '', { shouldValidate: true })
+      }
 
-        const parsedPositionSize = positionSize
-          ? parseFloat(positionSize)
-          : null
-        const directionalMove =
-          direction === 'Long' ? effectiveExit - entry : entry - effectiveExit
+      const parsedPositionSize = positionSize ? parseFloat(positionSize) : null
 
-        let nextProfitLoss: string | null = null
-        if (
-          parsedPositionSize &&
-          !isNaN(parsedPositionSize) &&
-          isFinite(parsedPositionSize)
-        ) {
-          nextProfitLoss = (directionalMove * parsedPositionSize).toFixed(2)
-        } else if (balance && risk && !isNaN(balance) && !isNaN(risk)) {
-          const riskAmount = balance * (risk / 100)
-          nextProfitLoss = (riskAmount * actualRRValue).toFixed(2)
+      let nextProfitLoss: string | null = null
+      if (
+        parsedPositionSize !== null &&
+        !isNaN(parsedPositionSize) &&
+        isFinite(parsedPositionSize)
+      ) {
+        nextProfitLoss = (directionalMove * parsedPositionSize).toFixed(2)
+      } else if (
+        actualRRValue !== null &&
+        balance &&
+        risk &&
+        !isNaN(balance) &&
+        !isNaN(risk)
+      ) {
+        const riskAmount = balance * (risk / 100)
+        nextProfitLoss = (riskAmount * actualRRValue).toFixed(2)
+      }
+
+      if (nextProfitLoss) {
+        const feeAmount =
+          !isNaN(parsedFee) && isFinite(parsedFee) && parsedFee > 0
+            ? parsedFee
+            : 0
+        const nextNetProfitLoss = (
+          parseFloat(nextProfitLoss) - feeAmount
+        ).toFixed(2)
+
+        if (form.getValues('profitLoss') !== nextNetProfitLoss) {
+          form.setValue('profitLoss', nextNetProfitLoss, {
+            shouldValidate: true,
+          })
         }
-
-        if (nextProfitLoss) {
-          const feeAmount =
-            !isNaN(parsedFee) && isFinite(parsedFee) && parsedFee > 0
-              ? parsedFee
-              : 0
-          const nextNetProfitLoss = (
-            parseFloat(nextProfitLoss) - feeAmount
-          ).toFixed(2)
-
-          if (form.getValues('profitLoss') !== nextNetProfitLoss) {
-            form.setValue('profitLoss', nextNetProfitLoss, {
-              shouldValidate: true,
-            })
-          }
-        }
+      } else if (form.getValues('profitLoss') !== '') {
+        form.setValue('profitLoss', '', { shouldValidate: true })
       }
     } else {
       if (form.getValues('actualRR') !== '') {
