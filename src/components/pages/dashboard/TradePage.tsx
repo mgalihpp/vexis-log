@@ -7,6 +7,7 @@ import type { TradeEntry } from "@/types/trade";
 import { TradeList } from "@/features/trade/components/TradeList";
 import { TradeDetail } from "@/features/trade/components/TradeDetail";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 type Props = {
   trades: Array<TradeEntry>;
@@ -36,23 +37,33 @@ export function TradePage({ trades }: Props) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className={selectedTrade ? "lg:col-span-2" : "lg:col-span-5"}>
-          <TradeList
-            trades={trades}
-            onSelectTrade={(trade) => setSelectedTradeId(trade.id)}
-            selectedId={selectedTradeId ?? undefined}
-          />
-        </div>
-        {selectedTrade && (
-          <div className="lg:col-span-3">
+      <TradeList
+        trades={trades}
+        onSelectTrade={(trade) => setSelectedTradeId(trade.id)}
+        selectedId={selectedTradeId ?? undefined}
+      />
+
+      <Sheet
+        open={Boolean(selectedTrade)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedTradeId(null);
+          }
+        }}
+      >
+        {selectedTrade ? (
+          <SheetContent
+            side="right"
+            showCloseButton={false}
+            className="w-full sm:max-w-3xl p-0 overflow-hidden"
+          >
             <TradeDetail
               trade={selectedTrade}
               onClose={() => setSelectedTradeId(null)}
             />
-          </div>
-        )}
-      </div>
+          </SheetContent>
+        ) : null}
+      </Sheet>
     </div>
   );
 }
