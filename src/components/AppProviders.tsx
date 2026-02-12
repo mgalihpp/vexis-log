@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "@/components/Theme-Provider";
+import { Splash } from "@/components/Splash";
 import {
   FeedbackToastHost,
   FeedbackToastProvider,
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function AppProviders({ children }: Props) {
+  const [showSplash, setShowSplash] = useState(true);
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -25,6 +27,21 @@ export function AppProviders({ children }: Props) {
         },
       }),
   );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showSplash) {
+    return (
+      <ThemeProvider>
+        <Splash zoomIn={true} />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider>

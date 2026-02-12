@@ -21,25 +21,25 @@ Vexis Log is a trading journal web app to record trades, review execution qualit
 
 ## Screenshots
 
-### Landing / Overview
+### Dashboard
 
-![Vexis Log Landing](./public/features1.png)
+![Vexis Log Dashboard](./public/features1.png)
 
-### Trade Journal Form
+### Trade Journal
 
-![Vexis Log Trade Form](./public/features2.png)
-
-### Trade Management
-
-![Vexis Log Trade List](./public/features3.png)
+![Vexis Log Trade Journal](./public/features2.png)
 
 ### Analytics
 
-![Vexis Log Analytics](./public/features4.png)
+![Vexis Log Analytics](./public/features3.png)
 
-### Dashboard Widgets
+### Trade History
 
-![Vexis Log Dashboard](./public/features5.png)
+![Vexis Log History](./public/features4.png)
+
+### Settings
+
+![Vexis Log Settings](./public/features5.png)
 
 ## Local Development
 
