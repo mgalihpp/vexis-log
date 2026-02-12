@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Legal",
+  description:
+    "Privacy Policy, Terms of Service, and Cookie Policy for Vexis Log.",
+  alternates: {
+    canonical: "/legal",
+  },
+};
 
 export default function LegalPage() {
   return (
