@@ -1,7 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
-import { PolarAngleAxis, RadialBar, RadialBarChart } from 'recharts'
+import { Cell, Customized, Pie, PieChart } from 'recharts'
 
 import type { ChartConfig } from '@/components/ui/chart'
 import { ChartContainer } from '@/components/ui/chart'
@@ -11,63 +10,146 @@ type WinRateMeterProps = {
   totalTrades: number
 }
 
+const chartConfig = {
+  winRate: {
+    label: 'Win Rate',
+    color: 'oklch(0.72 0.19 277)',
+  },
+} satisfies ChartConfig
+
+// Needle component that scales with the chart
+// Customized passes { width, height, ... } of the chart area
+const Needle = (props: any) => {
+  const { width, height, winRate } = props
+
+  if (typeof width !== 'number' || typeof height !== 'number') {
+    return null
+  }
+
+  // Calculate center.
+  // Pie is configured with cx="50%", cy="100%"
+  const center_x = width / 2
+  const center_y = height
+
+  // Calculate radius.
+  // Pie uses innerRadius="75%", outerRadius="100%"
+  // Recharts calculates 'maxRadius' as min(width/2, height)
+  const maxRadius = Math.min(width / 2, height)
+
+  // Needle length should be within the arc.
+  // Outer radius of arc is 100% of maxRadius.
+  // Inner is 75%.
+  // Let's make needle tip reach 85%?
+  const needleLength = maxRadius * 0.85
+
+  // Convert winRate to angle for speedometer (180 to 0)
+  // 0% -> 180 deg (Left)
+  // 100% -> 0 deg (Right)
+  const angle = 180 - (winRate / 100) * 180
+  const radian = (angle * Math.PI) / 180
+
+  const x = center_x + needleLength * Math.cos(radian)
+  const y = center_y - needleLength * Math.sin(radian)
+
+  return (
+    <g>
+      <circle cx={center_x} cy={center_y} r={4} fill="hsl(var(--foreground))" />
+      <line
+        x1={center_x}
+        y1={center_y}
+        x2={x}
+        y2={y}
+        stroke="hsl(var(--foreground))"
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+    </g>
+  )
+}
+
 export function WinRateMeter({ winRate, totalTrades }: WinRateMeterProps) {
-  const chartData = [
-    {
-      activity: 'winRate',
-      value: winRate,
-      fill: 'var(--color-winRate)',
-    },
+  // Data for the gauge
+  const gaugeData = [
+    { value: winRate }, // Filled
+    { value: 100 - winRate }, // Empty
   ]
 
-  const chartConfig = useMemo(
-    () =>
-      ({
-        winRate: {
-          label: 'Win Rate',
-          color: winRate >= 50 ? 'oklch(0.72 0.17 155)' : 'oklch(0.65 0.2 25)',
-        },
-      }) satisfies ChartConfig,
-    [winRate],
-  )
+  // Background track (full semicircle)
+  const backgroundData = [{ value: 100 }]
 
   return (
     <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col h-full">
       <h3 className="text-lg font-bold font-display mb-6">Win Rate</h3>
-      <div className="h-[300px] w-full relative">
+      <div className="flex-1 flex flex-col items-center justify-center">
         {totalTrades > 0 ? (
           <>
-            <ChartContainer
-              config={chartConfig}
-              className="mx-auto aspect-square w-full max-h-[300px]"
-            >
-              <RadialBarChart
-                data={chartData}
-                startAngle={90}
-                endAngle={-270}
-                innerRadius={80}
-                outerRadius={110}
+            <div className="w-full max-w-[280px]">
+              <ChartContainer
+                config={chartConfig}
+                className="w-full aspect-[5/3]"
               >
-                <PolarAngleAxis
-                  type="number"
-                  domain={[0, 100]}
-                  angleAxisId={0}
-                  tick={false}
-                />
-                <RadialBar background dataKey="value" cornerRadius={30} />
-              </RadialBarChart>
-            </ChartContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <PieChart>
+                  {/* Background track */}
+                  <Pie
+                    data={backgroundData}
+                    cx="50%"
+                    cy="100%"
+                    startAngle={180}
+                    endAngle={0}
+                    innerRadius="75%"
+                    outerRadius="100%"
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    <Cell fill="hsl(var(--muted))" />
+                  </Pie>
+
+                  {/* Value arc */}
+                  <Pie
+                    data={gaugeData}
+                    cx="50%"
+                    cy="100%"
+                    startAngle={180}
+                    endAngle={0}
+                    innerRadius="75%"
+                    outerRadius="100%"
+                    dataKey="value"
+                    stroke="none"
+                    cornerRadius={5}
+                  >
+                    <Cell fill="var(--color-winRate)" />
+                    <Cell fill="transparent" />
+                  </Pie>
+
+                  {/* Needle */}
+                  <Customized
+                    component={(props: any) => (
+                      <Needle {...props} winRate={winRate} />
+                    )}
+                  />
+                </PieChart>
+              </ChartContainer>
+            </div>
+
+            {/* Value display */}
+            <div className="text-center -mt-4">
               <span className="text-3xl font-bold font-display">
                 {winRate.toFixed(0)}%
               </span>
+              <br />
               <span className="text-sm text-muted-foreground">
                 {totalTrades} trades
               </span>
             </div>
+
+            {/* Scale labels */}
+            <div className="flex justify-between w-full max-w-[240px] -mt-2 px-2">
+              <span className="text-xs text-muted-foreground">0%</span>
+              <span className="text-xs text-muted-foreground">100%</span>
+            </div>
           </>
         ) : (
-          <div className="h-full flex text-center items-center justify-center text-sm text-muted-foreground border border-dashed border-border/60 rounded-xl">
+          <div className="h-full flex text-center items-center justify-center text-sm text-muted-foreground border border-dashed border-border/60 rounded-xl w-full min-h-[200px]">
             No trades yet.
             <br />
             Add a trade to see your win rate.
