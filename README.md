@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vexis Log
 
-## Getting Started
+Vexis Log is a trading journal web app to record trades, review execution quality, and track performance over time.
 
-First, run the development server:
+## Key Features
+
+- Secure authentication (JWT cookie session)
+- Full trade journaling flow (quick add and detailed multi-step form)
+- Analytics dashboard (equity curve, winrate, breakdown by session/market/setup)
+- Trade history and detail view with edit/delete support
+- User settings (profile, password, appearance)
+
+## Tech Stack
+
+- Next.js 16 (App Router)
+- React 19
+- Prisma + MongoDB
+- TanStack Query
+- Tailwind CSS
+- Vitest
+
+## Screenshots
+
+### Landing / Overview
+
+![Vexis Log Landing](./public/features1.png)
+
+### Trade Journal Form
+
+![Vexis Log Trade Form](./public/features2.png)
+
+### Trade Management
+
+![Vexis Log Trade List](./public/features3.png)
+
+### Analytics
+
+![Vexis Log Analytics](./public/features4.png)
+
+### Dashboard Widgets
+
+![Vexis Log Dashboard](./public/features5.png)
+
+## Local Development
+
+### Prerequisites
+
+- Node.js 20+
+- npm
+- MongoDB database URL
+
+### Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Configure environment variables in `.env`:
+
+```bash
+DATABASE_URL=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+3. Generate Prisma client:
+
+```bash
+npm run db:generate
+```
+
+4. Start development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - run dev server
+- `npm run build` - build production app
+- `npm run start` - run production server
+- `npm run test` - run tests
+- `npm run lint` - run lint checks
+- `npm run check` - run prettier + eslint fix
+- `npm run db:generate` - generate Prisma client
+- `npm run db:push` - push Prisma schema to database
