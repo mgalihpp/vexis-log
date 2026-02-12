@@ -227,6 +227,32 @@ code {
   }
 }
 
+@keyframes logo-shimmer-sweep {
+  0% {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  86% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(140%);
+    opacity: 0;
+  }
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -600% center;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee {
     animation: none;

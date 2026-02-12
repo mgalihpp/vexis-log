@@ -9,17 +9,33 @@ type Props = {
 
 export function DashboardSplashWrapper({ children }: Props) {
   const [showSplash, setShowSplash] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Start exit animation
+    const exitTimer = setTimeout(() => {
+      setIsExiting(true);
+    }, 1400);
+
+    // Remove component
+    const removeTimer = setTimeout(() => {
       setShowSplash(false);
-    }, 2500);
-    return () => clearTimeout(timer);
+    }, 2450);
+
+    return () => {
+      clearTimeout(exitTimer);
+      clearTimeout(removeTimer);
+    };
   }, []);
 
-  if (showSplash) {
-    return <Splash zoomIn={true} />;
-  }
-
-  return <>{children}</>;
+  return (
+    <>
+      {showSplash && (
+        <div className="fixed inset-0 z-[100]">
+          <Splash zoomIn={true} isExiting={isExiting} />
+        </div>
+      )}
+      {children}
+    </>
+  );
 }
