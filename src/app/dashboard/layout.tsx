@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/features/dashboard/components/Sidebar";
 import { getServerAuthSession } from "@/lib/auth-session";
+import { DashboardSplashWrapper } from "@/components/DashboardSplashWrapper";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -22,11 +23,15 @@ export default async function DashboardLayout({
   }
 
   return (
-    <main className="flex h-screen bg-background">
-      <Sidebar />
-      <div className="flex-1 min-h-0 overflow-auto">
-        <div className="container mx-auto p-4 md:p-8 max-w-7xl">{children}</div>
-      </div>
-    </main>
+    <DashboardSplashWrapper>
+      <main className="flex h-screen bg-background">
+        <Sidebar />
+        <div className="flex-1 min-h-0 overflow-auto">
+          <div className="container mx-auto p-4 md:p-8 max-w-7xl">
+            {children}
+          </div>
+        </div>
+      </main>
+    </DashboardSplashWrapper>
   );
 }
