@@ -1,6 +1,5 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
-import { format } from 'date-fns'
 import { useState } from 'react'
 import { getStats, getTrades } from '@/utils/dashboard.functions'
 import { Button } from '@/components/ui/button'
@@ -8,6 +7,9 @@ import { EquityCurveCard } from '@/features/dashboard/components/EquityCurveCard
 import { PerformanceCard } from '@/features/dashboard/components/PerformanceCard'
 import { StatsOverview } from '@/features/dashboard/components/StatsOverview'
 import { TradesTable } from '@/features/dashboard/components/TradesTable'
+import { WinRateMeter } from '@/features/dashboard/components/WinRateMeter'
+import { PnLCalendar } from '@/features/dashboard/components/PnLCalendar'
+import { TraderRadar } from '@/features/dashboard/components/TraderRadar'
 
 export const Route = createFileRoute('/dashboard/')({
   component: DashboardIndex,
@@ -27,25 +29,6 @@ function DashboardIndex() {
 
   const { trades, stats } = Route.useLoaderData()
   const hasTrades = trades.length > 0
-
-  // Prepare chart data (cumulative PnL)
-
-  const chartData = trades
-    .slice()
-    .reverse()
-    .reduce(
-      (acc: Array<{ date: string; value: number; daily: number }>, trade) => {
-        const prevPnL = acc.length > 0 ? acc[acc.length - 1].value : 0
-        const currentPnL = Number(trade.profitLoss || 0)
-        acc.push({
-          date: format(new Date(trade.date), 'MMM dd'),
-          value: prevPnL + currentPnL,
-          daily: currentPnL,
-        })
-        return acc
-      },
-      [],
-    )
 
   const filteredTrades = trades.filter((trade) => {
     const matchesMarket =
@@ -79,15 +62,23 @@ function DashboardIndex() {
 
       <StatsOverview stats={stats} />
 
-      {/* Charts Section */}
+      {/* Charts Row 1: Equity Curve + Win Rate */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <EquityCurveCard chartData={chartData} hasTrades={hasTrades} />
-
-        <PerformanceCard
-          bestWinTrade={stats.bestWinTrade}
-          worstLossTrade={stats.worstLossTrade}
-        />
+        <EquityCurveCard trades={trades} hasTrades={hasTrades} />
+        <WinRateMeter winRate={stats.winRate} totalTrades={stats.totalTrades} />
       </div>
+
+      {/* Charts Row 2: Radar + Calendar */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TraderRadar trades={trades} />
+        <PnLCalendar trades={trades} />
+      </div>
+
+      {/* Performance */}
+      <PerformanceCard
+        bestWinTrade={stats.bestWinTrade}
+        worstLossTrade={stats.worstLossTrade}
+      />
 
       {/* Trades Table */}
       <TradesTable

@@ -1,33 +1,30 @@
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { useMemo } from 'react'
+import { format } from 'date-fns'
 import type { ChartConfig } from '@/components/ui/chart'
+import type { AnalyticsTrade } from '@/utils/dashboard.analytics'
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
-
-type EquityPoint = {
-  date: string
-  value: number
-  daily: number
-}
+import { calculateEquityCurve } from '@/utils/dashboard.analytics'
 
 type EquityCurveCardProps = {
-  chartData: Array<EquityPoint>
+  trades: Array<AnalyticsTrade>
   hasTrades: boolean
 }
 
 const chartConfig = {
-  value: {
+  equity: {
     label: 'Equity',
     color: 'oklch(0.72 0.19 277)',
   },
 } satisfies ChartConfig
 
-export function EquityCurveCard({
-  chartData,
-  hasTrades,
-}: EquityCurveCardProps) {
+export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
+  const chartData = useMemo(() => calculateEquityCurve(trades), [trades])
+
   return (
     <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
       <h3 className="text-lg font-bold font-display mb-6">Equity Curve</h3>
@@ -36,15 +33,15 @@ export function EquityCurveCard({
           <ChartContainer config={chartConfig} className="h-full w-full">
             <AreaChart data={chartData}>
               <defs>
-                <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="colorEquity" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
-                    stopColor="var(--color-value)"
+                    stopColor="var(--color-equity)"
                     stopOpacity={0.4}
                   />
                   <stop
                     offset="95%"
-                    stopColor="var(--color-value)"
+                    stopColor="var(--color-equity)"
                     stopOpacity={0.05}
                   />
                 </linearGradient>
@@ -56,6 +53,7 @@ export function EquityCurveCard({
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
+                tickFormatter={(value) => format(new Date(value), 'MMM dd')}
               />
               <YAxis
                 fontSize={12}
@@ -63,13 +61,22 @@ export function EquityCurveCard({
                 axisLine={false}
                 tickFormatter={(value) => `$${value}`}
               />
-              <ChartTooltip content={<ChartTooltipContent />} />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    formatter={(value) => {
+                      const formattedValue = `$${Number(value).toFixed(2)}`
+                      return formattedValue
+                    }}
+                  />
+                }
+              />
               <Area
                 type="monotone"
-                dataKey="value"
-                stroke="var(--color-value)"
+                dataKey="equity"
+                stroke="var(--color-equity)"
                 fillOpacity={1}
-                fill="url(#colorValue)"
+                fill="url(#colorEquity)"
                 strokeWidth={2.5}
               />
             </AreaChart>
