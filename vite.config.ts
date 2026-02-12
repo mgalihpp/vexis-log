@@ -12,7 +12,16 @@ const config = defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '.prisma/client/default': fileURLToPath(
+        new URL('./node_modules/.prisma/client/default.js', import.meta.url),
+      ),
     },
+  },
+  ssr: {
+    noExternal: ['@prisma/client', 'prisma'],
+  },
+  nitro: {
+    noExternals: ['@prisma/client', '.prisma/client'],
   },
   plugins: [
     devtools(),
