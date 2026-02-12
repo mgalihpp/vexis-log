@@ -50,10 +50,10 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: getAbsoluteUrl("/logo.png"),
+        url: getAbsoluteUrl("/features1.png"),
         width: 1200,
         height: 630,
-        alt: "Vexis Log",
+        alt: "Vexis Log feature preview",
       },
     ],
   },
@@ -61,7 +61,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vexis Log | Trading Journal",
     description: siteDescription,
-    images: [getAbsoluteUrl("/logo.png")],
+    images: [getAbsoluteUrl("/features1.png")],
+  },
+  verification: {
+    google: "RYMUPhw0xFALCYGVMLQNRRaL4P29wKs9DmSEslffMGA",
   },
   icons: {
     icon: "/logo.png",
