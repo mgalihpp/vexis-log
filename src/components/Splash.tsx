@@ -1,10 +1,19 @@
-import { Logo } from '@/components/ui/logo'
-import { Spinner } from '@/components/ui/spinner'
+import { Logo } from "@/components/ui/logo";
+import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 
-export function Splash() {
+type Props = {
+  zoomIn: boolean;
+};
+
+export function Splash({ zoomIn = true }: Props) {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-background">
-      <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-500">
+      <div
+        className={cn("flex flex-col items-center gap-6", {
+          "animate-in fade-in zoom-in duration-500": zoomIn,
+        })}
+      >
         <div className="relative flex items-center justify-center">
           <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
           <Logo size={80} className="relative z-10" />
@@ -15,10 +24,10 @@ export function Splash() {
           </h1>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Spinner className="size-4" />
-            <span>Loading workspace...</span>
+            <span>Loading...</span>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

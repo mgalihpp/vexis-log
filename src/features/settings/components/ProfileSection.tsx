@@ -1,96 +1,98 @@
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Shield, User } from 'lucide-react'
+"use client";
+
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2, Shield, User } from "lucide-react";
 import type {
   ChangePasswordInput,
   UpdateProfileInput,
-} from '@/utils/schema/settingsSchema'
-import { Button } from '@/components/ui/button'
+} from "@/utils/schema/settingsSchema";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useAuth } from '@/hooks/useAuth'
-import { useFeedbackToast } from '@/hooks/use-feedback-toast'
-import { changePassword, updateProfile } from '@/utils/settings.functions'
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { useFeedbackToast } from "@/hooks/use-feedback-toast";
+import { changePassword, updateProfile } from "@/utils/settings.functions";
 import {
   changePasswordSchema,
   updateProfileSchema,
-} from '@/utils/schema/settingsSchema'
+} from "@/utils/schema/settingsSchema";
 
 export const ProfileSection = () => {
-  const { user } = useAuth()
-  const { showToast } = useFeedbackToast()
-  const queryClient = useQueryClient()
+  const { user } = useAuth();
+  const { showToast } = useFeedbackToast();
+  const queryClient = useQueryClient();
 
   const profileForm = useForm<UpdateProfileInput>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
-      name: user?.name ?? '',
-      email: user?.email ?? '',
+      name: user?.name ?? "",
+      email: user?.email ?? "",
     },
-  })
+  });
 
   const passwordForm = useForm<ChangePasswordInput>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     },
-  })
+  });
 
   useEffect(() => {
     profileForm.reset({
-      name: user?.name ?? '',
-      email: user?.email ?? '',
-    })
-  }, [profileForm, user?.email, user?.name])
+      name: user?.name ?? "",
+      email: user?.email ?? "",
+    });
+  }, [profileForm, user?.email, user?.name]);
 
   const updateProfileMutation = useMutation({
     mutationFn: (data: UpdateProfileInput) => updateProfile({ data }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['auth', 'session'] })
-      showToast('success', 'Profile updated successfully')
+      await queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
+      showToast("success", "Profile updated successfully");
     },
     onError: (error) => {
       const message =
         error instanceof Error
           ? error.message
-          : 'Failed to update profile. Please try again.'
-      showToast('error', message)
+          : "Failed to update profile. Please try again.";
+      showToast("error", message);
     },
-  })
+  });
 
   const changePasswordMutation = useMutation({
     mutationFn: (data: ChangePasswordInput) => changePassword({ data }),
     onSuccess: () => {
-      passwordForm.reset()
-      showToast('success', 'Password changed successfully')
+      passwordForm.reset();
+      showToast("success", "Password changed successfully");
     },
     onError: (error) => {
       const message =
         error instanceof Error
           ? error.message
-          : 'Failed to change password. Please try again.'
-      showToast('error', message)
+          : "Failed to change password. Please try again.";
+      showToast("error", message);
     },
-  })
+  });
 
   const handleProfileSubmit = (data: UpdateProfileInput) => {
-    updateProfileMutation.mutate(data)
-  }
+    updateProfileMutation.mutate(data);
+  };
 
   const handlePasswordSubmit = (data: ChangePasswordInput) => {
-    changePasswordMutation.mutate(data)
-  }
+    changePasswordMutation.mutate(data);
+  };
 
   return (
     <div className="space-y-6">
@@ -113,7 +115,7 @@ export const ProfileSection = () => {
                 id="name"
                 className="trade-input"
                 placeholder="Your name"
-                {...profileForm.register('name')}
+                {...profileForm.register("name")}
                 aria-invalid={!!profileForm.formState.errors.name}
               />
               {profileForm.formState.errors.name ? (
@@ -129,7 +131,7 @@ export const ProfileSection = () => {
                 type="email"
                 className="trade-input"
                 placeholder="email@example.com"
-                {...profileForm.register('email')}
+                {...profileForm.register("email")}
                 aria-invalid={!!profileForm.formState.errors.email}
               />
               {profileForm.formState.errors.email ? (
@@ -150,7 +152,7 @@ export const ProfileSection = () => {
                   Saving...
                 </>
               ) : (
-                'Save Changes'
+                "Save Changes"
               )}
             </Button>
           </form>
@@ -177,7 +179,7 @@ export const ProfileSection = () => {
                 type="password"
                 className="trade-input"
                 placeholder="••••••••"
-                {...passwordForm.register('currentPassword')}
+                {...passwordForm.register("currentPassword")}
                 aria-invalid={!!passwordForm.formState.errors.currentPassword}
               />
               {passwordForm.formState.errors.currentPassword ? (
@@ -193,7 +195,7 @@ export const ProfileSection = () => {
                 type="password"
                 className="trade-input"
                 placeholder="••••••••"
-                {...passwordForm.register('newPassword')}
+                {...passwordForm.register("newPassword")}
                 aria-invalid={!!passwordForm.formState.errors.newPassword}
               />
               {passwordForm.formState.errors.newPassword ? (
@@ -209,7 +211,7 @@ export const ProfileSection = () => {
                 type="password"
                 className="trade-input"
                 placeholder="••••••••"
-                {...passwordForm.register('confirmPassword')}
+                {...passwordForm.register("confirmPassword")}
                 aria-invalid={!!passwordForm.formState.errors.confirmPassword}
               />
               {passwordForm.formState.errors.confirmPassword ? (
@@ -230,12 +232,12 @@ export const ProfileSection = () => {
                   Changing...
                 </>
               ) : (
-                'Change Password'
+                "Change Password"
               )}
             </Button>
           </form>
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};

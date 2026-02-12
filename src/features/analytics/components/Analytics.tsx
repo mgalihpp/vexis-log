@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+"use client";
+
+import { useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -10,7 +12,7 @@ import {
   PieChart,
   XAxis,
   YAxis,
-} from 'recharts'
+} from "recharts";
 import {
   BarChart3,
   Brain,
@@ -21,10 +23,10 @@ import {
   TrendingUp,
   X,
   Zap,
-} from 'lucide-react'
-import { endOfDay, format, parseISO, startOfDay } from 'date-fns'
-import type { TradeEntry } from '@/types/trade'
-import type { BreakdownItem } from '@/lib/analytics'
+} from "lucide-react";
+import { endOfDay, format, parseISO, startOfDay } from "date-fns";
+import type { TradeEntry } from "@/types/trade";
+import type { BreakdownItem } from "@/lib/analytics";
 import {
   calculateStats,
   getDayOfWeekBreakdown,
@@ -39,14 +41,14 @@ import {
   getTradeTypeBreakdown,
   getWeeklyBreakdown,
   getYearlyBreakdown,
-} from '@/lib/analytics'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+} from "@/lib/analytics";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/chart";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -54,42 +56,42 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { Calendar as CalendarComponent } from '@/components/ui/calendar'
-import { cn } from '@/lib/utils'
-import { SubSidebar } from '@/components/dashboard/SubSidebar'
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { SubSidebar } from "@/components/dashboard/SubSidebar";
 
 const COLORS = [
-  'hsl(174, 72%, 46%)',
-  'hsl(142, 72%, 42%)',
-  'hsl(0, 72%, 51%)',
-  'hsl(38, 92%, 50%)',
-  'hsl(262, 60%, 52%)',
-  'hsl(200, 70%, 50%)',
-  'hsl(320, 65%, 52%)',
-  'hsl(80, 65%, 45%)',
-]
+  "hsl(174, 72%, 46%)",
+  "hsl(142, 72%, 42%)",
+  "hsl(0, 72%, 51%)",
+  "hsl(38, 92%, 50%)",
+  "hsl(262, 60%, 52%)",
+  "hsl(200, 70%, 50%)",
+  "hsl(320, 65%, 52%)",
+  "hsl(80, 65%, 45%)",
+];
 
 const CATEGORIES = [
-  { value: 'dayofweek', label: 'Day', icon: Calendar },
-  { value: 'monthly', label: 'Monthly', icon: Calendar },
-  { value: 'weekly', label: 'Weekly', icon: Calendar },
-  { value: 'yearly', label: 'Yearly', icon: Calendar },
-  { value: 'symbol', label: 'Symbol', icon: Globe },
-  { value: 'direction', label: 'Direction', icon: TrendingUp },
-  { value: 'session', label: 'Session', icon: Globe },
-  { value: 'market', label: 'Market', icon: BarChart3 },
-  { value: 'setup', label: 'Setup', icon: Target },
-  { value: 'tradetype', label: 'Trade Type', icon: Zap },
-  { value: 'emotion', label: 'Emotion', icon: Brain },
-] as const
+  { value: "dayofweek", label: "Day", icon: Calendar },
+  { value: "monthly", label: "Monthly", icon: Calendar },
+  { value: "weekly", label: "Weekly", icon: Calendar },
+  { value: "yearly", label: "Yearly", icon: Calendar },
+  { value: "symbol", label: "Symbol", icon: Globe },
+  { value: "direction", label: "Direction", icon: TrendingUp },
+  { value: "session", label: "Session", icon: Globe },
+  { value: "market", label: "Market", icon: BarChart3 },
+  { value: "setup", label: "Setup", icon: Target },
+  { value: "tradetype", label: "Trade Type", icon: Zap },
+  { value: "emotion", label: "Emotion", icon: Brain },
+] as const;
 
-type CategoryValue = (typeof CATEGORIES)[number]['value']
+type CategoryValue = (typeof CATEGORIES)[number]["value"];
 
 function BreakdownTable({ data }: { data: Array<BreakdownItem> }) {
   return (
@@ -123,9 +125,9 @@ function BreakdownTable({ data }: { data: Array<BreakdownItem> }) {
                 {item.winrate.toFixed(1)}%
               </TableCell>
               <TableCell
-                className={`text-right font-mono ${item.totalPL >= 0 ? 'text-success' : 'text-destructive'}`}
+                className={`text-right font-mono ${item.totalPL >= 0 ? "text-success" : "text-destructive"}`}
               >
-                {item.totalPL > 0 ? '+' : ''}
+                {item.totalPL > 0 ? "+" : ""}
                 {item.totalPL}
               </TableCell>
               <TableCell className="text-right font-mono">
@@ -136,60 +138,60 @@ function BreakdownTable({ data }: { data: Array<BreakdownItem> }) {
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
 
 function BreakdownBarChart({
   data,
-  dataKey = 'totalPL',
-  label = 'P&L',
+  dataKey = "totalPL",
+  label = "P&L",
 }: {
-  data: Array<BreakdownItem>
-  dataKey?: string
-  label?: string
+  data: Array<BreakdownItem>;
+  dataKey?: string;
+  label?: string;
 }) {
-  const chartConfig = { [dataKey]: { label, color: 'hsl(var(--chart-1))' } }
+  const chartConfig = { [dataKey]: { label, color: "hsl(var(--chart-1))" } };
   return (
     <ChartContainer config={chartConfig} className="h-[280px] w-full">
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 14%, 18%)" />
         <XAxis
           dataKey="name"
-          tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }}
+          tick={{ fill: "hsl(215, 15%, 52%)", fontSize: 12 }}
           interval={0}
         />
-        <YAxis tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }} />
+        <YAxis tick={{ fill: "hsl(215, 15%, 52%)", fontSize: 12 }} />
         <ChartTooltip content={<ChartTooltipContent />} />
         <Bar dataKey={dataKey} radius={[4, 4, 0, 0]}>
           {data.map((entry, i) => (
             <Cell
               key={i}
               fill={
-                entry.totalPL >= 0 ? 'hsl(142, 72%, 42%)' : 'hsl(0, 72%, 51%)'
+                entry.totalPL >= 0 ? "hsl(142, 72%, 42%)" : "hsl(0, 72%, 51%)"
               }
             />
           ))}
         </Bar>
       </BarChart>
     </ChartContainer>
-  )
+  );
 }
 
 function WinrateBarChart({ data }: { data: Array<BreakdownItem> }) {
   const chartConfig = {
-    winrate: { label: 'Winrate %', color: 'hsl(var(--chart-1))' },
-  }
+    winrate: { label: "Winrate %", color: "hsl(var(--chart-1))" },
+  };
   return (
     <ChartContainer config={chartConfig} className="h-[280px] w-full">
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 14%, 18%)" />
         <XAxis
           dataKey="name"
-          tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }}
+          tick={{ fill: "hsl(215, 15%, 52%)", fontSize: 12 }}
           interval={0}
         />
         <YAxis
-          tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }}
+          tick={{ fill: "hsl(215, 15%, 52%)", fontSize: 12 }}
           domain={[0, 100]}
         />
         <ChartTooltip content={<ChartTooltipContent />} />
@@ -200,7 +202,7 @@ function WinrateBarChart({ data }: { data: Array<BreakdownItem> }) {
         />
       </BarChart>
     </ChartContainer>
-  )
+  );
 }
 
 function DistributionPieChart({ data }: { data: Array<BreakdownItem> }) {
@@ -209,7 +211,7 @@ function DistributionPieChart({ data }: { data: Array<BreakdownItem> }) {
       d.name,
       { label: d.name, color: COLORS[i % COLORS.length] },
     ]),
-  )
+  );
   return (
     <ChartContainer config={chartConfig} className="h-[280px] w-full">
       <PieChart>
@@ -229,7 +231,7 @@ function DistributionPieChart({ data }: { data: Array<BreakdownItem> }) {
         </Pie>
       </PieChart>
     </ChartContainer>
-  )
+  );
 }
 
 function DateRangePicker({
@@ -239,11 +241,11 @@ function DateRangePicker({
   onDateToChange,
   onClear,
 }: {
-  dateFrom: Date | undefined
-  dateTo: Date | undefined
-  onDateFromChange: (d: Date | undefined) => void
-  onDateToChange: (d: Date | undefined) => void
-  onClear: () => void
+  dateFrom: Date | undefined;
+  dateTo: Date | undefined;
+  onDateFromChange: (d: Date | undefined) => void;
+  onDateToChange: (d: Date | undefined) => void;
+  onClear: () => void;
 }) {
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -253,12 +255,12 @@ function DateRangePicker({
             variant="outline"
             size="sm"
             className={cn(
-              'h-8 text-xs gap-1.5 border-border/50 bg-muted/50',
-              !dateFrom && 'text-muted-foreground',
+              "h-8 text-xs gap-1.5 border-border/50 bg-muted/50",
+              !dateFrom && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="h-3.5 w-3.5" />
-            {dateFrom ? format(dateFrom, 'dd MMM yyyy') : 'From'}
+            {dateFrom ? format(dateFrom, "dd MMM yyyy") : "From"}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -278,12 +280,12 @@ function DateRangePicker({
             variant="outline"
             size="sm"
             className={cn(
-              'h-8 text-xs gap-1.5 border-border/50 bg-muted/50',
-              !dateTo && 'text-muted-foreground',
+              "h-8 text-xs gap-1.5 border-border/50 bg-muted/50",
+              !dateTo && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="h-3.5 w-3.5" />
-            {dateTo ? format(dateTo, 'dd MMM yyyy') : 'To'}
+            {dateTo ? format(dateTo, "dd MMM yyyy") : "To"}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -307,7 +309,7 @@ function DateRangePicker({
         </Button>
       )}
     </div>
-  )
+  );
 }
 
 function getBreakdownData(category: CategoryValue, trades: Array<TradeEntry>) {
@@ -323,43 +325,43 @@ function getBreakdownData(category: CategoryValue, trades: Array<TradeEntry>) {
     setup: () => getSetupBreakdown(trades),
     tradetype: () => getTradeTypeBreakdown(trades),
     emotion: () => getEmotionBreakdown(trades),
-  }
-  return map[category]()
+  };
+  return map[category]();
 }
 
 const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
   const [activeCategory, setActiveCategory] =
-    useState<CategoryValue>('dayofweek')
-  const [dateFrom, setDateFrom] = useState<Date | undefined>()
-  const [dateTo, setDateTo] = useState<Date | undefined>()
+    useState<CategoryValue>("dayofweek");
+  const [dateFrom, setDateFrom] = useState<Date | undefined>();
+  const [dateTo, setDateTo] = useState<Date | undefined>();
 
   const filteredTrades = useMemo(() => {
-    if (!dateFrom && !dateTo) return trades
+    if (!dateFrom && !dateTo) return trades;
     return trades.filter((t) => {
       // Safe parsing if t.date is already Date object
       const dateObj =
-        t.date instanceof Date ? t.date : parseISO(t.date as unknown as string)
+        t.date instanceof Date ? t.date : parseISO(t.date as unknown as string);
 
-      if (dateFrom && dateObj < startOfDay(dateFrom)) return false
-      if (dateTo && dateObj > endOfDay(dateTo)) return false
-      return true
-    })
-  }, [dateFrom, dateTo, trades])
+      if (dateFrom && dateObj < startOfDay(dateFrom)) return false;
+      if (dateTo && dateObj > endOfDay(dateTo)) return false;
+      return true;
+    });
+  }, [dateFrom, dateTo, trades]);
 
-  const stats = useMemo(() => calculateStats(filteredTrades), [filteredTrades])
+  const stats = useMemo(() => calculateStats(filteredTrades), [filteredTrades]);
   const equityCurve = useMemo(
     () => getEquityCurve(filteredTrades),
     [filteredTrades],
-  )
+  );
   const breakdownData = useMemo(
     () => getBreakdownData(activeCategory, filteredTrades),
     [activeCategory, filteredTrades],
-  )
+  );
 
-  const activeCat = CATEGORIES.find((c) => c.value === activeCategory)!
+  const activeCat = CATEGORIES.find((c) => c.value === activeCategory)!;
   const equityChartConfig = {
-    equity: { label: 'Equity %', color: 'hsl(var(--chart-1))' },
-  }
+    equity: { label: "Equity %", color: "hsl(var(--chart-1))" },
+  };
 
   return (
     <div className="flex flex-col md:flex-row gap-6">
@@ -386,8 +388,8 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
             onDateFromChange={setDateFrom}
             onDateToChange={setDateTo}
             onClear={() => {
-              setDateFrom(undefined)
-              setDateTo(undefined)
+              setDateFrom(undefined);
+              setDateTo(undefined);
             }}
           />
         </div>
@@ -396,21 +398,21 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             {
-              label: 'Total Trades',
+              label: "Total Trades",
               value: stats.totalTrades,
               icon: BarChart3,
             },
             {
-              label: 'Winrate',
+              label: "Winrate",
               value: `${stats.winrate.toFixed(1)}%`,
               icon: Target,
             },
             {
-              label: 'Total P&L',
-              value: `${stats.totalProfitLoss > 0 ? '+' : ''}${stats.totalProfitLoss}`,
+              label: "Total P&L",
+              value: `${stats.totalProfitLoss > 0 ? "+" : ""}${stats.totalProfitLoss}`,
               icon: TrendingUp,
             },
-            { label: 'Avg RR', value: `${stats.avgRR}R`, icon: Zap },
+            { label: "Avg RR", value: `${stats.avgRR}R`, icon: Zap },
           ].map((s) => (
             <div key={s.label} className="glass-card p-4 animate-fade-in">
               <div className="flex items-center gap-2 mb-1">
@@ -457,9 +459,9 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
                 />
                 <XAxis
                   dataKey="date"
-                  tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }}
+                  tick={{ fill: "hsl(215, 15%, 52%)", fontSize: 12 }}
                 />
-                <YAxis tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }} />
+                <YAxis tick={{ fill: "hsl(215, 15%, 52%)", fontSize: 12 }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Area
                   type="monotone"
@@ -532,7 +534,7 @@ const Analytics = ({ trades }: { trades: Array<TradeEntry> }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Analytics
+export default Analytics;

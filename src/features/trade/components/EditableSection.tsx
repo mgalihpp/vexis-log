@@ -1,62 +1,63 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Edit, Loader2, Save, X } from 'lucide-react'
-import type { DefaultValues, FieldValues, UseFormReturn } from 'react-hook-form'
-import type { ZodSchema } from 'zod'
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
-import { useFeedbackToast } from '@/hooks/use-feedback-toast'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Edit, Loader2, Save, X } from "lucide-react";
+import type { DefaultValues, UseFormReturn } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { useFeedbackToast } from "@/hooks/use-feedback-toast";
+import type {
+  TradeFormInput,
+  TradeFormValues,
+} from "@/utils/schema/tradeSchema";
 
-interface EditableSectionProps<T extends FieldValues> {
-  title: string
-  icon: React.ElementType
-  defaultValues: DefaultValues<T>
-  schema: ZodSchema
-  renderView: () => React.ReactNode
-  renderEdit: (form: UseFormReturn<T>) => React.ReactNode
-  onSave: (data: T) => Promise<void>
-  className?: string
+interface EditableSectionProps {
+  title: string;
+  icon: React.ElementType;
+  defaultValues: DefaultValues<TradeFormInput>;
+  renderView: () => React.ReactNode;
+  renderEdit: (
+    form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>,
+  ) => React.ReactNode;
+  onSave: (data: TradeFormValues) => Promise<void>;
+  className?: string;
 }
 
-export function EditableSection<T extends FieldValues>({
+export function EditableSection({
   title,
   icon: Icon,
   defaultValues,
-  schema,
   renderView,
   renderEdit,
   onSave,
   className,
-}: EditableSectionProps<T>) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const { showToast } = useFeedbackToast()
+}: EditableSectionProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const { showToast } = useFeedbackToast();
 
-  const form = useForm<T>({
-    resolver: zodResolver(schema),
+  const form = useForm<TradeFormInput, unknown, TradeFormValues>({
     defaultValues,
-  })
+  });
 
-  const handleSave = async (data: T) => {
-    setIsSaving(true)
+  const handleSave = async (data: TradeFormValues) => {
+    setIsSaving(true);
     try {
-      await onSave(data)
-      setIsEditing(false)
+      await onSave(data);
+      setIsEditing(false);
       // Reset form with new values (handled by parent re-render usually, but good to reset to be sure)
-      form.reset(data)
+      form.reset(data);
     } catch (error) {
-      console.error(error)
-      showToast('error', 'Failed to save changes')
+      console.error(error);
+      showToast("error", "Failed to save changes");
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
-    form.reset(defaultValues)
-  }
+    setIsEditing(false);
+    form.reset(defaultValues);
+  };
 
   return (
     <section className={className}>
@@ -116,5 +117,5 @@ export function EditableSection<T extends FieldValues>({
         )}
       </div>
     </section>
-  )
+  );
 }

@@ -7,51 +7,51 @@ import {
   SlidersHorizontal,
   TrendingDown,
   TrendingUp,
-} from 'lucide-react'
-import { format } from 'date-fns'
-import { Link } from '@tanstack/react-router'
-import { useMemo, useState } from 'react'
-import type { TradeEntry } from '@/types/trade'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+} from "lucide-react";
+import { format } from "date-fns";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import type { TradeEntry } from "@/types/trade";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
 
 interface TradeListProps {
-  trades: Array<TradeEntry>
-  onSelectTrade: (trade: TradeEntry) => void
-  selectedId?: string
+  trades: Array<TradeEntry>;
+  onSelectTrade: (trade: TradeEntry) => void;
+  selectedId?: string;
 }
 
 const resultConfig = {
   Win: {
     icon: TrendingUp,
-    class: 'bg-success/15 text-success border-success/30',
+    class: "bg-success/15 text-success border-success/30",
   },
   Loss: {
     icon: TrendingDown,
-    class: 'bg-destructive/15 text-destructive border-destructive/30',
+    class: "bg-destructive/15 text-destructive border-destructive/30",
   },
   Pending: {
     icon: Minus,
-    class: 'bg-muted/15 text-foreground border-border',
+    class: "bg-muted/15 text-foreground border-border",
   },
-  BE: { icon: Minus, class: 'bg-warning/15 text-warning border-warning/30' },
-}
+  BE: { icon: Minus, class: "bg-warning/15 text-warning border-warning/30" },
+};
 
 const marketColors: Record<string, string> = {
-  Forex: 'bg-primary/15 text-primary border-primary/30',
+  Forex: "bg-primary/15 text-primary border-primary/30",
   Crypto:
-    'bg-[hsl(262,60%,52%)]/15 text-[hsl(262,60%,52%)] border-[hsl(262,60%,52%)]/30',
-  Stock: 'bg-success/15 text-success border-success/30',
-  Index: 'bg-warning/15 text-warning border-warning/30',
-}
+    "bg-[hsl(262,60%,52%)]/15 text-[hsl(262,60%,52%)] border-[hsl(262,60%,52%)]/30",
+  Stock: "bg-success/15 text-success border-success/30",
+  Index: "bg-warning/15 text-warning border-warning/30",
+};
 
 export function TradeList({
   trades,
@@ -59,18 +59,18 @@ export function TradeList({
   selectedId,
 }: TradeListProps) {
   const getTradeDate = (trade: TradeEntry) =>
-    trade.date instanceof Date ? trade.date : new Date(trade.date)
+    trade.date instanceof Date ? trade.date : new Date(trade.date);
 
-  const [search, setSearch] = useState('')
-  const [marketFilter, setMarketFilter] = useState('all')
-  const [directionFilter, setDirectionFilter] = useState('all')
-  const [tradeTypeFilter, setTradeTypeFilter] = useState('all')
-  const [sessionFilter, setSessionFilter] = useState('all')
-  const [timeframeFilter, setTimeframeFilter] = useState('all')
-  const [resultFilter, setResultFilter] = useState('all')
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
+  const [search, setSearch] = useState("");
+  const [marketFilter, setMarketFilter] = useState("all");
+  const [directionFilter, setDirectionFilter] = useState("all");
+  const [tradeTypeFilter, setTradeTypeFilter] = useState("all");
+  const [sessionFilter, setSessionFilter] = useState("all");
+  const [timeframeFilter, setTimeframeFilter] = useState("all");
+  const [resultFilter, setResultFilter] = useState("all");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   const filterOptions = useMemo(() => {
     const uniqueValues = (
@@ -83,8 +83,8 @@ export function TradeList({
             .map((value) => value?.trim())
             .filter((value): value is string => Boolean(value)),
         ),
-      ).sort((a, b) => a.localeCompare(b))
-    }
+      ).sort((a, b) => a.localeCompare(b));
+    };
 
     return {
       markets: uniqueValues((trade) => trade.market),
@@ -93,42 +93,42 @@ export function TradeList({
       sessions: uniqueValues((trade) => trade.session),
       timeframes: uniqueValues((trade) => trade.timeframe),
       results: uniqueValues((trade) => trade.result ?? trade.outcome),
-    }
-  }, [trades])
+    };
+  }, [trades]);
 
   const filteredTrades = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase()
+    const normalizedSearch = search.trim().toLowerCase();
 
     return trades.filter((trade) => {
-      const result = trade.result ?? trade.outcome ?? ''
-      const tradeDate = getTradeDate(trade)
-      const tradeDateKey = tradeDate.toISOString().slice(0, 10)
+      const result = trade.result ?? trade.outcome ?? "";
+      const tradeDate = getTradeDate(trade);
+      const tradeDateKey = tradeDate.toISOString().slice(0, 10);
 
       const matchesSearch =
         normalizedSearch.length === 0 ||
         trade.pair.toLowerCase().includes(normalizedSearch) ||
-        (trade.setup ?? '').toLowerCase().includes(normalizedSearch) ||
-        (trade.notes ?? '').toLowerCase().includes(normalizedSearch) ||
+        (trade.setup ?? "").toLowerCase().includes(normalizedSearch) ||
+        (trade.notes ?? "").toLowerCase().includes(normalizedSearch) ||
         trade.market.toLowerCase().includes(normalizedSearch) ||
-        (trade.tradeType ?? '').toLowerCase().includes(normalizedSearch) ||
+        (trade.tradeType ?? "").toLowerCase().includes(normalizedSearch) ||
         trade.type.toLowerCase().includes(normalizedSearch) ||
-        (trade.session ?? '').toLowerCase().includes(normalizedSearch) ||
+        (trade.session ?? "").toLowerCase().includes(normalizedSearch) ||
         trade.timeframe.toLowerCase().includes(normalizedSearch) ||
-        result.toLowerCase().includes(normalizedSearch)
+        result.toLowerCase().includes(normalizedSearch);
 
       const matchesMarket =
-        marketFilter === 'all' || trade.market === marketFilter
+        marketFilter === "all" || trade.market === marketFilter;
       const matchesDirection =
-        directionFilter === 'all' || trade.type === directionFilter
+        directionFilter === "all" || trade.type === directionFilter;
       const matchesTradeType =
-        tradeTypeFilter === 'all' || trade.tradeType === tradeTypeFilter
+        tradeTypeFilter === "all" || trade.tradeType === tradeTypeFilter;
       const matchesSession =
-        sessionFilter === 'all' || trade.session === sessionFilter
+        sessionFilter === "all" || trade.session === sessionFilter;
       const matchesTimeframe =
-        timeframeFilter === 'all' || trade.timeframe === timeframeFilter
-      const matchesResult = resultFilter === 'all' || result === resultFilter
-      const matchesDateFrom = dateFrom === '' || tradeDateKey >= dateFrom
-      const matchesDateTo = dateTo === '' || tradeDateKey <= dateTo
+        timeframeFilter === "all" || trade.timeframe === timeframeFilter;
+      const matchesResult = resultFilter === "all" || result === resultFilter;
+      const matchesDateFrom = dateFrom === "" || tradeDateKey >= dateFrom;
+      const matchesDateTo = dateTo === "" || tradeDateKey <= dateTo;
 
       return (
         matchesSearch &&
@@ -140,8 +140,8 @@ export function TradeList({
         matchesResult &&
         matchesDateFrom &&
         matchesDateTo
-      )
-    })
+      );
+    });
   }, [
     dateFrom,
     dateTo,
@@ -153,61 +153,61 @@ export function TradeList({
     timeframeFilter,
     tradeTypeFilter,
     trades,
-  ])
+  ]);
 
   const groupedTrades = useMemo(() => {
     const sortedTrades = [...filteredTrades].sort(
       (a, b) => getTradeTimestamp(b) - getTradeTimestamp(a),
-    )
+    );
 
     const grouped = new Map<
       string,
       { dateLabel: string; trades: Array<TradeEntry> }
-    >()
+    >();
 
     sortedTrades.forEach((trade) => {
-      const tradeDate = getTradeDate(trade)
-      const dateKey = tradeDate.toISOString().slice(0, 10)
+      const tradeDate = getTradeDate(trade);
+      const dateKey = tradeDate.toISOString().slice(0, 10);
 
       if (!grouped.has(dateKey)) {
         grouped.set(dateKey, {
-          dateLabel: format(tradeDate, 'd MMM yyyy'),
+          dateLabel: format(tradeDate, "d MMM yyyy"),
           trades: [],
-        })
+        });
       }
 
-      grouped.get(dateKey)?.trades.push(trade)
-    })
+      grouped.get(dateKey)?.trades.push(trade);
+    });
 
     return Array.from(grouped.entries()).map(([dateKey, value]) => ({
       dateKey,
       dateLabel: value.dateLabel,
       trades: value.trades,
-    }))
-  }, [filteredTrades])
+    }));
+  }, [filteredTrades]);
 
   const hasActiveFilters =
     search.length > 0 ||
-    marketFilter !== 'all' ||
-    directionFilter !== 'all' ||
-    tradeTypeFilter !== 'all' ||
-    sessionFilter !== 'all' ||
-    timeframeFilter !== 'all' ||
-    resultFilter !== 'all' ||
-    dateFrom !== '' ||
-    dateTo !== ''
+    marketFilter !== "all" ||
+    directionFilter !== "all" ||
+    tradeTypeFilter !== "all" ||
+    sessionFilter !== "all" ||
+    timeframeFilter !== "all" ||
+    resultFilter !== "all" ||
+    dateFrom !== "" ||
+    dateTo !== "";
 
   const resetFilters = () => {
-    setSearch('')
-    setMarketFilter('all')
-    setDirectionFilter('all')
-    setTradeTypeFilter('all')
-    setSessionFilter('all')
-    setTimeframeFilter('all')
-    setResultFilter('all')
-    setDateFrom('')
-    setDateTo('')
-  }
+    setSearch("");
+    setMarketFilter("all");
+    setDirectionFilter("all");
+    setTradeTypeFilter("all");
+    setSessionFilter("all");
+    setTimeframeFilter("all");
+    setResultFilter("all");
+    setDateFrom("");
+    setDateTo("");
+  };
 
   if (trades.length === 0) {
     return (
@@ -219,14 +219,14 @@ export function TradeList({
           Trade Journal Empty
         </h3>
         <p className="max-w-xs mb-6 text-sm text-muted-foreground">
-          You haven't logged any trades yet. Start your journey by adding your
-          first trade.
+          You haven&apos;t logged any trades yet. Start your journey by adding
+          your first trade.
         </p>
-        <Link to="/dashboard/trade/new">
+        <Link href="/dashboard/trade/new">
           <Button>Add First Trade</Button>
         </Link>
       </div>
-    )
+    );
   }
 
   return (
@@ -254,7 +254,7 @@ export function TradeList({
             onClick={() => setShowFilters((prev) => !prev)}
           >
             <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
+            {showFilters ? "Hide Filters" : "Show Filters"}
           </Button>
         </div>
 
@@ -402,24 +402,25 @@ export function TradeList({
             </div>
 
             {group.trades.map((trade, i) => {
-              const outcomeKey = trade.outcome ?? 'BE'
+              const outcomeKey = trade.outcome ?? "BE";
               const cfg =
-                (resultConfig as Record<string, any>)[outcomeKey] ??
-                resultConfig.BE
-              const ResultIcon = cfg.icon
-              const isSelected = trade.id === selectedId
+                outcomeKey in resultConfig
+                  ? resultConfig[outcomeKey as keyof typeof resultConfig]
+                  : resultConfig.BE;
+              const ResultIcon = cfg.icon;
+              const isSelected = trade.id === selectedId;
 
               const profitLossPercent =
                 trade.riskPercent && trade.actualRR
                   ? Number((trade.actualRR * trade.riskPercent).toFixed(2))
-                  : (trade.profitLoss ?? 0)
+                  : (trade.profitLoss ?? 0);
 
               return (
                 <button
                   key={trade.id}
                   onClick={() => onSelectTrade(trade)}
                   className={`w-full text-left glass-card p-4 hover:bg-secondary/50 transition-all cursor-pointer animate-fade-in group ${
-                    isSelected ? 'ring-1 ring-primary/50 glow-primary' : ''
+                    isSelected ? "ring-1 ring-primary/50 glow-primary" : ""
                   }`}
                   style={{ animationDelay: `${i * 50}ms` }}
                 >
@@ -437,7 +438,7 @@ export function TradeList({
                           </span>
                           <Badge
                             variant="outline"
-                            className={`text-[10px] px-1.5 py-0 ${marketColors[trade.market] || ''}`}
+                            className={`text-[10px] px-1.5 py-0 ${marketColors[trade.market] || ""}`}
                           >
                             {trade.market}
                           </Badge>
@@ -469,17 +470,17 @@ export function TradeList({
                         <div
                           className={`font-mono font-semibold text-sm ${
                             profitLossPercent > 0
-                              ? 'text-success'
+                              ? "text-success"
                               : profitLossPercent < 0
-                                ? 'text-destructive'
-                                : 'text-foreground'
+                                ? "text-destructive"
+                                : "text-foreground"
                           }`}
                         >
-                          {profitLossPercent > 0 ? '+' : ''}
+                          {profitLossPercent > 0 ? "+" : ""}
                           {profitLossPercent}%
                         </div>
                         <div className="text-xs text-muted-foreground font-mono">
-                          {trade.actualRR && trade.actualRR > 0 ? '+' : ''}
+                          {trade.actualRR && trade.actualRR > 0 ? "+" : ""}
                           {trade.actualRR}R
                         </div>
                       </div>
@@ -487,39 +488,39 @@ export function TradeList({
                     </div>
                   </div>
                 </button>
-              )
+              );
             })}
           </div>
         ))
       )}
     </div>
-  )
+  );
 }
 
-function tradeDateLabel(tradeDate: Date, rawDate: TradeEntry['date']) {
+function tradeDateLabel(tradeDate: Date, rawDate: TradeEntry["date"]) {
   if (Number.isNaN(tradeDate.getTime())) {
-    return String(rawDate)
+    return String(rawDate);
   }
 
-  return format(tradeDate, 'd MMM yyyy')
+  return format(tradeDate, "d MMM yyyy");
 }
 
 function getTradeTimestamp(trade: TradeEntry) {
   const tradeDate =
-    trade.date instanceof Date ? trade.date : new Date(trade.date)
+    trade.date instanceof Date ? trade.date : new Date(trade.date);
 
   if (Number.isNaN(tradeDate.getTime())) {
-    return 0
+    return 0;
   }
 
-  const timestamp = new Date(tradeDate)
-  const [hoursPart, minutesPart] = (trade.time ?? '00:00').split(':')
-  const hours = Number(hoursPart)
-  const minutes = Number(minutesPart)
+  const timestamp = new Date(tradeDate);
+  const [hoursPart, minutesPart] = (trade.time ?? "00:00").split(":");
+  const hours = Number(hoursPart);
+  const minutes = Number(minutesPart);
 
   if (Number.isFinite(hours) && Number.isFinite(minutes)) {
-    timestamp.setHours(hours, minutes, 0, 0)
+    timestamp.setHours(hours, minutes, 0, 0);
   }
 
-  return timestamp.getTime()
+  return timestamp.getTime();
 }

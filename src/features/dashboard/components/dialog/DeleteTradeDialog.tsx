@@ -1,5 +1,5 @@
-import { useRouter } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,32 +9,37 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { deleteTrade } from '@/utils/dashboard.functions'
+} from "@/components/ui/alert-dialog";
+import { deleteTrade } from "@/utils/dashboard.functions";
+import { useFeedbackToast } from "@/hooks/use-feedback-toast";
 
 type Props = {
-  id: string
-  open: boolean
-  onClose: () => void
-}
+  id: string;
+  open: boolean;
+  onClose: () => void;
+};
 
 export const DeleteTradeDialog = ({ id, open, onClose }: Props) => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
+  const { showToast } = useFeedbackToast();
 
   const handleSubmit = async () => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      await deleteTrade({ data: { id } })
-      router.invalidate()
-      setIsSubmitting(false)
+      await deleteTrade({ data: { id } });
+      router.refresh();
+      onClose();
+      showToast("success", "Trade deleted successfully.");
     } catch (error) {
-      setIsSubmitting(false)
+      const message =
+        error instanceof Error ? error.message : "Failed to delete trade";
+      showToast("error", message);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
@@ -49,10 +54,10 @@ export const DeleteTradeDialog = ({ id, open, onClose }: Props) => {
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? 'Deleting...' : 'Delete'}
+            {isSubmitting ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
-}
+  );
+};

@@ -1,6 +1,8 @@
-import { Link } from '@tanstack/react-router'
-import { FileQuestion } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+"use client";
+
+import Link from "next/link";
+import { FileQuestion } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -8,7 +10,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '@/components/ui/empty'
+} from "@/components/ui/empty";
 
 export function NotFound() {
   return (
@@ -25,23 +27,23 @@ export function NotFound() {
             Page not found
           </EmptyTitle>
           <EmptyDescription className="mt-2 text-base text-muted-foreground">
-            Sorry, we couldn't find the page you're looking for. It might have
-            been removed, renamed, or doesn't exist.
+            Sorry, we couldn&apos;t find the page you&apos;re looking for. It
+            might have been removed, renamed, or doesn&apos;t exist.
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <div className="mt-6 flex flex-col gap-2 sm:flex-row">
             <Button asChild size="lg">
-              <Link to="/">Go back home</Link>
+              <Link href="/">Go back home</Link>
             </Button>
             <Button asChild variant="ghost" size="lg">
-              <Link to=".." onClick={() => window.history.back()}>
+              <button type="button" onClick={() => window.history.back()}>
                 Go back
-              </Link>
+              </button>
             </Button>
           </div>
         </EmptyContent>
       </Empty>
     </div>
-  )
+  );
 }

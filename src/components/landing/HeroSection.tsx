@@ -1,62 +1,67 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ArrowRight, PlayCircle } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
-import { cn } from '@/lib/utils'
+import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ArrowRight, PlayCircle } from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export function HeroSection() {
   // Motion values for 3D tilt
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
   // Spring physics for smooth movement
-  const mouseX = useSpring(x, { stiffness: 150, damping: 15 })
-  const mouseY = useSpring(y, { stiffness: 150, damping: 15 })
+  const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
+  const mouseY = useSpring(y, { stiffness: 150, damping: 15 });
 
   // Transform mouse position to rotation degrees
   // Max tilt: +/- 5 degrees
-  const rotateX = useTransform(mouseY, [-0.5, 0.5], [5, -5])
-  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-5, 5])
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], [5, -5]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], [-5, 5]);
 
-  const [isHovered, setIsHovered] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   // Handle mouse move for tilt effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
+    if (!cardRef.current) return;
 
-    const rect = cardRef.current.getBoundingClientRect()
-    const width = rect.width
-    const height = rect.height
+    const rect = cardRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
 
-    const mouseXFromCenter = e.clientX - rect.left - width / 2
-    const mouseYFromCenter = e.clientY - rect.top - height / 2
+    const mouseXFromCenter = e.clientX - rect.left - width / 2;
+    const mouseYFromCenter = e.clientY - rect.top - height / 2;
 
     // Normalize to -0.5 to 0.5
-    x.set(mouseXFromCenter / width)
-    y.set(mouseYFromCenter / height)
-  }
+    x.set(mouseXFromCenter / width);
+    y.set(mouseYFromCenter / height);
+  };
 
   const handleMouseLeave = () => {
-    setIsHovered(false)
-    x.set(0)
-    y.set(0)
-  }
+    setIsHovered(false);
+    x.set(0);
+    y.set(0);
+  };
 
   const handleMouseEnter = () => {
-    setIsHovered(true)
-  }
+    setIsHovered(true);
+  };
 
   // Reduced motion check
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setPrefersReducedMotion(mediaQuery.matches)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
 
-    const handler = () => setPrefersReducedMotion(mediaQuery.matches)
-    mediaQuery.addEventListener('change', handler)
-    return () => mediaQuery.removeEventListener('change', handler)
-  }, [])
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const handler = () => setPrefersReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
 
   // Disable tilt if reduced motion is preferred
   const style = prefersReducedMotion
@@ -64,8 +69,8 @@ export function HeroSection() {
     : {
         rotateX,
         rotateY,
-        transformStyle: 'preserve-3d' as const,
-      }
+        transformStyle: "preserve-3d" as const,
+      };
 
   return (
     <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-32 pb-20 px-6 overflow-hidden">
@@ -177,7 +182,7 @@ export function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
         >
           <Link
-            to="/signup"
+            href="/signup"
             className="group bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_color-mix(in_oklab,var(--color-primary)_45%,transparent)] hover:shadow-[0_0_50px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] hover:-translate-y-1 flex items-center gap-2"
           >
             Start Journaling
@@ -187,7 +192,7 @@ export function HeroSection() {
             />
           </Link>
           <Link
-            to="/dashboard"
+            href="/dashboard"
             className="px-8 py-4 rounded-lg text-muted-foreground font-medium hover:text-foreground hover:bg-accent/50 transition-colors border border-transparent hover:border-border flex items-center gap-2"
           >
             <PlayCircle size={18} />
@@ -198,7 +203,7 @@ export function HeroSection() {
         {/* 3D Tilt Dashboard Mockup */}
         <div
           className="perspective-1000 w-full max-w-4xl mx-auto"
-          style={{ perspective: '1000px' }}
+          style={{ perspective: "1000px" }}
         >
           <motion.div
             id="hero-dashboard-mockup"
@@ -215,8 +220,8 @@ export function HeroSection() {
             {/* Glow effect on hover */}
             <div
               className={cn(
-                'absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-chart-3/20 opacity-0 transition-opacity duration-500 rounded-xl pointer-events-none',
-                isHovered ? 'opacity-100' : '',
+                "absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-chart-3/20 opacity-0 transition-opacity duration-500 rounded-xl pointer-events-none",
+                isHovered ? "opacity-100" : "",
               )}
             />
 
@@ -233,11 +238,11 @@ export function HeroSection() {
             {/* Reflection Shine */}
             <div
               className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-xl pointer-events-none"
-              style={{ mixBlendMode: 'overlay' }}
+              style={{ mixBlendMode: "overlay" }}
             />
           </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }

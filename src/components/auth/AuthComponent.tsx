@@ -1,27 +1,23 @@
-import { useRouteContext } from '@tanstack/react-router'
+"use client";
+
+import { useAuth } from "@/hooks/useAuth";
 
 type Props = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 export const AuthComponent = ({ children }: Props) => {
-  const auth = useRouteContext({
-    from: '/',
-    select: (ctx) => ctx.auth,
-  })
+  const { user } = useAuth();
 
-  if (!auth.user) return null
+  if (!user) return null;
 
-  return <> {children} </>
-}
+  return <> {children} </>;
+};
 
 export const UnAuthComponent = ({ children }: Props) => {
-  const auth = useRouteContext({
-    from: '/',
-    select: (ctx) => ctx.auth,
-  })
+  const { user } = useAuth();
 
-  if (auth.user) return null
+  if (user) return null;
 
-  return <> {children} </>
-}
+  return <> {children} </>;
+};

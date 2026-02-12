@@ -1,17 +1,19 @@
-import { useState } from 'react'
-import { useRouter } from '@tanstack/react-router'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import type {
   QuickAddTradeFormInput,
   QuickAddTradeFormValues,
-} from '@/utils/schema/tradeSchema'
-import { quickAddTradeSchema } from '@/utils/schema/tradeSchema'
-import { createTrade } from '@/utils/dashboard.functions'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { FeedbackToast } from '@/components/ui/feedback-toast'
-import { useFeedbackToast } from '@/hooks/use-feedback-toast'
+} from "@/utils/schema/tradeSchema";
+import { quickAddTradeSchema } from "@/utils/schema/tradeSchema";
+import { createTrade } from "@/utils/dashboard.functions";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { FeedbackToast } from "@/components/ui/feedback-toast";
+import { useFeedbackToast } from "@/hooks/use-feedback-toast";
 import {
   Form,
   FormControl,
@@ -19,8 +21,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Combobox,
   ComboboxContent,
@@ -28,7 +30,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from '@/components/ui/combobox'
+} from "@/components/ui/combobox";
 import {
   DIRECTION_OPTIONS,
   MARKET_OPTIONS,
@@ -37,60 +39,60 @@ import {
   SESSION_OPTIONS,
   TIMEFRAME_OPTIONS,
   TRADE_TYPE_OPTIONS,
-} from '@/features/trade/components/tradeFormFields'
+} from "@/features/trade/components/tradeFormFields";
 
 const getDefaultValues = (): QuickAddTradeFormInput => ({
   date: new Date().toISOString().slice(0, 10),
   time: new Date().toTimeString().slice(0, 5),
-  market: '',
-  pair: '',
-  timeframe: '',
-  session: '',
-  tradeType: '',
-  direction: '',
-  marketCondition: '',
-  marketBias: '',
-  strategy: '',
-  setup: '',
-  technicalConfirmation: '',
-  fundamentalConfirmation: '',
-  entryReason: '',
-  entryPrice: '',
-  stopLoss: '',
-  takeProfit: '',
-  riskPercent: '',
-  rrRatio: '',
-  positionSize: '',
+  market: "",
+  pair: "",
+  timeframe: "",
+  session: "",
+  tradeType: "",
+  direction: "",
+  marketCondition: "",
+  marketBias: "",
+  strategy: "",
+  setup: "",
+  technicalConfirmation: "",
+  fundamentalConfirmation: "",
+  entryReason: "",
+  entryPrice: "",
+  stopLoss: "",
+  takeProfit: "",
+  riskPercent: "",
+  rrRatio: "",
+  positionSize: "",
   entryOnPlan: false,
-  slippage: '',
-  planChange: '',
-  tradeManagement: '',
-  emotionBefore: '',
-  emotionalDisruption: '',
+  slippage: "",
+  planChange: "",
+  tradeManagement: "",
+  emotionBefore: "",
+  emotionalDisruption: "",
   confidence: 5,
   discipline: 5,
-  exitPrice: '',
-  fee: '',
-  profitLoss: '',
-  result: '',
-  actualRR: '',
-  whatWentRight: '',
-  mistakes: '',
+  exitPrice: "",
+  fee: "",
+  profitLoss: "",
+  result: "",
+  actualRR: "",
+  whatWentRight: "",
+  mistakes: "",
   validSetup: false,
-  entryTiming: '',
-  lesson: '',
-  notes: '',
+  entryTiming: "",
+  lesson: "",
+  notes: "",
   tags: [],
-  improvement: '',
-  rulesToTighten: '',
-  actionPlan: '',
-})
+  improvement: "",
+  rulesToTighten: "",
+  actionPlan: "",
+});
 
 export function QuickAddTradeCard() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast, showToast, dismissToast } = useFeedbackToast()
-  const router = useRouter()
-  const defaultValues = getDefaultValues()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast, showToast, dismissToast } = useFeedbackToast();
+  const router = useRouter();
+  const defaultValues = getDefaultValues();
   const form = useForm<
     QuickAddTradeFormInput,
     unknown,
@@ -98,37 +100,37 @@ export function QuickAddTradeCard() {
   >({
     resolver: zodResolver(quickAddTradeSchema),
     defaultValues,
-  })
+  });
 
-  const resultValue = form.watch('result')
-  const requiresFullForm = resultValue !== '' && resultValue !== 'Pending'
+  const resultValue = form.watch("result");
+  const requiresFullForm = resultValue !== "" && resultValue !== "Pending";
 
   const handleSubmit = async (data: QuickAddTradeFormValues) => {
-    if (data.result && data.result !== 'Pending') {
+    if (data.result && data.result !== "Pending") {
       showToast(
-        'error',
-        'Final outcomes need full execution details (Entry, SL, TP, Exit, Fee). Continue in the Full Trade Form.',
-      )
-      return
+        "error",
+        "Final outcomes need full execution details (Entry, SL, TP, Exit, Fee). Continue in the Full Trade Form.",
+      );
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      await createTrade({ data })
-      router.invalidate()
-      form.reset(getDefaultValues())
-      showToast('success', 'Trade saved successfully.')
-      router.navigate({ to: '/dashboard' })
+      await createTrade({ data });
+      router.refresh();
+      form.reset(getDefaultValues());
+      showToast("success", "Trade saved successfully.");
+      router.push("/dashboard");
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
-          : 'Unable to save the trade. Please check required fields.'
-      showToast('error', message)
+          : "Unable to save the trade. Please check required fields.";
+      showToast("error", message);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Card className="border-border bg-card p-6">
@@ -170,7 +172,7 @@ export function QuickAddTradeCard() {
                   <Combobox
                     items={MARKET_OPTIONS}
                     value={field.value}
-                    onValueChange={(value) => field.onChange(value ?? '')}
+                    onValueChange={(value) => field.onChange(value ?? "")}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select market" />
@@ -211,8 +213,8 @@ export function QuickAddTradeCard() {
                   <FormLabel>Timeframe</FormLabel>
                   <Combobox
                     items={TIMEFRAME_OPTIONS}
-                    value={field.value ?? ''}
-                    onValueChange={(value) => field.onChange(value ?? '')}
+                    value={field.value ?? ""}
+                    onValueChange={(value) => field.onChange(value ?? "")}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select timeframe" />
@@ -240,8 +242,8 @@ export function QuickAddTradeCard() {
                   <FormLabel>Session</FormLabel>
                   <Combobox
                     items={SESSION_OPTIONS}
-                    value={field.value ?? ''}
-                    onValueChange={(value) => field.onChange(value ?? '')}
+                    value={field.value ?? ""}
+                    onValueChange={(value) => field.onChange(value ?? "")}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select session" />
@@ -269,8 +271,8 @@ export function QuickAddTradeCard() {
                   <FormLabel>Trade Type</FormLabel>
                   <Combobox
                     items={TRADE_TYPE_OPTIONS}
-                    value={field.value ?? ''}
-                    onValueChange={(value) => field.onChange(value ?? '')}
+                    value={field.value ?? ""}
+                    onValueChange={(value) => field.onChange(value ?? "")}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select trade type" />
@@ -299,7 +301,7 @@ export function QuickAddTradeCard() {
                   <Combobox
                     items={DIRECTION_OPTIONS}
                     value={field.value}
-                    onValueChange={(value) => field.onChange(value ?? '')}
+                    onValueChange={(value) => field.onChange(value ?? "")}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select direction" />
@@ -328,7 +330,7 @@ export function QuickAddTradeCard() {
                   <Combobox
                     items={RESULT_OPTIONS}
                     value={field.value}
-                    onValueChange={(value) => field.onChange(value ?? '')}
+                    onValueChange={(value) => field.onChange(value ?? "")}
                   >
                     <FormControl>
                       <ComboboxInput placeholder="Select result" />
@@ -358,9 +360,7 @@ export function QuickAddTradeCard() {
                   type="button"
                   variant="outline"
                   className="mt-2"
-                  onClick={() =>
-                    router.navigate({ to: '/dashboard/trade/new' })
-                  }
+                  onClick={() => router.push("/dashboard/trade/new")}
                 >
                   Open Full Trade Form
                 </Button>
@@ -370,7 +370,7 @@ export function QuickAddTradeCard() {
 
           <div className="flex items-center justify-end gap-2">
             <Button type="submit" disabled={isSubmitting || requiresFullForm}>
-              {isSubmitting ? 'Saving…' : 'Save trade'}
+              {isSubmitting ? "Saving…" : "Save trade"}
             </Button>
           </div>
         </form>
@@ -383,5 +383,5 @@ export function QuickAddTradeCard() {
         />
       ) : null}
     </Card>
-  )
+  );
 }

@@ -1,138 +1,36 @@
-# Vexis Log
-
-Vexis Log is a full-stack trading journal app to help traders log context, review execution quality, and measure performance over time.
-
-Built with TanStack Start + React, Prisma, and Tailwind CSS.
-
-## Repository
-
-- Repo: `https://github.com/mgalihpp/vexis-log`
-- Issues: `https://github.com/mgalihpp/vexis-log/issues`
-- Pull Requests: `https://github.com/mgalihpp/vexis-log/pulls`
-
-## Core Features
-
-- Trade journal flow with structured fields (setup, execution, psychology, review)
-- Dashboard analytics (win rate, performance metrics, equity insights)
-- Trade list filtering and grouped views
-- Authentication flow (login/signup + session-based access)
-- Landing pages and legal page for product presentation
-
-## Screenshots
-
-### Feature 1
-
-![Feature 1](public/features1.png)
-
-### Feature 2
-
-![Feature 2](public/features2.png)
-
-### Feature 3
-
-![Feature 3](public/features3.png)
-
-### Feature 4
-
-![Feature 4](public/features4.png)
-
-### Feature 5
-
-![Feature 5](public/features5.png)
-
-## Tech Stack
-
-- TanStack Start + TanStack Router
-- React 19 + TypeScript
-- Tailwind CSS 4 + custom UI components
-- Prisma + MongoDB
-- Vitest for testing
-- ESLint + Prettier + Husky + lint-staged
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-### 1) Install
-
-```bash
-npm install
-```
-
-### 2) Environment
-
-Create `.env` with your database connection string:
-
-```bash
-DATABASE_URL="your-mongodb-connection-string"
-JWT_SECRET="your-jwt-secret"
-```
-
-### 3) Generate Prisma client
-
-```bash
-npm run db:generate
-```
-
-### 4) Start dev server
+First, run the development server:
 
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-App runs at `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Scripts
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```bash
-npm run dev          # start development server
-npm run build        # production build
-npm run preview      # preview production build
-npm run test         # run tests
-npm run lint         # run eslint
-npm run format       # run prettier
-npm run check        # prettier + eslint fix
-npm run db:generate  # prisma generate
-npm run db:push      # push schema to database
-npm run db:studio    # prisma studio
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Project Structure
+## Learn More
 
-```text
-src/
-  components/
-    landing/         # landing page sections
-    ui/              # shared UI components
-  features/          # feature modules (dashboard, trade, settings)
-  routes/            # file-based route definitions
-  utils/             # shared utilities and server functions
-prisma/
-  schema.prisma      # database schema
-public/
-  features1-5.png    # README screenshots
-```
+To learn more about Next.js, take a look at the following resources:
 
-## Development Workflow
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-1. Create a feature branch from `master`
-2. Make focused commits
-3. Run checks locally (`npm run test`, `npm run build`)
-4. Open a PR and link relevant issue
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Issues and Pull Requests
+## Deploy on Vercel
 
-### Report an Issue
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-- Use Issues: `https://github.com/mgalihpp/vexis-log/issues`
-- Include reproduction steps, expected result, and actual result
-- Add screenshots or logs if relevant
-
-### Open a Pull Request
-
-- Open PR here: `https://github.com/mgalihpp/vexis-log/pulls`
-- Keep PR scoped to one logical change
-- Include summary, screenshots (if UI changes), and test notes
-
-## Notes
-
-- Some TypeScript errors may exist in unrelated older modules; keep new changes isolated and verified with build/tests.
-- Husky pre-commit hooks run lint/format on staged files.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

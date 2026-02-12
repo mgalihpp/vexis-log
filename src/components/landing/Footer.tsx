@@ -1,28 +1,28 @@
-import { Link } from '@tanstack/react-router'
-import { Logo } from '@/components/ui/logo'
+import Link from "next/link";
+import { Logo } from "@/components/ui/logo";
 
 export function Footer() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   const productLinks = [
-    { label: 'Features', to: '/#features-section' },
-    { label: 'Integrations', to: '/' },
-    { label: 'Pricing', to: '/' },
-    { label: 'Changelog', to: '/' },
-  ]
+    { label: "Features", to: "/#features-section" },
+    { label: "Integrations", to: "/" },
+    { label: "Pricing", to: "/" },
+    { label: "Changelog", to: "/" },
+  ];
 
   const resourceLinks = [
-    { label: 'Documentation', to: '/' },
-    { label: 'API Reference', to: '/' },
-    { label: 'Community', to: '/' },
-    { label: 'Blog', to: '/' },
-  ]
+    { label: "Documentation", to: "/" },
+    { label: "API Reference", to: "/" },
+    { label: "Community", to: "/" },
+    { label: "Blog", to: "/" },
+  ];
 
   const legalLinks = [
-    { label: 'Privacy Policy', to: '/legal#privacy-policy' },
-    { label: 'Terms of Service', to: '/legal#terms-of-service' },
-    { label: 'Cookie Policy', to: '/legal#cookie-policy' },
-  ]
+    { label: "Privacy Policy", to: "/legal#privacy-policy" },
+    { label: "Terms of Service", to: "/legal#terms-of-service" },
+    { label: "Cookie Policy", to: "/legal#cookie-policy" },
+  ];
 
   return (
     <footer className="relative z-10 border-t border-border/60 bg-background/95">
@@ -50,7 +50,7 @@ export function Footer() {
               {productLinks.map((item) => (
                 <li key={item.label}>
                   <Link
-                    to={item.to}
+                    href={item.to}
                     className="hover:text-primary transition-colors"
                   >
                     {item.label}
@@ -68,7 +68,7 @@ export function Footer() {
               {resourceLinks.map((item) => (
                 <li key={item.label}>
                   <Link
-                    to={item.to}
+                    href={item.to}
                     className="hover:text-primary transition-colors"
                   >
                     {item.label}
@@ -86,7 +86,7 @@ export function Footer() {
               {legalLinks.map((item) => (
                 <li key={item.label}>
                   <Link
-                    to={item.to}
+                    href={item.to}
                     className="hover:text-primary transition-colors"
                   >
                     {item.label}
@@ -104,5 +104,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

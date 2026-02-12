@@ -1,64 +1,65 @@
-import { createServerFn } from '@tanstack/react-start'
-import {
-  deleteCookie,
-  getCookie,
-  setCookie,
-} from '@tanstack/react-start/server'
-import { loginSchema, registerSchema } from '@/utils/schema/authSchema'
-import {
-  authenticateUser,
-  createUser,
-  generateToken,
-  getUserFromToken,
-} from '@/utils/auth.server'
+import type { LoginInput, RegisterInput } from "@/utils/schema/authSchema";
+import type { SafeUser } from "@/utils/auth.server";
 
-const COOKIE_NAME = 'auth_token'
+type ApiError = {
+  error?: string;
+};
 
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  path: '/',
-  maxAge: 60 * 60 * 24 * 7, // 7 days
-}
+async function readJson<T>(response: Response): Promise<T> {
+  const body = (await response.json().catch(() => null)) as T | ApiError | null;
 
-export const getAuthSession = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  const token = getCookie(COOKIE_NAME)
-
-  if (!token) {
-    return null
+  if (!response.ok) {
+    const message =
+      body && typeof body === "object" && "error" in body && body.error
+        ? body.error
+        : "Request failed";
+    throw new Error(message);
   }
 
-  return getUserFromToken(token)
-})
+  return body as T;
+}
 
-export const register = createServerFn({
-  method: 'POST',
-})
-  .inputValidator((data: unknown) => registerSchema.parse(data))
-  .handler(async ({ data }) => {
-    const user = await createUser(data)
-    const token = generateToken(user)
-    setCookie(COOKIE_NAME, token, COOKIE_OPTIONS)
-    return user
-  })
+export async function getAuthSession(): Promise<SafeUser | null> {
+  const response = await fetch("/api/auth/session", {
+    method: "GET",
+    credentials: "include",
+    cache: "no-store",
+  });
 
-export const login = createServerFn({
-  method: 'POST',
-})
-  .inputValidator((data: unknown) => loginSchema.parse(data))
-  .handler(async ({ data }) => {
-    const user = await authenticateUser(data)
-    const token = generateToken(user)
-    setCookie(COOKIE_NAME, token, COOKIE_OPTIONS)
-    return user
-  })
+  return readJson<SafeUser | null>(response);
+}
 
-export const logout = createServerFn({
-  method: 'POST',
-}).handler(() => {
-  deleteCookie(COOKIE_NAME, COOKIE_OPTIONS)
-  return { success: true }
-})
+export async function register({
+  data,
+}: {
+  data: RegisterInput;
+}): Promise<SafeUser> {
+  const response = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return readJson<SafeUser>(response);
+}
+
+export async function login({ data }: { data: LoginInput }): Promise<SafeUser> {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return readJson<SafeUser>(response);
+}
+
+export async function logout(): Promise<{ success: boolean }> {
+  const response = await fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  return readJson<{ success: boolean }>(response);
+}

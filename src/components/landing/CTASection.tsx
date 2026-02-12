@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 export function CTASection() {
   return (
@@ -28,7 +28,7 @@ export function CTASection() {
             {/* Headline */}
             <h2 className="text-4xl md:text-6xl font-black text-foreground mb-6 tracking-tight leading-[1.1]">
               Stop guessing. <br className="hidden md:block" />
-              Start{' '}
+              Start{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-chart-3">
                 journaling with intent
               </span>
@@ -44,7 +44,7 @@ export function CTASection() {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                to="/signup"
+                href="/signup"
                 className="group w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground text-lg font-semibold px-8 py-4 rounded-lg transition-all shadow-[0_0_30px_color-mix(in_oklab,var(--color-primary)_45%,transparent)] hover:shadow-[0_0_50px_color-mix(in_oklab,var(--color-primary)_65%,transparent)] hover:-translate-y-1 flex items-center justify-center gap-2"
               >
                 Start Journaling Free
@@ -54,7 +54,7 @@ export function CTASection() {
                 />
               </Link>
               <Link
-                to="/dashboard"
+                href="/dashboard"
                 className="w-full sm:w-auto px-8 py-4 rounded-lg text-muted-foreground font-medium hover:text-foreground hover:bg-accent transition-colors border border-transparent hover:border-border flex items-center justify-center"
               >
                 View Demo
@@ -69,5 +69,5 @@ export function CTASection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,4 +1,6 @@
-import React from 'react'
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Activity,
   AlertTriangle,
@@ -14,69 +16,68 @@ import {
   TrendingDown,
   TrendingUp,
   X,
-} from 'lucide-react'
-import { Link, useRouter } from '@tanstack/react-router'
-import { mapTradeToFormValues } from '../utils/trade-mapper'
-import { EditableSection } from './EditableSection'
-import { TradeStepInfo } from './steps/TradeStepInfo'
-import { TradeStepPlan } from './steps/TradeStepPlan'
-import { TradeStepExecution } from './steps/TradeStepExecution'
-import { TradeStepPsychology } from './steps/TradeStepPsychology'
-import { TradeStepReview } from './steps/TradeStepReview'
-import { TradeStepEvaluation } from './steps/TradeStepEvaluation'
-import { TradeDerivedFieldsSync } from './TradeDerivedFieldsSync'
-import type { TradeEntry } from '@/types/trade'
-import { Separator } from '@/components/ui/separator'
-import { Badge } from '@/components/ui/badge'
-import { updateTradeSchema } from '@/utils/schema/tradeSchema'
-import { updateTrade } from '@/utils/dashboard.functions'
+} from "lucide-react";
+import { mapTradeToFormValues } from "../utils/trade-mapper";
+import { EditableSection } from "./EditableSection";
+import { TradeStepInfo } from "./steps/TradeStepInfo";
+import { TradeStepPlan } from "./steps/TradeStepPlan";
+import { TradeStepExecution } from "./steps/TradeStepExecution";
+import { TradeStepPsychology } from "./steps/TradeStepPsychology";
+import { TradeStepReview } from "./steps/TradeStepReview";
+import { TradeStepEvaluation } from "./steps/TradeStepEvaluation";
+import { TradeDerivedFieldsSync } from "./TradeDerivedFieldsSync";
+import type { TradeEntry } from "@/types/trade";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import type { TradeFormValues } from "@/utils/schema/tradeSchema";
+import { updateTrade } from "@/utils/dashboard.functions";
 
 interface TradeDetailProps {
-  trade: TradeEntry
-  onClose: () => void
+  trade: TradeEntry;
+  onClose: () => void;
 }
 
 const resultConfig = {
   Win: {
     icon: TrendingUp,
-    label: 'WIN',
-    class: 'text-success bg-success/15 border-success/30',
+    label: "WIN",
+    class: "text-success bg-success/15 border-success/30",
   },
   Loss: {
     icon: TrendingDown,
-    label: 'LOSS',
-    class: 'text-destructive bg-destructive/15 border-destructive/30',
+    label: "LOSS",
+    class: "text-destructive bg-destructive/15 border-destructive/30",
   },
   Breakeven: {
     icon: Minus,
-    label: 'BREAKEVEN',
-    class: 'text-warning bg-warning/15 border-warning/30',
+    label: "BREAKEVEN",
+    class: "text-warning bg-warning/15 border-warning/30",
   },
   Partial: {
     icon: Activity,
-    label: 'PARTIAL',
-    class: 'text-info bg-info/15 border-info/30',
+    label: "PARTIAL",
+    class: "text-info bg-info/15 border-info/30",
   },
   Pending: {
     icon: Clock,
-    label: 'PENDING',
-    class: 'text-muted-foreground bg-muted/15 border-muted/30',
+    label: "PENDING",
+    class: "text-muted-foreground bg-muted/15 border-muted/30",
   },
-}
+};
 
 function SectionTitle({
   icon: Icon,
   title,
 }: {
-  icon: React.ElementType
-  title: string
+  icon: React.ElementType;
+  title: string;
 }) {
   return (
     <div className="section-header">
       <Icon className="h-4 w-4 text-primary" />
       <span>{title}</span>
     </div>
-  )
+  );
 }
 
 function Field({
@@ -84,30 +85,30 @@ function Field({
   value,
   mono,
 }: {
-  label: string
-  value: string | number | boolean | null | undefined
-  mono?: boolean
+  label: string;
+  value: string | number | boolean | null | undefined;
+  mono?: boolean;
 }) {
   const display =
-    typeof value === 'boolean'
+    typeof value === "boolean"
       ? value
-        ? 'Yes ✓'
-        : 'No ✗'
-      : String(value ?? '')
+        ? "Yes ✓"
+        : "No ✗"
+      : String(value ?? "");
   return (
     <div>
       <div className="text-xs text-muted-foreground mb-0.5">{label}</div>
-      <div className={`text-sm text-foreground ${mono ? 'font-mono' : ''}`}>
-        {display || '—'}
+      <div className={`text-sm text-foreground ${mono ? "font-mono" : ""}`}>
+        {display || "—"}
       </div>
     </div>
-  )
+  );
 }
 
 function RatingBar({ value, max = 10 }: { value: number; max?: number }) {
-  const pct = (value / max) * 100
+  const pct = (value / max) * 100;
   const color =
-    value >= 7 ? 'bg-success' : value >= 4 ? 'bg-warning' : 'bg-destructive'
+    value >= 7 ? "bg-success" : value >= 4 ? "bg-warning" : "bg-destructive";
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
@@ -120,38 +121,38 @@ function RatingBar({ value, max = 10 }: { value: number; max?: number }) {
         {value}/{max}
       </span>
     </div>
-  )
+  );
 }
 
 export function TradeDetail({ trade, onClose }: TradeDetailProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   // Normalize outcome to match config keys
-  let outcome = trade.outcome ?? 'Pending'
+  let outcome = trade.outcome ?? "Pending";
 
   // Handle legacy/alternate values
-  if (outcome === 'BE') outcome = 'Breakeven'
+  if (outcome === "BE") outcome = "Breakeven";
 
   // Fallback if the outcome string isn't in our config (e.g. invalid data)
   if (!(outcome in resultConfig)) {
-    outcome = 'Pending'
+    outcome = "Pending";
   }
 
-  const outcomeKey = outcome as keyof typeof resultConfig
-  const cfg = resultConfig[outcomeKey]
-  const ResultIcon = cfg.icon
+  const outcomeKey = outcome as keyof typeof resultConfig;
+  const cfg = resultConfig[outcomeKey];
+  const ResultIcon = cfg.icon;
 
   const profitLossPercent =
     trade.riskPercent && trade.actualRR
       ? Number((trade.actualRR * trade.riskPercent).toFixed(2))
-      : (trade.profitLoss ?? 0)
+      : (trade.profitLoss ?? 0);
 
-  const defaultValues = mapTradeToFormValues(trade)
+  const defaultValues = mapTradeToFormValues(trade);
 
-  const handleSave = async (data: any) => {
-    await updateTrade({ data: { id: trade.id, data } })
-    await router.invalidate({ sync: true })
-  }
+  const handleSave = async (data: TradeFormValues) => {
+    await updateTrade({ data: { id: trade.id, data } });
+    router.refresh();
+  };
 
   return (
     <div className="glass-card p-6 animate-fade-in h-full overflow-y-auto">
@@ -171,8 +172,8 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
               <span>
                 {trade.date instanceof Date
                   ? trade.date.toLocaleDateString()
-                  : String(trade.date)}{' '}
-                {trade.time ?? ''}
+                  : String(trade.date)}{" "}
+                {trade.time ?? ""}
               </span>
               <span>·</span>
               <span>{trade.session}</span>
@@ -180,10 +181,7 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Link
-            to="/dashboard/trade/$tradeId/edit"
-            params={{ tradeId: trade.id }}
-          >
+          <Link href={`/dashboard/trade/${trade.id}/edit`}>
             <button
               type="button"
               className="p-2 rounded-lg hover:bg-secondary transition-colors"
@@ -210,12 +208,12 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
             {cfg.label}
           </Badge>
           <span className="text-sm">
-            Actual RR:{' '}
+            Actual RR:{" "}
             <span className="font-mono font-bold">{trade.actualRR}R</span>
           </span>
         </div>
         <div className="font-mono text-2xl font-bold">
-          {profitLossPercent > 0 ? '+' : ''}
+          {profitLossPercent > 0 ? "+" : ""}
           {profitLossPercent}%
         </div>
       </div>
@@ -226,7 +224,6 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           title="Trade Info & Setup"
           icon={FileText}
           defaultValues={defaultValues}
-          schema={updateTradeSchema}
           onSave={handleSave}
           renderEdit={(form) => (
             <>
@@ -272,7 +269,6 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           title="Analysis & Plan"
           icon={Target}
           defaultValues={defaultValues}
-          schema={updateTradeSchema}
           onSave={handleSave}
           renderEdit={(form) => (
             <>
@@ -325,11 +321,10 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           title="Execution & Outcome"
           icon={Activity}
           defaultValues={defaultValues}
-          schema={updateTradeSchema}
           onSave={handleSave}
           renderEdit={(form) => {
-            const result = form.watch('result')
-            const isPending = result === 'Pending'
+            const result = form.watch("result");
+            const isPending = result === "Pending";
             return (
               <>
                 <TradeDerivedFieldsSync form={form} />
@@ -339,7 +334,7 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
                   showRequiredIndicators={false}
                 />
               </>
-            )
+            );
           }}
           renderView={() => (
             <>
@@ -380,7 +375,6 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           title="Trading Psychology"
           icon={Brain}
           defaultValues={defaultValues}
-          schema={updateTradeSchema}
           onSave={handleSave}
           renderEdit={(form) => (
             <>
@@ -426,7 +420,6 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           title="Post-Trade Review"
           icon={Lightbulb}
           defaultValues={defaultValues}
-          schema={updateTradeSchema}
           onSave={handleSave}
           renderEdit={(form) => (
             <>
@@ -460,7 +453,6 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
           title="Improvement & Evaluation"
           icon={AlertTriangle}
           defaultValues={defaultValues}
-          schema={updateTradeSchema}
           onSave={handleSave}
           renderEdit={(form) => (
             <>
@@ -502,5 +494,5 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
         />
       </div>
     </div>
-  )
+  );
 }

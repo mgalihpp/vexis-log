@@ -1,52 +1,69 @@
-import { createServerFn } from '@tanstack/react-start'
-import { getCookie } from '@tanstack/react-start/server'
-import { getUserFromToken } from '@/utils/auth.server'
-import {
-  changePasswordSchema,
-  updatePreferencesSchema,
-  updateProfileSchema,
-} from '@/utils/schema/settingsSchema'
-import {
-  changeUserPassword,
-  updateUserPreferences,
-  updateUserProfile,
-} from '@/utils/settings.server'
+import type {
+  ChangePasswordInput,
+  UpdatePreferencesInput,
+  UpdateProfileInput,
+} from "@/utils/schema/settingsSchema";
+import type { SafeUser } from "@/utils/auth.server";
 
-const COOKIE_NAME = 'auth_token'
+type ApiError = {
+  error?: string;
+};
 
-async function requireAuth(): Promise<string> {
-  const token = getCookie(COOKIE_NAME)
+async function readJson<T>(response: Response): Promise<T> {
+  const body = (await response.json().catch(() => null)) as T | ApiError | null;
 
-  if (!token) {
-    throw new Error('Not authenticated')
+  if (!response.ok) {
+    const message =
+      body && typeof body === "object" && "error" in body && body.error
+        ? body.error
+        : "Request failed";
+    throw new Error(message);
   }
 
-  const user = await getUserFromToken(token)
-
-  if (!user) {
-    throw new Error('Invalid session')
-  }
-
-  return user.id
+  return body as T;
 }
 
-export const updateProfile = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => updateProfileSchema.parse(data))
-  .handler(async ({ data }) => {
-    const userId = await requireAuth()
-    return updateUserProfile(userId, data)
-  })
+export async function updateProfile({
+  data,
+}: {
+  data: UpdateProfileInput;
+}): Promise<SafeUser> {
+  const response = await fetch("/api/settings/profile", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
 
-export const changePassword = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => changePasswordSchema.parse(data))
-  .handler(async ({ data }) => {
-    const userId = await requireAuth()
-    return changeUserPassword(userId, data)
-  })
+  return readJson<SafeUser>(response);
+}
 
-export const updatePreferences = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => updatePreferencesSchema.parse(data))
-  .handler(async ({ data }) => {
-    const userId = await requireAuth()
-    return updateUserPreferences(userId, data)
-  })
+export async function changePassword({
+  data,
+}: {
+  data: ChangePasswordInput;
+}): Promise<{ success: boolean }> {
+  const response = await fetch("/api/settings/password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return readJson<{ success: boolean }>(response);
+}
+
+export async function updatePreferences({
+  data,
+}: {
+  data: UpdatePreferencesInput;
+}): Promise<SafeUser> {
+  const response = await fetch("/api/settings/preferences", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  return readJson<SafeUser>(response);
+}

@@ -1,14 +1,14 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const tradeSchema = z.object({
-  date: z.string().min(1, 'Please enter a date.'),
+  date: z.string().min(1, "Please enter a date."),
   time: z.string().optional(),
-  market: z.string().min(1, 'Please select a market.'),
-  pair: z.string().min(1, 'Please enter a pair/asset.'),
+  market: z.string().min(1, "Please select a market."),
+  pair: z.string().min(1, "Please enter a pair/asset."),
   timeframe: z.string().optional(),
   session: z.string().optional(),
   tradeType: z.string().optional(),
-  direction: z.string().min(1, 'Please select a direction.'),
+  direction: z.string().min(1, "Please select a direction."),
   marketCondition: z.string().optional(),
   marketBias: z.string().optional(),
   strategy: z.string().optional(),
@@ -34,7 +34,7 @@ export const tradeSchema = z.object({
   exitPrice: z.string().optional(),
   fee: z.string().optional(),
   profitLoss: z.string().optional(),
-  result: z.string().optional().default('Pending'),
+  result: z.string().optional().default("Pending"),
   actualRR: z.string().optional(),
   whatWentRight: z.string().optional(),
   mistakes: z.string().optional(),
@@ -46,32 +46,32 @@ export const tradeSchema = z.object({
   improvement: z.string().optional(),
   rulesToTighten: z.string().optional(),
   actionPlan: z.string().optional(),
-})
+});
 
 export const quickAddTradeSchema = tradeSchema.partial().extend({
-  date: z.string().min(1, 'Please enter a date.'),
-  time: z.string().min(1, 'Please enter a time.'),
-  market: z.string().min(1, 'Please select a market.'),
-  pair: z.string().min(1, 'Please enter a pair/asset.'),
+  date: z.string().min(1, "Please enter a date."),
+  time: z.string().min(1, "Please enter a time."),
+  market: z.string().min(1, "Please select a market."),
+  pair: z.string().min(1, "Please enter a pair/asset."),
   timeframe: z.string().optional(),
   tradeType: z.string().optional(),
-  direction: z.string().min(1, 'Please select a direction.'),
+  direction: z.string().min(1, "Please select a direction."),
   result: z.string().optional(),
   confidence: z.number().optional(),
   discipline: z.number().optional(),
-})
+});
 
 export const updateTradeSchema = z
   .object({})
   .passthrough()
   .refine((data) => Object.keys(data).length > 0, {
-    message: 'At least one field must be provided for update.',
+    message: "At least one field must be provided for update.",
   })
-  .pipe(tradeSchema.partial())
+  .pipe(tradeSchema.partial());
 
-export type TradeFormInput = z.infer<typeof tradeSchema>
-export type TradeFormValues = z.infer<typeof tradeSchema>
-export type QuickAddTradeFormInput = z.infer<typeof quickAddTradeSchema>
-export type QuickAddTradeFormValues = z.infer<typeof quickAddTradeSchema>
-export type UpdateTradeFormInput = Partial<z.infer<typeof tradeSchema>>
-export type UpdateTradeFormValues = z.infer<typeof updateTradeSchema>
+export type TradeFormInput = z.input<typeof tradeSchema>;
+export type TradeFormValues = z.output<typeof tradeSchema>;
+export type QuickAddTradeFormInput = z.input<typeof quickAddTradeSchema>;
+export type QuickAddTradeFormValues = z.output<typeof quickAddTradeSchema>;
+export type UpdateTradeFormInput = Partial<z.input<typeof tradeSchema>>;
+export type UpdateTradeFormValues = z.output<typeof updateTradeSchema>;

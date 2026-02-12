@@ -1,13 +1,16 @@
-import { Link, useLocation } from '@tanstack/react-router'
-import { LogOut } from 'lucide-react'
-import { SIDEBAR_LINKS } from '../constants/nav'
-import { cn } from '@/lib/utils'
-import { Logo } from '@/components/ui/logo'
-import { useAuth } from '@/hooks/useAuth'
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { LogOut } from "lucide-react";
+import { SIDEBAR_LINKS } from "../constants/nav";
+import { cn } from "@/lib/utils";
+import { Logo } from "@/components/ui/logo";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Sidebar() {
-  const location = useLocation()
-  const { logout, isLogoutPending } = useAuth()
+  const pathname = usePathname();
+  const { logout, isLogoutPending } = useAuth();
 
   return (
     <div className="hidden md:flex flex-col w-64 min-h-screen bg-card border-r border-border sticky top-0 h-screen">
@@ -30,31 +33,31 @@ export function Sidebar() {
           MENU
         </p>
         {SIDEBAR_LINKS.map((link) => {
-          const Icon = link.icon
-          const isActive = location.pathname === link.href
+          const Icon = link.icon;
+          const isActive = pathname === link.href;
 
           return (
             <Link
               key={link.href}
-              to={link.href}
+              href={link.href}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group font-medium text-sm',
+                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group font-medium text-sm",
                 isActive
-                  ? 'bg-primary/10 text-primary shadow-sm'
-                  : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground',
+                  ? "bg-primary/10 text-primary shadow-sm"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
               )}
             >
               <Icon
                 className={cn(
-                  'w-5 h-5 transition-colors',
+                  "w-5 h-5 transition-colors",
                   isActive
-                    ? 'text-primary'
-                    : 'text-muted-foreground group-hover:text-foreground',
+                    ? "text-primary"
+                    : "text-muted-foreground group-hover:text-foreground",
                 )}
               />
               {link.label}
             </Link>
-          )
+          );
         })}
       </nav>
 
@@ -65,9 +68,9 @@ export function Sidebar() {
           className="flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <LogOut className="w-5 h-5" />
-          {isLogoutPending ? 'Signing out...' : 'Sign Out'}
+          {isLogoutPending ? "Signing out..." : "Sign Out"}
         </button>
       </div>
     </div>
-  )
+  );
 }

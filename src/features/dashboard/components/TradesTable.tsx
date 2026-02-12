@@ -1,10 +1,10 @@
-import { Edit, Filter, MoreHorizontal, Search, Trash2 } from 'lucide-react'
-import { format } from 'date-fns'
-import { Link } from '@tanstack/react-router'
-import { useState } from 'react'
-import { DeleteTradeDialog } from './dialog/DeleteTradeDialog'
-import type { DashboardTrade } from '@/features/dashboard/types'
-import { Button } from '@/components/ui/button'
+import { Edit, Filter, MoreHorizontal, Search, Trash2 } from "lucide-react";
+import { format } from "date-fns";
+import Link from "next/link";
+import { useState } from "react";
+import { DeleteTradeDialog } from "./dialog/DeleteTradeDialog";
+import type { DashboardTrade } from "@/features/dashboard/types";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,26 +20,26 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 type TradesTableProps = {
-  trades: Array<DashboardTrade>
-  search: string
-  filterMarket: string
-  onSearchChange: (value: string) => void
-  onFilterMarketChange: (value: string) => void
-  title?: string
-}
+  trades: Array<DashboardTrade>;
+  search: string;
+  filterMarket: string;
+  onSearchChange: (value: string) => void;
+  onFilterMarketChange: (value: string) => void;
+  title?: string;
+};
 
 export function TradesTable({
   trades,
@@ -47,20 +47,20 @@ export function TradesTable({
   filterMarket,
   onSearchChange,
   onFilterMarketChange,
-  title = 'Recent Trades',
+  title = "Recent Trades",
 }: TradesTableProps) {
-  const [open, setOpen] = useState(false)
-  const [selectedTradeId, setSelectedTradeId] = useState<string | null>(null)
+  const [open, setOpen] = useState(false);
+  const [selectedTradeId, setSelectedTradeId] = useState<string | null>(null);
 
   const handleOpen = (tradeId: string) => {
-    setSelectedTradeId(tradeId)
-    setOpen(true)
-  }
+    setSelectedTradeId(tradeId);
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setSelectedTradeId(null)
-    setOpen(false)
-  }
+    setSelectedTradeId(null);
+    setOpen(false);
+  };
 
   return (
     <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden">
@@ -130,7 +130,7 @@ export function TradesTable({
                   className="group hover:bg-muted/30 transition-colors"
                 >
                   <TableCell className="font-mono text-xs text-muted-foreground">
-                    {format(new Date(trade.date), 'yyyy-MM-dd')}
+                    {format(new Date(trade.date), "yyyy-MM-dd")}
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
@@ -151,20 +151,20 @@ export function TradesTable({
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm">
-                    {trade.setup || '-'}
+                    {trade.setup || "-"}
                   </TableCell>
                   <TableCell>
                     {trade.result && (
                       <Badge
                         variant="secondary"
                         className={cn(
-                          'font-bold text-xs uppercase tracking-wide',
-                          trade.result === 'Win' &&
-                            'bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25',
-                          trade.result === 'Loss' &&
-                            'bg-rose-500/15 text-rose-500 hover:bg-rose-500/25',
-                          trade.result === 'Break Even' &&
-                            'bg-slate-500/15 text-slate-500 hover:bg-slate-500/25',
+                          "font-bold text-xs uppercase tracking-wide",
+                          trade.result === "Win" &&
+                            "bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25",
+                          trade.result === "Loss" &&
+                            "bg-rose-500/15 text-rose-500 hover:bg-rose-500/25",
+                          trade.result === "Break Even" &&
+                            "bg-slate-500/15 text-slate-500 hover:bg-slate-500/25",
                         )}
                       >
                         {trade.result}
@@ -176,11 +176,11 @@ export function TradesTable({
                       <span
                         className={
                           Number(trade.profitLoss) >= 0
-                            ? 'text-emerald-500'
-                            : 'text-rose-500'
+                            ? "text-emerald-500"
+                            : "text-rose-500"
                         }
                       >
-                        {Number(trade.profitLoss) >= 0 ? '+' : ''}
+                        {Number(trade.profitLoss) >= 0 ? "+" : ""}
                         {Number(trade.profitLoss).toFixed(2)}
                       </span>
                     ) : (
@@ -202,10 +202,7 @@ export function TradesTable({
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                          <Link
-                            to="/dashboard/trade/$tradeId/edit"
-                            params={{ tradeId: trade.id }}
-                          >
+                          <Link href={`/dashboard/trade/${trade.id}/edit`}>
                             <Edit className="w-4 h-4 mr-2" /> Edit
                           </Link>
                         </DropdownMenuItem>
@@ -213,7 +210,7 @@ export function TradesTable({
                           onClick={() => handleOpen(trade.id)}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Trash2 className="w-4 h-4 mr-2 text-destructive" />{' '}
+                          <Trash2 className="w-4 h-4 mr-2 text-destructive" />{" "}
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -232,5 +229,5 @@ export function TradesTable({
         onClose={handleClose}
       />
     </div>
-  )
+  );
 }
