@@ -155,6 +155,7 @@ function BreakdownBarChart({
         <XAxis
           dataKey="name"
           tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }}
+          interval={0}
         />
         <YAxis tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }} />
         <ChartTooltip content={<ChartTooltipContent />} />
@@ -184,6 +185,7 @@ function WinrateBarChart({ data }: { data: Array<BreakdownItem> }) {
         <XAxis
           dataKey="name"
           tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }}
+          interval={0}
         />
         <YAxis
           tick={{ fill: 'hsl(215, 15%, 52%)', fontSize: 12 }}

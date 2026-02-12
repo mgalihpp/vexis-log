@@ -260,7 +260,7 @@ export const getEmotionBreakdown = (trades: Array<TradeEntry>) => {
 }
 
 export const getEquityCurve = (trades: Array<TradeEntry>) => {
-  let equity = 0
+  if (trades.length === 0) return []
 
   // Sort trades by date
   const sortedTrades = [...trades].sort((a, b) => {
@@ -271,13 +271,30 @@ export const getEquityCurve = (trades: Array<TradeEntry>) => {
     return dateA - dateB
   })
 
-  return sortedTrades.map((trade) => {
-    equity += trade.profitLoss || 0
+  // Aggregate P&L by date
+  const dailyMap = new Map<string, { dateLabel: string; pnl: number }>()
+
+  for (const trade of sortedTrades) {
+    const dateObj =
+      typeof trade.date === 'string' ? parseISO(trade.date) : trade.date
+    const dateKey = format(dateObj, 'yyyy-MM-dd')
+    const dateLabel = format(dateObj, 'dd MMM')
+    const pnl = trade.profitLoss || 0
+
+    const current = dailyMap.get(dateKey)
+    if (current) {
+      current.pnl += pnl
+    } else {
+      dailyMap.set(dateKey, { dateLabel, pnl })
+    }
+  }
+
+  // Build cumulative equity curve
+  let equity = 0
+  return Array.from(dailyMap.values()).map(({ dateLabel, pnl }) => {
+    equity += pnl
     return {
-      date: format(
-        typeof trade.date === 'string' ? parseISO(trade.date) : trade.date,
-        'dd MMM',
-      ),
+      date: dateLabel,
       equity: Number(equity.toFixed(2)),
     }
   })
