@@ -11,9 +11,13 @@ type WinRateMeterProps = {
 }
 
 const chartConfig = {
-  winRate: {
-    label: 'Win Rate',
-    color: 'oklch(0.72 0.19 277)',
+  win: {
+    label: 'Win',
+    color: 'hsl(142, 72%, 42%)',
+  },
+  loss: {
+    label: 'Loss',
+    color: 'hsl(0, 72%, 51%)',
   },
 } satisfies ChartConfig
 
@@ -74,9 +78,6 @@ export function WinRateMeter({ winRate, totalTrades }: WinRateMeterProps) {
     { value: 100 - winRate }, // Empty
   ]
 
-  // Background track (full semicircle)
-  const backgroundData = [{ value: 100 }]
-
   return (
     <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col h-full">
       <h3 className="text-lg font-bold font-display mb-6">Win Rate</h3>
@@ -89,21 +90,6 @@ export function WinRateMeter({ winRate, totalTrades }: WinRateMeterProps) {
                 className="w-full aspect-[5/3]"
               >
                 <PieChart>
-                  {/* Background track */}
-                  <Pie
-                    data={backgroundData}
-                    cx="50%"
-                    cy="100%"
-                    startAngle={180}
-                    endAngle={0}
-                    innerRadius="75%"
-                    outerRadius="100%"
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    <Cell fill="hsl(var(--muted))" />
-                  </Pie>
-
                   {/* Value arc */}
                   <Pie
                     data={gaugeData}
@@ -117,8 +103,8 @@ export function WinRateMeter({ winRate, totalTrades }: WinRateMeterProps) {
                     stroke="none"
                     cornerRadius={5}
                   >
-                    <Cell fill="var(--color-winRate)" />
-                    <Cell fill="transparent" />
+                    <Cell fill="var(--color-win)" />
+                    <Cell fill="var(--color-loss)" />
                   </Pie>
 
                   {/* Needle */}
