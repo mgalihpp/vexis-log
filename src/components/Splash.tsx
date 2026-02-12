@@ -49,7 +49,7 @@ export function Splash({ zoomIn = true, isExiting = false }: Props) {
               transitionDelay: isExiting ? "60ms" : "0ms",
             }}
           >
-            <div className="absolute top-0 bottom-0 -left-[45%] w-[190%] animate-[logo-shimmer-sweep_1.35s_cubic-bezier(0.4,0,0.2,1)_infinite]">
+            <div className="absolute top-0 bottom-0 -left-[45%] w-[190%] animate-[logo-shimmer-sweep_2.4s_cubic-bezier(0.4,0,0.2,1)_infinite]">
               <div className="w-full h-full bg-gradient-to-r from-transparent via-white/28 to-transparent -skew-x-12" />
             </div>
           </div>
