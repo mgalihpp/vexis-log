@@ -9,9 +9,9 @@ type Params = {
 
 export async function GET(_: Request, { params }: Params) {
   try {
-    await requireServerAuth();
+    const user = await requireServerAuth();
     const { id } = await params;
-    const trade = await getTradeById(id);
+    const trade = await getTradeById(id, user.id);
     return NextResponse.json(trade);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Trade not found";
@@ -22,10 +22,10 @@ export async function GET(_: Request, { params }: Params) {
 
 export async function PATCH(request: Request, { params }: Params) {
   try {
-    await requireServerAuth();
+    const user = await requireServerAuth();
     const { id } = await params;
     const payload = await request.json();
-    const trade = await updateTradeRecord(id, payload);
+    const trade = await updateTradeRecord(id, user.id, payload);
     return NextResponse.json(trade);
   } catch (error) {
     const message =
@@ -36,9 +36,9 @@ export async function PATCH(request: Request, { params }: Params) {
 
 export async function DELETE(_: Request, { params }: Params) {
   try {
-    await requireServerAuth();
+    const user = await requireServerAuth();
     const { id } = await params;
-    const trade = await deleteTradeById(id);
+    const trade = await deleteTradeById(id, user.id);
     return NextResponse.json(trade);
   } catch (error) {
     const message =

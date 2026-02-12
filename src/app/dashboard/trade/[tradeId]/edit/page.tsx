@@ -1,14 +1,21 @@
+import { redirect } from "next/navigation";
 import TradeForm from "@/features/trade/components/TradeForm";
 import { getTradeById } from "@/utils/dashboard.server";
 import { mapTradeToFormValues } from "@/features/trade/utils/trade-mapper";
+import { getServerAuthSession } from "@/lib/auth-session";
 
 type Params = {
   params: Promise<{ tradeId: string }>;
 };
 
 export default async function DashboardTradeEditPage({ params }: Params) {
+  const user = await getServerAuthSession();
+  if (!user) {
+    redirect("/login");
+  }
+
   const { tradeId } = await params;
-  const trade = await getTradeById(tradeId);
+  const trade = await getTradeById(tradeId, user.id);
   const initialValues = mapTradeToFormValues(trade);
 
   return (

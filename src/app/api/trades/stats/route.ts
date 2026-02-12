@@ -4,8 +4,8 @@ import { requireServerAuth } from "@/lib/auth-session";
 
 export async function GET() {
   try {
-    await requireServerAuth();
-    const stats = await getTradeStats();
+    const user = await requireServerAuth();
+    const stats = await getTradeStats(user.id);
     return NextResponse.json(stats);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unauthorized";

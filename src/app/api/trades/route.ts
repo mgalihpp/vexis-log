@@ -5,8 +5,8 @@ import { requireServerAuth } from "@/lib/auth-session";
 
 export async function GET() {
   try {
-    await requireServerAuth();
-    const trades = await getAllTrades();
+    const user = await requireServerAuth();
+    const trades = await getAllTrades(user.id);
     return NextResponse.json(trades);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unauthorized";
@@ -16,9 +16,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    await requireServerAuth();
+    const user = await requireServerAuth();
     const payload = await request.json();
-    const trade = await createTradeRecord(payload);
+    const trade = await createTradeRecord(user.id, payload);
     return NextResponse.json(trade);
   } catch (error) {
     const message =

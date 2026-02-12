@@ -1,69 +1,81 @@
-import type { PeriodTrend, TrendValue } from '@/features/trade/types'
-import { prisma } from '@/lib/db'
+import type { PeriodTrend, TrendValue } from "@/features/trade/types";
+import { prisma } from "@/lib/db";
 
-const DAY_MS = 24 * 60 * 60 * 1000
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-export async function getAllTrades() {
-  return prisma.trade.findMany()
+export async function getAllTrades(userId: string) {
+  return prisma.trade.findMany({
+    where: {
+      userId,
+    },
+  });
 }
 
-export async function getTradeById(id: string) {
-  const trade = await prisma.trade.findUnique({
+export async function getTradeById(id: string, userId: string) {
+  const trade = await prisma.trade.findFirst({
     where: {
       id,
+      userId,
     },
-  })
+  });
 
   if (!trade) {
-    throw new Error('Trade not found')
+    throw new Error("Trade not found");
   }
 
-  return trade
+  return trade;
 }
 
-export async function deleteTradeById(id: string) {
-  const trade = await prisma.trade.findUnique({
+export async function deleteTradeById(id: string, userId: string) {
+  const trade = await prisma.trade.findFirst({
     where: {
       id,
+      userId,
     },
-  })
+  });
 
   if (!trade) {
-    throw new Error('Trade not found')
+    throw new Error("Trade not found");
   }
 
   const deletedTrade = await prisma.trade.delete({
     where: {
       id,
     },
-  })
+  });
 
-  return deletedTrade
+  return deletedTrade;
 }
 
 function calculateTrend(current: number, previous: number): TrendValue {
   if (previous === 0) {
     if (current === 0) {
-      return { value: 0, direction: 'neutral' }
+      return { value: 0, direction: "neutral" };
     }
 
-    return { value: 100, direction: 'up' }
+    return { value: 100, direction: "up" };
   }
 
-  const deltaPercent = ((current - previous) / Math.abs(previous)) * 100
+  const deltaPercent = ((current - previous) / Math.abs(previous)) * 100;
 
   if (deltaPercent === 0) {
-    return { value: 0, direction: 'neutral' }
+    return { value: 0, direction: "neutral" };
   }
 
   return {
     value: deltaPercent,
-    direction: deltaPercent > 0 ? 'up' : 'down',
-  }
+    direction: deltaPercent > 0 ? "up" : "down",
+  };
 }
 
-async function buildStats(where?: { date?: { gte: Date; lt: Date } }) {
-  const baseWhere = where ?? {}
+async function buildStats(
+  userId: string,
+  where?: { date?: { gte: Date; lt: Date } },
+) {
+  const baseWhere = {
+    userId,
+    ...(where ?? {}),
+  };
 
   const [
     totalTrades,
@@ -118,34 +130,34 @@ async function buildStats(where?: { date?: { gte: Date; lt: Date } }) {
         },
       },
     }),
-  ])
+  ]);
 
-  const netPnLValue = netPnL._sum.profitLoss ?? 0
-  const grossProfitValue = grossProfit._sum.profitLoss ?? 0
-  const grossLossValue = Math.abs(grossLoss._sum.profitLoss ?? 0)
-  const resolvedTrades = winningTrades + losingTrades
+  const netPnLValue = netPnL._sum.profitLoss ?? 0;
+  const grossProfitValue = grossProfit._sum.profitLoss ?? 0;
+  const grossLossValue = Math.abs(grossLoss._sum.profitLoss ?? 0);
+  const resolvedTrades = winningTrades + losingTrades;
   const winRate =
-    resolvedTrades === 0 ? 0 : (winningTrades / resolvedTrades) * 100
+    resolvedTrades === 0 ? 0 : (winningTrades / resolvedTrades) * 100;
   const profitFactor =
-    grossLossValue === 0 ? 0 : grossProfitValue / grossLossValue
+    grossLossValue === 0 ? 0 : grossProfitValue / grossLossValue;
 
   return {
     winRate,
     totalTrades,
     profitFactor,
     netPnL: netPnLValue,
-  }
+  };
 }
 
-export async function getTradeStats() {
-  const now = new Date()
-  const dayStart = new Date(now.getTime() - DAY_MS)
-  const weekStart = new Date(now.getTime() - DAY_MS * 7)
-  const monthStart = new Date(now.getTime() - DAY_MS * 30)
+export async function getTradeStats(userId: string) {
+  const now = new Date();
+  const dayStart = new Date(now.getTime() - DAY_MS);
+  const weekStart = new Date(now.getTime() - DAY_MS * 7);
+  const monthStart = new Date(now.getTime() - DAY_MS * 30);
 
-  const previousDayStart = new Date(dayStart.getTime() - DAY_MS)
-  const previousWeekStart = new Date(weekStart.getTime() - DAY_MS * 7)
-  const previousMonthStart = new Date(monthStart.getTime() - DAY_MS * 30)
+  const previousDayStart = new Date(dayStart.getTime() - DAY_MS);
+  const previousWeekStart = new Date(weekStart.getTime() - DAY_MS * 7);
+  const previousMonthStart = new Date(monthStart.getTime() - DAY_MS * 30);
 
   const [
     overall,
@@ -157,13 +169,13 @@ export async function getTradeStats() {
     monthPrevious,
     extremes,
   ] = await Promise.all([
-    buildStats(),
-    buildStats({ date: { gte: dayStart, lt: now } }),
-    buildStats({ date: { gte: previousDayStart, lt: dayStart } }),
-    buildStats({ date: { gte: weekStart, lt: now } }),
-    buildStats({ date: { gte: previousWeekStart, lt: weekStart } }),
-    buildStats({ date: { gte: monthStart, lt: now } }),
-    buildStats({ date: { gte: previousMonthStart, lt: monthStart } }),
+    buildStats(userId),
+    buildStats(userId, { date: { gte: dayStart, lt: now } }),
+    buildStats(userId, { date: { gte: previousDayStart, lt: dayStart } }),
+    buildStats(userId, { date: { gte: weekStart, lt: now } }),
+    buildStats(userId, { date: { gte: previousWeekStart, lt: weekStart } }),
+    buildStats(userId, { date: { gte: monthStart, lt: now } }),
+    buildStats(userId, { date: { gte: previousMonthStart, lt: monthStart } }),
     prisma.trade.aggregate({
       _max: {
         profitLoss: true,
@@ -171,10 +183,13 @@ export async function getTradeStats() {
       _min: {
         profitLoss: true,
       },
+      where: {
+        userId,
+      },
     }),
-  ])
+  ]);
 
-  const trends: Record<'day' | 'week' | 'month', PeriodTrend> = {
+  const trends: Record<"day" | "week" | "month", PeriodTrend> = {
     day: {
       winRate: calculateTrend(dayCurrent.winRate, dayPrevious.winRate),
       totalTrades: calculateTrend(
@@ -211,12 +226,12 @@ export async function getTradeStats() {
       ),
       netPnL: calculateTrend(monthCurrent.netPnL, monthPrevious.netPnL),
     },
-  }
+  };
 
   return {
     ...overall,
     bestWinTrade: Math.max(0, extremes._max.profitLoss ?? 0),
     worstLossTrade: Math.min(0, extremes._min.profitLoss ?? 0),
     trends,
-  }
+  };
 }

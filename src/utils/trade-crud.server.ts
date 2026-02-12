@@ -288,12 +288,13 @@ const chunkTradeUpdateData = (
   return chunks;
 };
 
-export async function createTradeRecord(data: unknown) {
+export async function createTradeRecord(userId: string, data: unknown) {
   const validData = tradeSchema.or(quickAddTradeSchema).parse(data);
   const mapped = mapTradeInputToData(validData);
 
   return prisma.trade.create({
     data: {
+      userId,
       ...mapped,
       date: mapped.date ?? new Date(),
       market: withFallback(mapped.market, "Forex"),
@@ -304,7 +305,25 @@ export async function createTradeRecord(data: unknown) {
   });
 }
 
-export async function updateTradeRecord(id: string, data: unknown) {
+export async function updateTradeRecord(
+  id: string,
+  userId: string,
+  data: unknown,
+) {
+  const existingTrade = await prisma.trade.findFirst({
+    where: {
+      id,
+      userId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!existingTrade) {
+    throw new Error("Trade not found");
+  }
+
   const validData = updateTradeSchema.parse(data);
   const mapped = mapTradeInputToData(validData);
 
