@@ -42,7 +42,7 @@ export function PerformanceCard({
   const chartData = performanceData.filter((d) => d.value > 0)
 
   return (
-    <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col">
+    <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col lg:col-span-2">
       <h3 className="text-lg font-bold font-display mb-4">Performance</h3>
       <div className="flex-1 flex flex-col items-center justify-center">
         {performanceTotal > 0 ? (

@@ -79,7 +79,7 @@ export function WinRateMeter({ winRate, totalTrades }: WinRateMeterProps) {
   ]
 
   return (
-    <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col h-full">
+    <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col h-full lg:col-span-2">
       <h3 className="text-lg font-bold font-display mb-6">Win Rate</h3>
       <div className="flex-1 flex flex-col items-center justify-center">
         {totalTrades > 0 ? (
@@ -118,18 +118,17 @@ export function WinRateMeter({ winRate, totalTrades }: WinRateMeterProps) {
             </div>
 
             {/* Value display */}
-            <div className="text-center -mt-4">
-              <span className="text-3xl font-bold font-display">
+            <div className="mt-2 text-center space-y-1">
+              <span className="block text-3xl font-bold font-display leading-none">
                 {winRate.toFixed(0)}%
               </span>
-              <br />
-              <span className="text-sm text-muted-foreground">
-                {totalTrades} trades
+              <span className="block text-sm text-muted-foreground leading-tight">
+                Total {totalTrades} trades
               </span>
             </div>
 
             {/* Scale labels */}
-            <div className="flex justify-between w-full max-w-[240px] -mt-2 px-2">
+            <div className="mt-3 flex justify-between w-full max-w-[240px] px-2">
               <span className="text-xs text-muted-foreground">0%</span>
               <span className="text-xs text-muted-foreground">100%</span>
             </div>

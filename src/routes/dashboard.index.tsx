@@ -63,9 +63,13 @@ function DashboardIndex() {
       <StatsOverview stats={stats} />
 
       {/* Charts Row 1: Equity Curve + Win Rate */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
         <EquityCurveCard trades={trades} hasTrades={hasTrades} />
         <WinRateMeter winRate={stats.winRate} totalTrades={stats.totalTrades} />
+        <PerformanceCard
+          bestWinTrade={stats.bestWinTrade}
+          worstLossTrade={stats.worstLossTrade}
+        />
       </div>
 
       {/* Charts Row 2: Radar + Calendar */}
@@ -73,12 +77,6 @@ function DashboardIndex() {
         <TraderRadar trades={trades} />
         <PnLCalendar trades={trades} />
       </div>
-
-      {/* Performance */}
-      <PerformanceCard
-        bestWinTrade={stats.bestWinTrade}
-        worstLossTrade={stats.worstLossTrade}
-      />
 
       {/* Trades Table */}
       <TradesTable

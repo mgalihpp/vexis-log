@@ -26,7 +26,7 @@ export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
   const chartData = useMemo(() => calculateEquityCurve(trades), [trades])
 
   return (
-    <div className="lg:col-span-2 bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
+    <div className="lg:col-span-3 bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
       <h3 className="text-lg font-bold font-display mb-6">Equity Curve</h3>
       <div className="h-[300px] w-full">
         {hasTrades ? (

@@ -19,6 +19,7 @@ import {
 } from '@/hooks/use-feedback-toast'
 import { NotFound } from '@/components/NotFound'
 import { getAuthSession } from '@/utils/auth.functions'
+import { Splash } from '@/components/Splash'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -31,6 +32,7 @@ export const Route = createRootRouteWithContext<{
     }
   },
   notFoundComponent: NotFound,
+  pendingComponent: Splash,
   head: () => ({
     meta: [
       {
@@ -79,7 +81,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('vite-ui-theme')||'system';if(t==='system'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.classList.add(t)}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem('vite-ui-theme')||'system';if(t==='system'){t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}document.documentElement.classList.remove('light','dark');document.documentElement.classList.add(t)}catch(e){}})()`,
           }}
         />
         <HeadContent />
