@@ -1,5 +1,4 @@
 import { Edit, Filter, MoreHorizontal, Search, Trash2 } from "lucide-react";
-import { format } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
 import { DeleteTradeDialog } from "./dialog/DeleteTradeDialog";
@@ -31,6 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { getTradeDateKey } from "@/utils/trade-date";
 
 type TradesTableProps = {
   trades: Array<DashboardTrade>;
@@ -130,7 +130,7 @@ export function TradesTable({
                   className="group hover:bg-muted/30 transition-colors"
                 >
                   <TableCell className="font-mono text-xs text-muted-foreground">
-                    {format(new Date(trade.date), "yyyy-MM-dd")}
+                    {getTradeDateKey(trade.date)}
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">

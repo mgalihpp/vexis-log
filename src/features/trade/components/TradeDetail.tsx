@@ -31,6 +31,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import type { TradeFormValues } from "@/utils/schema/tradeSchema";
 import { updateTrade } from "@/utils/dashboard.functions";
+import { getTradeDateLabel } from "@/utils/trade-date";
 
 interface TradeDetailProps {
   trade: TradeEntry;
@@ -170,10 +171,7 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
             </h2>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span>
-                {trade.date instanceof Date
-                  ? trade.date.toLocaleDateString("en-US", { timeZone: "UTC" })
-                  : String(trade.date)}{" "}
-                {trade.time ?? ""}
+                {getTradeDateLabel(trade.date)} {trade.time ?? ""}
               </span>
               <span>·</span>
               <span>{trade.session}</span>

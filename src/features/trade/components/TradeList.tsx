@@ -8,7 +8,6 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { format } from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { TradeEntry } from "@/types/trade";
@@ -22,6 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  getTradeDateKey,
+  getTradeDateLabel,
+  toTradeDate,
+} from "@/utils/trade-date";
 
 interface TradeListProps {
   trades: Array<TradeEntry>;
@@ -58,9 +62,6 @@ export function TradeList({
   onSelectTrade,
   selectedId,
 }: TradeListProps) {
-  const getTradeDate = (trade: TradeEntry) =>
-    trade.date instanceof Date ? trade.date : new Date(trade.date);
-
   const [search, setSearch] = useState("");
   const [marketFilter, setMarketFilter] = useState("all");
   const [directionFilter, setDirectionFilter] = useState("all");
@@ -101,8 +102,7 @@ export function TradeList({
 
     return trades.filter((trade) => {
       const result = trade.result ?? trade.outcome ?? "";
-      const tradeDate = getTradeDate(trade);
-      const tradeDateKey = format(tradeDate, "yyyy-MM-dd");
+      const tradeDateKey = getTradeDateKey(trade.date);
 
       const matchesSearch =
         normalizedSearch.length === 0 ||
@@ -166,12 +166,11 @@ export function TradeList({
     >();
 
     sortedTrades.forEach((trade) => {
-      const tradeDate = getTradeDate(trade);
-      const dateKey = format(tradeDate, "yyyy-MM-dd");
+      const dateKey = getTradeDateKey(trade.date);
 
       if (!grouped.has(dateKey)) {
         grouped.set(dateKey, {
-          dateLabel: format(tradeDate, "d MMM yyyy"),
+          dateLabel: getTradeDateLabel(trade.date),
           trades: [],
         });
       }
@@ -456,9 +455,7 @@ export function TradeList({
                           </Badge>
                         </div>
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          <span>
-                            {tradeDateLabel(getTradeDate(trade), trade.date)}
-                          </span>
+                          <span>{tradeDateLabel(trade.date)}</span>
                           <span>{trade.session}</span>
                           <span>{trade.timeframe}</span>
                         </div>
@@ -497,30 +494,30 @@ export function TradeList({
   );
 }
 
-function tradeDateLabel(tradeDate: Date, rawDate: TradeEntry["date"]) {
-  if (Number.isNaN(tradeDate.getTime())) {
-    return String(rawDate);
-  }
-
-  return format(tradeDate, "d MMM yyyy");
+function tradeDateLabel(rawDate: TradeEntry["date"]) {
+  return getTradeDateLabel(rawDate);
 }
 
 function getTradeTimestamp(trade: TradeEntry) {
-  const tradeDate =
-    trade.date instanceof Date ? trade.date : new Date(trade.date);
+  const tradeDate = toTradeDate(trade.date);
 
-  if (Number.isNaN(tradeDate.getTime())) {
+  if (!tradeDate) {
     return 0;
   }
 
-  const timestamp = new Date(tradeDate);
   const [hoursPart, minutesPart] = (trade.time ?? "00:00").split(":");
   const hours = Number(hoursPart);
   const minutes = Number(minutesPart);
+  const normalizedHours = Number.isFinite(hours) ? hours : 0;
+  const normalizedMinutes = Number.isFinite(minutes) ? minutes : 0;
 
-  if (Number.isFinite(hours) && Number.isFinite(minutes)) {
-    timestamp.setHours(hours, minutes, 0, 0);
-  }
-
-  return timestamp.getTime();
+  return Date.UTC(
+    tradeDate.getUTCFullYear(),
+    tradeDate.getUTCMonth(),
+    tradeDate.getUTCDate(),
+    normalizedHours,
+    normalizedMinutes,
+    0,
+    0,
+  );
 }

@@ -1,15 +1,13 @@
-import { format } from "date-fns";
 import type { TradeFormInput } from "@/utils/schema/tradeSchema";
 import type { TradeEntry } from "@/types/trade";
 import { normalizeRrRatio } from "@/utils/rr-ratio";
+import { getTradeDateKey, getTradeTimeLabel } from "@/utils/trade-date";
 
 export function mapTradeToFormValues(trade: TradeEntry): TradeFormInput {
-  const dateValue =
-    trade.date instanceof Date ? trade.date : new Date(trade.date);
-  const timeValue = trade.time ?? format(dateValue, "HH:mm");
+  const timeValue = trade.time ?? getTradeTimeLabel(trade.date);
 
   return {
-    date: format(dateValue, "yyyy-MM-dd"),
+    date: getTradeDateKey(trade.date),
     time: timeValue,
     market: trade.market,
     pair: trade.pair,
