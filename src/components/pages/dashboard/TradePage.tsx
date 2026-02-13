@@ -45,6 +45,7 @@ export function TradePage({ trades }: Props) {
 
       <Sheet
         open={Boolean(selectedTrade)}
+        modal={false}
         onOpenChange={(open) => {
           if (!open) {
             setSelectedTradeId(null);
