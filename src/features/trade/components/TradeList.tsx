@@ -1,6 +1,7 @@
 import {
   ChevronRight,
   ClipboardList,
+  Clock,
   FilterX,
   Minus,
   Search,
@@ -46,7 +47,7 @@ const resultConfig = {
     icon: Minus,
     class: "bg-muted/15 text-foreground border-border",
   },
-  BE: { icon: Minus, class: "bg-warning/15 text-warning border-warning/30" },
+  BE: { icon: Clock, class: "bg-warning/15 text-warning border-warning/30" },
 };
 
 const marketColors: Record<string, string> = {
@@ -54,7 +55,7 @@ const marketColors: Record<string, string> = {
   Crypto:
     "bg-[hsl(262,60%,52%)]/15 text-[hsl(262,60%,52%)] border-[hsl(262,60%,52%)]/30",
   Stock: "bg-success/15 text-success border-success/30",
-  Index: "bg-warning/15 text-warning border-warning/30",
+  Index: "bg-muted/15 text-muted-foreground border-muted/30",
 };
 
 export function TradeList({
