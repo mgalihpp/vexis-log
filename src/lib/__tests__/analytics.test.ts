@@ -121,6 +121,30 @@ describe("getDayOfWeekBreakdown", () => {
     expect(friday?.losses).toBe(0);
     expect(friday?.winrate).toBe(100);
   });
+
+  it("excludes breakeven from winrate denominator", () => {
+    const winTrade = createTrade({
+      date: new Date("2026-02-13T09:00:00.000Z"),
+      result: "Win",
+      outcome: "Win",
+      profitLoss: 120,
+    });
+    const breakevenTrade = createTrade({
+      id: "65f1e7b1f0e4f2a9c8d7b6a8",
+      date: new Date("2026-02-13T11:00:00.000Z"),
+      result: "Breakeven",
+      outcome: "Breakeven",
+      profitLoss: 0,
+    });
+
+    const items = getDayOfWeekBreakdown([winTrade, breakevenTrade]);
+    const friday = items.find((item) => item.name === "Friday");
+
+    expect(friday?.trades).toBe(2);
+    expect(friday?.wins).toBe(1);
+    expect(friday?.losses).toBe(0);
+    expect(friday?.winrate).toBe(100);
+  });
 });
 
 describe("UTC date grouping consistency", () => {

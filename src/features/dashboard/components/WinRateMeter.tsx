@@ -97,6 +97,8 @@ export function WinRateMeter({
   resolvedTrades,
   totalTrades,
 }: WinRateMeterProps) {
+  const excludedTrades = Math.max(0, totalTrades - resolvedTrades);
+
   // Data for the gauge
   const gaugeData = [
     { value: winRate }, // Filled
@@ -150,13 +152,8 @@ export function WinRateMeter({
                 {winRate.toFixed(0)}%
               </span>
               <span className="block text-sm text-muted-foreground leading-tight">
-                {resolvedTrades} resolved of {totalTrades} trades
+                {resolvedTrades} trades of {totalTrades} total
               </span>
-              {resolvedTrades === 0 ? (
-                <span className="block text-xs text-muted-foreground/80 leading-tight">
-                  Pending and Breakeven are excluded from win rate.
-                </span>
-              ) : null}
             </div>
 
             {/* Scale labels */}

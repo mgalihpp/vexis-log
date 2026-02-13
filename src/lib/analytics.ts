@@ -54,7 +54,9 @@ const calculateBreakdownStats = (
   return Object.values(items)
     .filter((item): item is BreakdownItem => item !== undefined)
     .map((item) => {
-      item.winrate = item.trades > 0 ? (item.wins / item.trades) * 100 : 0;
+      const resolvedTrades = item.wins + item.losses;
+      item.winrate =
+        resolvedTrades > 0 ? (item.wins / resolvedTrades) * 100 : 0;
       item.totalPL = Number(item.totalPL.toFixed(2));
       item.avgRR =
         item.trades > 0 ? Number((item.avgRR / item.trades).toFixed(2)) : 0;
