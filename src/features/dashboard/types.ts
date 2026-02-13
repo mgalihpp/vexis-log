@@ -20,6 +20,7 @@ export type DashboardTrends = {
 
 export type DashboardStats = {
   winRate: number;
+  resolvedTrades: number;
   totalTrades: number;
   profitFactor: number;
   netPnL: number;

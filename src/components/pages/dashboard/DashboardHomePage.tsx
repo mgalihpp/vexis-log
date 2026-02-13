@@ -58,7 +58,11 @@ export function DashboardHomePage({ trades, stats }: Props) {
 
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
         <EquityCurveCard trades={trades} hasTrades={hasTrades} />
-        <WinRateMeter winRate={stats.winRate} totalTrades={stats.totalTrades} />
+        <WinRateMeter
+          winRate={stats.winRate}
+          resolvedTrades={stats.resolvedTrades}
+          totalTrades={stats.totalTrades}
+        />
         <PerformanceCard
           bestWinTrade={stats.bestWinTrade}
           worstLossTrade={stats.worstLossTrade}

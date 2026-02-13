@@ -11,6 +11,7 @@ type ApiError = {
 
 type TradeStats = {
   winRate: number;
+  resolvedTrades: number;
   totalTrades: number;
   profitFactor: number;
   netPnL: number;

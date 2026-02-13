@@ -159,6 +159,7 @@ async function buildStats(
 
   return {
     winRate,
+    resolvedTrades,
     totalTrades,
     profitFactor,
     netPnL: netPnLValue,
