@@ -97,7 +97,7 @@ export function ProblemSection() {
               <span className="text-primary">edge</span>.
             </h3>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-10">
-              Vexis doesn't just record trades. It analyzes your behavior,
+              Vexis doesn&apos;t just record trades. It analyzes your behavior,
               identifies your best setups, and forces you to confront your worst
               habits.
             </p>

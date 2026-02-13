@@ -93,7 +93,7 @@ export function TestimonialMarquee() {
                   ))}
                 </div>
                 <p className="text-foreground italic mb-6 leading-relaxed">
-                  "{t.quote}"
+                  &ldquo;{t.quote}&rdquo;
                 </p>
               </div>
               <div className="flex items-center gap-3 mt-auto">

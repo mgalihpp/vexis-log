@@ -1,8 +1,8 @@
 import {
+  useCallback,
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -44,24 +44,28 @@ export function FeedbackToastProvider({
     };
   }, []);
 
-  const showToast = (kind: ToastKind, message: string) => {
-    if (timeoutRef.current !== null) {
-      window.clearTimeout(timeoutRef.current);
-    }
-    setToast({ kind, message });
-    timeoutRef.current = window.setTimeout(() => {
-      setToast(null);
-    }, durationMs);
-  };
-
-  const value = useMemo(
-    () => ({
-      toast,
-      showToast,
-      dismissToast: () => setToast(null),
-    }),
-    [toast],
+  const showToast = useCallback(
+    (kind: ToastKind, message: string) => {
+      if (timeoutRef.current !== null) {
+        window.clearTimeout(timeoutRef.current);
+      }
+      setToast({ kind, message });
+      timeoutRef.current = window.setTimeout(() => {
+        setToast(null);
+      }, durationMs);
+    },
+    [durationMs],
   );
+
+  const dismissToast = useCallback(() => {
+    setToast(null);
+  }, []);
+
+  const value: ToastContextValue = {
+    toast,
+    showToast,
+    dismissToast,
+  };
 
   return (
     <ToastContext.Provider value={value}>{children}</ToastContext.Provider>

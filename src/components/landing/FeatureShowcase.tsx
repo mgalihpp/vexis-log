@@ -156,7 +156,7 @@ export function FeatureShowcase() {
               <p className="text-xs text-muted-foreground">
                 You lose{" "}
                 <span className="text-destructive font-bold">12% more</span> on
-                trades tagged "FOMO" compared to your average.
+                trades tagged &quot;FOMO&quot; compared to your average.
               </p>
             </div>
           </div>

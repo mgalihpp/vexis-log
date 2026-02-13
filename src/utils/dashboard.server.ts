@@ -89,17 +89,33 @@ async function buildStats(
     prisma.trade.count({
       where: {
         ...baseWhere,
-        profitLoss: {
-          gt: 0,
-        },
+        OR: [
+          {
+            result: {
+              in: ["Win", "Partial"],
+            },
+          },
+          {
+            result: null,
+            outcome: {
+              in: ["Win", "Partial"],
+            },
+          },
+        ],
       },
     }),
     prisma.trade.count({
       where: {
         ...baseWhere,
-        profitLoss: {
-          lt: 0,
-        },
+        OR: [
+          {
+            result: "Loss",
+          },
+          {
+            result: null,
+            outcome: "Loss",
+          },
+        ],
       },
     }),
     prisma.trade.aggregate({

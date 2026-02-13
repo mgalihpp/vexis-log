@@ -21,11 +21,31 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-// Needle component that scales with the chart
-// Customized passes { width, height, ... } of the chart area
-const Needle = (props: any) => {
-  const { width, height, winRate } = props;
+type NeedleLayoutProps = {
+  width?: number;
+  height?: number;
+};
 
+const getNeedleLayoutProps = (value: unknown): NeedleLayoutProps => {
+  if (!value || typeof value !== "object") {
+    return {};
+  }
+
+  const candidate = value as Record<string, unknown>;
+
+  return {
+    width: typeof candidate.width === "number" ? candidate.width : undefined,
+    height: typeof candidate.height === "number" ? candidate.height : undefined,
+  };
+};
+
+const Needle = ({
+  width,
+  height,
+  winRate,
+}: NeedleLayoutProps & {
+  winRate: number;
+}) => {
   if (typeof width !== "number" || typeof height !== "number") {
     return null;
   }
@@ -109,9 +129,11 @@ export function WinRateMeter({ winRate, totalTrades }: WinRateMeterProps) {
 
                   {/* Needle */}
                   <Customized
-                    component={(props: any) => (
-                      <Needle {...props} winRate={winRate} />
-                    )}
+                    component={(props: unknown) => {
+                      const layoutProps = getNeedleLayoutProps(props);
+
+                      return <Needle {...layoutProps} winRate={winRate} />;
+                    }}
                   />
                 </PieChart>
               </ChartContainer>

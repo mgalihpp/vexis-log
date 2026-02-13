@@ -90,12 +90,13 @@ describe("calculateRadarMetrics", () => {
       { date: "2023-01-01", result: "Win" },
       { date: "2023-01-01", result: "Loss" },
       { date: "2023-01-01", result: "Breakeven" }, // Excluded from denominator
+      { date: "2023-01-01", result: "Partial" }, // Treated as win
       { date: "2023-01-01", result: "Win" },
     ];
-    // 2 Wins out of 3 resolved trades (Win, Loss, Win) -> 66.67
+    // 3 Wins out of 4 resolved trades (Win, Loss, Partial, Win) -> 75
     const result = calculateRadarMetrics(trades);
     const winRate = result.find((m) => m.metric === "Win Rate")?.value;
-    expect(winRate).toBeCloseTo(66.67, 1);
+    expect(winRate).toBeCloseTo(75, 1);
   });
 
   it("calculates profit factor correctly (caps at 100)", () => {

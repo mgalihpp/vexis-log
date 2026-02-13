@@ -1,4 +1,4 @@
-import { format, parseISO, startOfWeek } from "date-fns";
+import { parseISO } from "date-fns";
 import type { TradeEntry } from "@/types/trade";
 
 export interface BreakdownItem {
@@ -30,6 +30,10 @@ const classifyTradeOutcome = (trade: TradeEntry) => {
   }
 
   if (status === "Win") {
+    return "win" as const;
+  }
+
+  if (status === "Partial") {
     return "win" as const;
   }
 
@@ -72,26 +76,75 @@ const processTrade = (trade: TradeEntry, item: BreakdownItem) => {
   item.avgRR += trade.actualRR || 0;
 };
 
+const WEEKDAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const;
+
+const MONTH_NAMES_SHORT = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
+
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+const toUtcDate = (value: Date | string): Date =>
+  typeof value === "string" ? parseISO(value) : value;
+
+const pad2 = (value: number): string => String(value).padStart(2, "0");
+
+const getUtcWeekdayName = (date: Date): string =>
+  WEEKDAY_NAMES[date.getUTCDay()];
+
+const getUtcMonthLabel = (date: Date): string =>
+  `${MONTH_NAMES_SHORT[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+
+const getUtcWeekLabel = (date: Date): string => {
+  const utcMidnightMs = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+  );
+  const weekStartMs = utcMidnightMs - date.getUTCDay() * ONE_DAY_MS;
+  const weekStart = new Date(weekStartMs);
+  const label = `${pad2(weekStart.getUTCDate())} ${MONTH_NAMES_SHORT[weekStart.getUTCMonth()]}`;
+
+  return `Week of ${label}`;
+};
+
+const getUtcYearLabel = (date: Date): string => String(date.getUTCFullYear());
+
+const getUtcDateKey = (date: Date): string =>
+  `${date.getUTCFullYear()}-${pad2(date.getUTCMonth() + 1)}-${pad2(date.getUTCDate())}`;
+
+const getUtcDateLabel = (date: Date): string =>
+  `${pad2(date.getUTCDate())} ${MONTH_NAMES_SHORT[date.getUTCMonth()]}`;
+
 export const getDayOfWeekBreakdown = (trades: Array<TradeEntry>) => {
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
   const items: Record<string, BreakdownItem | undefined> = {};
 
-  days.forEach((day) => {
+  WEEKDAY_NAMES.forEach((day) => {
     items[day] = createBreakdownItem(day);
   });
 
   trades.forEach((trade) => {
-    const date =
-      typeof trade.date === "string" ? parseISO(trade.date) : trade.date;
-    const dayName = format(date, "EEEE");
+    const date = toUtcDate(trade.date);
+    const dayName = getUtcWeekdayName(date);
     const item = items[dayName];
     if (item) {
       processTrade(trade, item);
@@ -105,9 +158,8 @@ export const getMonthlyBreakdown = (trades: Array<TradeEntry>) => {
   const items: Record<string, BreakdownItem | undefined> = {};
 
   trades.forEach((trade) => {
-    const date =
-      typeof trade.date === "string" ? parseISO(trade.date) : trade.date;
-    const monthName = format(date, "MMM yyyy");
+    const date = toUtcDate(trade.date);
+    const monthName = getUtcMonthLabel(date);
 
     if (!items[monthName]) {
       items[monthName] = createBreakdownItem(monthName);
@@ -123,10 +175,8 @@ export const getWeeklyBreakdown = (trades: Array<TradeEntry>) => {
   const items: Record<string, BreakdownItem | undefined> = {};
 
   trades.forEach((trade) => {
-    const date =
-      typeof trade.date === "string" ? parseISO(trade.date) : trade.date;
-    const weekStart = format(startOfWeek(date), "dd MMM");
-    const weekLabel = `Week of ${weekStart}`;
+    const date = toUtcDate(trade.date);
+    const weekLabel = getUtcWeekLabel(date);
 
     if (!items[weekLabel]) {
       items[weekLabel] = createBreakdownItem(weekLabel);
@@ -141,9 +191,8 @@ export const getYearlyBreakdown = (trades: Array<TradeEntry>) => {
   const items: Record<string, BreakdownItem | undefined> = {};
 
   trades.forEach((trade) => {
-    const date =
-      typeof trade.date === "string" ? parseISO(trade.date) : trade.date;
-    const year = format(date, "yyyy");
+    const date = toUtcDate(trade.date);
+    const year = getUtcYearLabel(date);
 
     if (!items[year]) {
       items[year] = createBreakdownItem(year);
@@ -264,14 +313,8 @@ export const getEquityCurve = (trades: Array<TradeEntry>) => {
 
   // Sort trades by date
   const sortedTrades = [...trades].sort((a, b) => {
-    const dateA =
-      typeof a.date === "string"
-        ? parseISO(a.date).getTime()
-        : a.date.getTime();
-    const dateB =
-      typeof b.date === "string"
-        ? parseISO(b.date).getTime()
-        : b.date.getTime();
+    const dateA = toUtcDate(a.date).getTime();
+    const dateB = toUtcDate(b.date).getTime();
     return dateA - dateB;
   });
 
@@ -279,10 +322,9 @@ export const getEquityCurve = (trades: Array<TradeEntry>) => {
   const dailyMap = new Map<string, { dateLabel: string; pnl: number }>();
 
   for (const trade of sortedTrades) {
-    const dateObj =
-      typeof trade.date === "string" ? parseISO(trade.date) : trade.date;
-    const dateKey = format(dateObj, "yyyy-MM-dd");
-    const dateLabel = format(dateObj, "dd MMM");
+    const dateObj = toUtcDate(trade.date);
+    const dateKey = getUtcDateKey(dateObj);
+    const dateLabel = getUtcDateLabel(dateObj);
     const pnl = trade.profitLoss || 0;
 
     const current = dailyMap.get(dateKey);

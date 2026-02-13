@@ -86,6 +86,9 @@ export function calculateRadarMetrics(
     if (res === "win") {
       wins++;
       resolvedCount++;
+    } else if (res === "partial") {
+      wins++;
+      resolvedCount++;
     } else if (res === "loss") {
       resolvedCount++;
     }
