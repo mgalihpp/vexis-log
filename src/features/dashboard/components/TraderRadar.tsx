@@ -50,7 +50,11 @@ export function TraderRadar({ trades }: TraderRadarProps) {
             className="mx-auto aspect-square w-full max-h-[280px]"
           >
             <RadarChart data={radarData}>
-              <PolarGrid />
+              <PolarGrid
+                radialLines={false}
+                stroke="hsl(var(--border))"
+                strokeOpacity={0.45}
+              />
               <PolarAngleAxis dataKey="metric" fontSize={12} />
               <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} />
               <ChartTooltip content={<ChartTooltipContent />} />
