@@ -1,12 +1,12 @@
-import { RESULT_OPTIONS, RequiredLabel } from '../tradeFormFields'
-import type { UseFormReturn } from 'react-hook-form'
+import { RESULT_OPTIONS, RequiredLabel } from "../tradeFormFields";
+import type { UseFormReturn } from "react-hook-form";
 import type {
   TradeFormInput,
   TradeFormValues,
-} from '@/utils/schema/tradeSchema'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
+} from "@/utils/schema/tradeSchema";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Combobox,
   ComboboxContent,
@@ -14,20 +14,20 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from '@/components/ui/combobox'
+} from "@/components/ui/combobox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
 type TradeStepExecutionProps = {
-  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>
-  isPending: boolean
-  showRequiredIndicators?: boolean
-}
+  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>;
+  isPending: boolean;
+  showRequiredIndicators?: boolean;
+};
 
 export function TradeStepExecution({
   form,
@@ -111,7 +111,7 @@ export function TradeStepExecution({
             <Combobox
               items={RESULT_OPTIONS}
               value={field.value}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select outcome" />
@@ -198,5 +198,5 @@ export function TradeStepExecution({
         </>
       )}
     </div>
-  )
+  );
 }

@@ -1,42 +1,42 @@
-import { useMemo } from 'react'
+import { useMemo } from "react";
 import {
   PolarAngleAxis,
   PolarGrid,
   PolarRadiusAxis,
   Radar,
   RadarChart,
-} from 'recharts'
-import type { ChartConfig } from '@/components/ui/chart'
-import type { AnalyticsTrade } from '@/utils/dashboard.analytics'
+} from "recharts";
+import type { ChartConfig } from "@/components/ui/chart";
+import type { AnalyticsTrade } from "@/utils/dashboard.analytics";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
-import { calculateRadarMetrics } from '@/utils/dashboard.analytics'
+} from "@/components/ui/chart";
+import { calculateRadarMetrics } from "@/utils/dashboard.analytics";
 
 type TraderRadarProps = {
-  trades: Array<AnalyticsTrade>
-}
+  trades: Array<AnalyticsTrade>;
+};
 
 const chartConfig = {
   value: {
-    label: 'Score',
-    color: 'oklch(0.72 0.19 277)',
+    label: "Score",
+    color: "oklch(0.72 0.19 277)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 const getMetricColor = (value: number): string => {
-  if (value >= 80) return 'bg-emerald-500/15 text-emerald-400'
-  if (value >= 60) return 'bg-emerald-500/10 text-emerald-300'
-  if (value >= 40) return 'bg-amber-500/15 text-amber-400'
-  if (value >= 20) return 'bg-orange-500/15 text-orange-400'
-  return 'bg-red-500/15 text-red-400'
-}
+  if (value >= 80) return "bg-emerald-500/15 text-emerald-400";
+  if (value >= 60) return "bg-emerald-500/10 text-emerald-300";
+  if (value >= 40) return "bg-amber-500/15 text-amber-400";
+  if (value >= 20) return "bg-orange-500/15 text-orange-400";
+  return "bg-red-500/15 text-red-400";
+};
 
 export function TraderRadar({ trades }: TraderRadarProps) {
-  const radarData = useMemo(() => calculateRadarMetrics(trades), [trades])
-  const hasTrades = trades.length > 0
+  const radarData = useMemo(() => calculateRadarMetrics(trades), [trades]);
+  const hasTrades = trades.length > 0;
 
   return (
     <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
@@ -90,5 +90,5 @@ export function TraderRadar({ trades }: TraderRadarProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

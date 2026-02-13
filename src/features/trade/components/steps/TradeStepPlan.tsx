@@ -1,13 +1,13 @@
 import {
   RR_RATIO_OPTIONS,
   TECHNICAL_CONFIRMATION_OPTIONS,
-} from '../../constants/options'
-import type { UseFormReturn } from 'react-hook-form'
+} from "../../constants/options";
+import type { UseFormReturn } from "react-hook-form";
 import type {
   TradeFormInput,
   TradeFormValues,
-} from '@/utils/schema/tradeSchema'
-import { Input } from '@/components/ui/input'
+} from "@/utils/schema/tradeSchema";
+import { Input } from "@/components/ui/input";
 import {
   Combobox,
   ComboboxContent,
@@ -15,18 +15,18 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from '@/components/ui/combobox'
+} from "@/components/ui/combobox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
 type TradeStepPlanProps = {
-  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>
-}
+  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>;
+};
 
 export function TradeStepPlan({ form }: TradeStepPlanProps) {
   return (
@@ -39,8 +39,8 @@ export function TradeStepPlan({ form }: TradeStepPlanProps) {
             <FormLabel>Technical Confirmation</FormLabel>
             <Combobox
               items={TECHNICAL_CONFIRMATION_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select confirmation" />
@@ -159,8 +159,8 @@ export function TradeStepPlan({ form }: TradeStepPlanProps) {
             <FormLabel>RR Ratio</FormLabel>
             <Combobox
               items={RR_RATIO_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select or enter RR" />
@@ -194,5 +194,5 @@ export function TradeStepPlan({ form }: TradeStepPlanProps) {
         )}
       />
     </div>
-  )
+  );
 }

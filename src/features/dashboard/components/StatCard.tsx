@@ -1,19 +1,19 @@
-import type { ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface StatCardProps {
-  title: string
-  value: string | number
-  icon: ReactNode
-  trend?: string
-  trendDirection?: 'up' | 'down' | 'neutral'
-  trendLabel?: string
+  title: string;
+  value: string | number;
+  icon: ReactNode;
+  trend?: string;
+  trendDirection?: "up" | "down" | "neutral";
+  trendLabel?: string;
   trends?: Array<{
-    label: string
-    value: string
-    direction: 'up' | 'down' | 'neutral'
-  }>
-  className?: string
+    label: string;
+    value: string;
+    direction: "up" | "down" | "neutral";
+  }>;
+  className?: string;
 }
 
 export function StatCard({
@@ -29,7 +29,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        'bg-card rounded-2xl p-6 border border-border/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300',
+        "bg-card rounded-2xl p-6 border border-border/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300",
         className,
       )}
     >
@@ -53,13 +53,13 @@ export function StatCard({
                 >
                   <span
                     className={cn(
-                      'text-xs font-semibold px-2 py-0.5 rounded-full',
-                      item.direction === 'up' &&
-                        'bg-emerald-500/10 text-emerald-500',
-                      item.direction === 'down' &&
-                        'bg-rose-500/10 text-rose-500',
-                      item.direction === 'neutral' &&
-                        'bg-slate-500/10 text-slate-500',
+                      "text-xs font-semibold px-2 py-0.5 rounded-full",
+                      item.direction === "up" &&
+                        "bg-emerald-500/10 text-emerald-500",
+                      item.direction === "down" &&
+                        "bg-rose-500/10 text-rose-500",
+                      item.direction === "neutral" &&
+                        "bg-slate-500/10 text-slate-500",
                     )}
                   >
                     {item.value}
@@ -75,18 +75,18 @@ export function StatCard({
             <div className="flex items-center gap-1.5 mt-2">
               <span
                 className={cn(
-                  'text-xs font-semibold px-2 py-0.5 rounded-full',
-                  trendDirection === 'up' &&
-                    'bg-emerald-500/10 text-emerald-500',
-                  trendDirection === 'down' && 'bg-rose-500/10 text-rose-500',
-                  trendDirection === 'neutral' &&
-                    'bg-slate-500/10 text-slate-500',
+                  "text-xs font-semibold px-2 py-0.5 rounded-full",
+                  trendDirection === "up" &&
+                    "bg-emerald-500/10 text-emerald-500",
+                  trendDirection === "down" && "bg-rose-500/10 text-rose-500",
+                  trendDirection === "neutral" &&
+                    "bg-slate-500/10 text-slate-500",
                 )}
               >
                 {trend}
               </span>
               <span className="text-xs text-muted-foreground">
-                {trendLabel ?? 'vs last month'}
+                {trendLabel ?? "vs last month"}
               </span>
             </div>
           )}
@@ -96,5 +96,5 @@ export function StatCard({
         </div>
       </div>
     </div>
-  )
+  );
 }

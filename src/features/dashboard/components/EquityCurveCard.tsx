@@ -1,29 +1,29 @@
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
-import { useMemo } from 'react'
-import { format } from 'date-fns'
-import type { ChartConfig } from '@/components/ui/chart'
-import type { AnalyticsTrade } from '@/utils/dashboard.analytics'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { useMemo } from "react";
+import { format } from "date-fns";
+import type { ChartConfig } from "@/components/ui/chart";
+import type { AnalyticsTrade } from "@/utils/dashboard.analytics";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
-import { calculateEquityCurve } from '@/utils/dashboard.analytics'
+} from "@/components/ui/chart";
+import { calculateEquityCurve } from "@/utils/dashboard.analytics";
 
 type EquityCurveCardProps = {
-  trades: Array<AnalyticsTrade>
-  hasTrades: boolean
-}
+  trades: Array<AnalyticsTrade>;
+  hasTrades: boolean;
+};
 
 const chartConfig = {
   equity: {
-    label: 'Equity',
-    color: 'oklch(0.72 0.19 277)',
+    label: "Equity",
+    color: "oklch(0.72 0.19 277)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
-  const chartData = useMemo(() => calculateEquityCurve(trades), [trades])
+  const chartData = useMemo(() => calculateEquityCurve(trades), [trades]);
 
   return (
     <div className="lg:col-span-3 bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
@@ -53,7 +53,7 @@ export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
-                tickFormatter={(value) => format(new Date(value), 'MMM dd')}
+                tickFormatter={(value) => format(new Date(value), "MMM dd")}
               />
               <YAxis
                 fontSize={12}
@@ -65,8 +65,8 @@ export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
                 content={
                   <ChartTooltipContent
                     formatter={(value) => {
-                      const formattedValue = `$${Number(value).toFixed(2)}`
-                      return formattedValue
+                      const formattedValue = `$${Number(value).toFixed(2)}`;
+                      return formattedValue;
                     }}
                   />
                 }
@@ -88,5 +88,5 @@ export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

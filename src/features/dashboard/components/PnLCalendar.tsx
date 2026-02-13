@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   addMonths,
   eachDayOfInterval,
@@ -7,48 +7,48 @@ import {
   getDay,
   startOfMonth,
   subMonths,
-} from 'date-fns'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import type { AnalyticsTrade } from '@/utils/dashboard.analytics'
-import { calculateDailyPnL } from '@/utils/dashboard.analytics'
+} from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { AnalyticsTrade } from "@/utils/dashboard.analytics";
+import { calculateDailyPnL } from "@/utils/dashboard.analytics";
 
 type PnLCalendarProps = {
-  trades: Array<AnalyticsTrade>
-}
+  trades: Array<AnalyticsTrade>;
+};
 
 export function PnLCalendar({ trades }: PnLCalendarProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date())
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // Calculate P&L data
-  const dailyData = calculateDailyPnL(trades)
-  const pnlMap = new Map<string, { pnl: number; tradeCount: number }>()
+  const dailyData = calculateDailyPnL(trades);
+  const pnlMap = new Map<string, { pnl: number; tradeCount: number }>();
 
   for (const day of dailyData) {
-    pnlMap.set(day.date, { pnl: day.pnl, tradeCount: day.tradeCount })
+    pnlMap.set(day.date, { pnl: day.pnl, tradeCount: day.tradeCount });
   }
 
   // Calendar generation logic
-  const monthStart = startOfMonth(currentMonth)
-  const monthEnd = endOfMonth(currentMonth)
-  const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd })
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(currentMonth);
+  const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
   // Calculate offset for Monday start
   // getDay returns 0 for Sunday, 1 for Monday, etc.
-  const startDay = getDay(monthStart)
-  const offset = startDay === 0 ? 6 : startDay - 1
+  const startDay = getDay(monthStart);
+  const offset = startDay === 0 ? 6 : startDay - 1;
 
   const getDayCellStyle = (pnl: number | undefined) => {
-    if (pnl === undefined) return 'bg-muted/30 text-muted-foreground'
+    if (pnl === undefined) return "bg-muted/30 text-muted-foreground";
     if (pnl > 0)
-      return 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30 font-medium'
+      return "bg-emerald-500/15 text-emerald-600 border-emerald-500/30 font-medium";
     if (pnl < 0)
-      return 'bg-red-500/15 text-red-600 border-red-500/30 font-medium'
-    return 'bg-muted/30 text-muted-foreground'
-  }
+      return "bg-red-500/15 text-red-600 border-red-500/30 font-medium";
+    return "bg-muted/30 text-muted-foreground";
+  };
 
   const formatCurrency = (val: number) => {
-    return val > 0 ? `+$${val.toFixed(2)}` : `-$${Math.abs(val).toFixed(2)}`
-  }
+    return val > 0 ? `+$${val.toFixed(2)}` : `-$${Math.abs(val).toFixed(2)}`;
+  };
 
   if (trades.length === 0) {
     return (
@@ -59,7 +59,7 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
           <p>Add a trade to see your P&L calendar.</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -76,7 +76,7 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
             <ChevronLeft className="h-4 w-4" />
           </button>
           <span className="text-sm font-medium min-w-[120px] text-center">
-            {format(currentMonth, 'MMMM yyyy')}
+            {format(currentMonth, "MMMM yyyy")}
           </span>
           <button
             onClick={() => setCurrentMonth((prev) => addMonths(prev, 1))}
@@ -90,7 +90,7 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
 
       {/* Day headers */}
       <div className="grid grid-cols-7 gap-1 mb-1">
-        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
           <div
             key={day}
             className="text-center text-xs text-muted-foreground font-medium py-1"
@@ -109,10 +109,10 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
 
         {/* Day cells */}
         {daysInMonth.map((date) => {
-          const dateStr = format(date, 'yyyy-MM-dd')
-          const dayData = pnlMap.get(dateStr)
-          const pnl = dayData?.pnl
-          const dayNumber = format(date, 'd')
+          const dateStr = format(date, "yyyy-MM-dd");
+          const dayData = pnlMap.get(dateStr);
+          const pnl = dayData?.pnl;
+          const dayNumber = format(date, "d");
 
           return (
             <div
@@ -121,7 +121,7 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
                 relative p-2 rounded-lg border text-xs sm:text-sm flex flex-col justify-between
                 min-h-[60px] md:min-h-[80px] transition-colors
                 ${getDayCellStyle(pnl)}
-                ${!dayData ? 'border-transparent' : ''}
+                ${!dayData ? "border-transparent" : ""}
               `}
             >
               <span className="opacity-50 text-[10px] sm:text-xs font-medium">
@@ -135,14 +135,14 @@ export function PnLCalendar({ trades }: PnLCalendarProps) {
                   </span>
                   <span className="text-[10px] opacity-70 hidden sm:inline-block">
                     {dayData.tradeCount} trade
-                    {dayData.tradeCount !== 1 ? 's' : ''}
+                    {dayData.tradeCount !== 1 ? "s" : ""}
                   </span>
                 </div>
               )}
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

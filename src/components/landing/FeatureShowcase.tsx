@@ -1,28 +1,28 @@
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertTriangle,
   Calculator,
   ClipboardList,
   Tags,
   TrendingUp,
-} from 'lucide-react'
-import { ScrollReveal } from '@/components/landing/ScrollReveal'
-import { cn } from '@/lib/utils'
+} from "lucide-react";
+import { ScrollReveal } from "@/components/landing/ScrollReveal";
+import { cn } from "@/lib/utils";
 
 export function FeatureShowcase() {
-  const [activeFeature, setActiveFeature] = useState(0)
+  const [activeFeature, setActiveFeature] = useState(0);
 
   // Mock data for the features
   const features = [
     {
-      id: 'journal',
-      title: 'Structured Journal',
+      id: "journal",
+      title: "Structured Journal",
       description:
-        'Capture every trade with a guided multi-step flow: trade info, setup plan, execution, psychology, review, and improvement.',
+        "Capture every trade with a guided multi-step flow: trade info, setup plan, execution, psychology, review, and improvement.",
       icon: ClipboardList,
-      color: 'text-primary',
-      bg: 'bg-primary/10',
+      color: "text-primary",
+      bg: "bg-primary/10",
       visualContent: (
         <div className="w-full h-full flex flex-col justify-center gap-4 p-8">
           <div className="p-4 bg-card/80 rounded-lg border border-border/70">
@@ -37,7 +37,7 @@ export function FeatureShowcase() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            {['Trade Info', 'Setup & Entry', 'Execution', 'Review'].map(
+            {["Trade Info", "Setup & Entry", "Execution", "Review"].map(
               (item) => (
                 <div
                   key={item}
@@ -57,13 +57,13 @@ export function FeatureShowcase() {
       ),
     },
     {
-      id: 'risk',
-      title: 'Performance Metrics',
+      id: "risk",
+      title: "Performance Metrics",
       description:
-        'Monitor key numbers from your journal: win rate, net P&L, profit factor, and R:R context for each trade.',
+        "Monitor key numbers from your journal: win rate, net P&L, profit factor, and R:R context for each trade.",
       icon: Calculator,
-      color: 'text-success',
-      bg: 'bg-success/10',
+      color: "text-success",
+      bg: "bg-success/10",
       visualContent: (
         <div className="w-full h-full flex flex-col justify-center gap-4 p-8">
           <div className="grid grid-cols-2 gap-4">
@@ -101,43 +101,43 @@ export function FeatureShowcase() {
       ),
     },
     {
-      id: 'behavior',
-      title: 'Behavioral Tags',
+      id: "behavior",
+      title: "Behavioral Tags",
       description:
         'Tag emotions like "FOMO" or "Revenge". Identify patterns where your psychology is leaking profits. Fix the trader, not just the trade.',
       icon: Tags,
-      color: 'text-warning',
-      bg: 'bg-warning/10',
+      color: "text-warning",
+      bg: "bg-warning/10",
       visualContent: (
         <div className="w-full h-full flex flex-col justify-center gap-4 p-8">
           <div className="flex flex-wrap gap-2 justify-center">
             {[
               {
-                label: 'FOMO',
+                label: "FOMO",
                 color:
-                  'bg-destructive/20 text-destructive border-destructive/30',
+                  "bg-destructive/20 text-destructive border-destructive/30",
               },
               {
-                label: 'A+ Setup',
-                color: 'bg-success/20 text-success border-success/30',
+                label: "A+ Setup",
+                color: "bg-success/20 text-success border-success/30",
               },
               {
-                label: 'Revenge',
-                color: 'bg-warning/20 text-warning border-warning/30',
+                label: "Revenge",
+                color: "bg-warning/20 text-warning border-warning/30",
               },
               {
-                label: 'Impulse',
-                color: 'bg-warning/20 text-warning border-warning/30',
+                label: "Impulse",
+                color: "bg-warning/20 text-warning border-warning/30",
               },
               {
-                label: 'Disciplined',
-                color: 'bg-primary/20 text-primary border-primary/30',
+                label: "Disciplined",
+                color: "bg-primary/20 text-primary border-primary/30",
               },
             ].map((tag, i) => (
               <span
                 key={i}
                 className={cn(
-                  'px-3 py-1 rounded-full text-xs font-medium border',
+                  "px-3 py-1 rounded-full text-xs font-medium border",
                   tag.color,
                 )}
               >
@@ -154,7 +154,7 @@ export function FeatureShowcase() {
                 Pattern Detected
               </div>
               <p className="text-xs text-muted-foreground">
-                You lose{' '}
+                You lose{" "}
                 <span className="text-destructive font-bold">12% more</span> on
                 trades tagged "FOMO" compared to your average.
               </p>
@@ -163,7 +163,7 @@ export function FeatureShowcase() {
         </div>
       ),
     },
-  ]
+  ];
 
   return (
     <section id="features-section" className="relative py-24 bg-background">
@@ -173,7 +173,7 @@ export function FeatureShowcase() {
           <div className="mb-20 text-center max-w-2xl mx-auto">
             <ScrollReveal>
               <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-                Built for the <span className="text-primary">serious</span>{' '}
+                Built for the <span className="text-primary">serious</span>{" "}
                 trader.
               </h2>
             </ScrollReveal>
@@ -193,14 +193,14 @@ export function FeatureShowcase() {
                   key={feature.id}
                   initial={{ opacity: 0.2 }}
                   whileInView={{ opacity: 1 }}
-                  viewport={{ amount: 0.55, margin: '-100px 0px -100px 0px' }}
+                  viewport={{ amount: 0.55, margin: "-100px 0px -100px 0px" }}
                   onViewportEnter={() => setActiveFeature(index)}
                   className="group lg:min-h-[50vh] lg:flex lg:items-center"
                 >
                   <div className="flex flex-col gap-4">
                     <div
                       className={cn(
-                        'w-12 h-12 rounded-lg flex items-center justify-center mb-2 transition-colors duration-300',
+                        "w-12 h-12 rounded-lg flex items-center justify-center mb-2 transition-colors duration-300",
                         feature.bg,
                         feature.color,
                       )}
@@ -255,5 +255,5 @@ export function FeatureShowcase() {
         </div>
       </div>
     </section>
-  )
+  );
 }

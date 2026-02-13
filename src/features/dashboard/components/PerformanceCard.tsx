@@ -1,26 +1,26 @@
-import { Cell, Pie, PieChart } from 'recharts'
-import type { ChartConfig } from '@/components/ui/chart'
+import { Cell, Pie, PieChart } from "recharts";
+import type { ChartConfig } from "@/components/ui/chart";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart'
+} from "@/components/ui/chart";
 
 type PerformanceCardProps = {
-  bestWinTrade: number
-  worstLossTrade: number
-}
+  bestWinTrade: number;
+  worstLossTrade: number;
+};
 
 const COLORS = {
-  win: '#34d399',
-  loss: '#fb7185',
-}
+  win: "#34d399",
+  loss: "#fb7185",
+};
 
 const chartConfig = {
-  value: { label: 'Amount' },
-  'Best Win': { label: 'Best Win', color: COLORS.win },
-  'Worst Loss': { label: 'Worst Loss', color: COLORS.loss },
-} satisfies ChartConfig
+  value: { label: "Amount" },
+  "Best Win": { label: "Best Win", color: COLORS.win },
+  "Worst Loss": { label: "Worst Loss", color: COLORS.loss },
+} satisfies ChartConfig;
 
 export function PerformanceCard({
   bestWinTrade,
@@ -28,18 +28,18 @@ export function PerformanceCard({
 }: PerformanceCardProps) {
   const performanceData = [
     {
-      name: 'Best Win',
+      name: "Best Win",
       value: bestWinTrade,
       fill: COLORS.win,
     },
     {
-      name: 'Worst Loss',
+      name: "Worst Loss",
       value: Math.abs(worstLossTrade),
       fill: COLORS.loss,
     },
-  ]
-  const performanceTotal = performanceData[0].value + performanceData[1].value
-  const chartData = performanceData.filter((d) => d.value > 0)
+  ];
+  const performanceTotal = performanceData[0].value + performanceData[1].value;
+  const chartData = performanceData.filter((d) => d.value > 0);
 
   return (
     <div className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm flex flex-col lg:col-span-2">
@@ -98,5 +98,5 @@ export function PerformanceCard({
         )}
       </div>
     </div>
-  )
+  );
 }

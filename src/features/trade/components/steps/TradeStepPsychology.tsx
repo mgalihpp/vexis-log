@@ -1,10 +1,10 @@
-import { DISRUPTION_OPTIONS, EMOTION_OPTIONS } from '../../constants/options'
-import type { UseFormReturn } from 'react-hook-form'
+import { DISRUPTION_OPTIONS, EMOTION_OPTIONS } from "../../constants/options";
+import type { UseFormReturn } from "react-hook-form";
 import type {
   TradeFormInput,
   TradeFormValues,
-} from '@/utils/schema/tradeSchema'
-import { Slider } from '@/components/ui/slider'
+} from "@/utils/schema/tradeSchema";
+import { Slider } from "@/components/ui/slider";
 import {
   Combobox,
   ComboboxContent,
@@ -12,18 +12,18 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from '@/components/ui/combobox'
+} from "@/components/ui/combobox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
 type TradeStepPsychologyProps = {
-  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>
-}
+  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>;
+};
 
 export function TradeStepPsychology({ form }: TradeStepPsychologyProps) {
   return (
@@ -36,8 +36,8 @@ export function TradeStepPsychology({ form }: TradeStepPsychologyProps) {
             <FormLabel>Emotion Before Entry</FormLabel>
             <Combobox
               items={EMOTION_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select emotion" />
@@ -65,8 +65,8 @@ export function TradeStepPsychology({ form }: TradeStepPsychologyProps) {
             <FormLabel>Emotional Disruptions</FormLabel>
             <Combobox
               items={DISRUPTION_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select disruption" />
@@ -127,5 +127,5 @@ export function TradeStepPsychology({ form }: TradeStepPsychologyProps) {
         )}
       />
     </div>
-  )
+  );
 }

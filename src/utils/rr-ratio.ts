@@ -1,29 +1,29 @@
-const RATIO_PRECISION = 2
+const RATIO_PRECISION = 2;
 
 function formatRatioNumber(value: number): string {
-  return value.toFixed(RATIO_PRECISION).replace(/\.?0+$/, '')
+  return value.toFixed(RATIO_PRECISION).replace(/\.?0+$/, "");
 }
 
 export function normalizeRrRatio(value?: string | number | null): string {
   if (value === undefined || value === null) {
-    return ''
+    return "";
   }
 
-  const rawValue = String(value).trim()
+  const rawValue = String(value).trim();
   if (!rawValue) {
-    return ''
+    return "";
   }
 
-  if (rawValue.includes(':')) {
+  if (rawValue.includes(":")) {
     const [leftRaw, rightRaw, ...rest] = rawValue
-      .split(':')
-      .map((part) => part.trim())
+      .split(":")
+      .map((part) => part.trim());
     if (rest.length > 0) {
-      return rawValue
+      return rawValue;
     }
 
-    const left = Number(leftRaw)
-    const right = Number(rightRaw)
+    const left = Number(leftRaw);
+    const right = Number(rightRaw);
 
     if (
       !Number.isFinite(left) ||
@@ -31,17 +31,17 @@ export function normalizeRrRatio(value?: string | number | null): string {
       left === 0 ||
       right <= 0
     ) {
-      return rawValue
+      return rawValue;
     }
 
-    const normalized = right / left
-    return `1:${formatRatioNumber(normalized)}`
+    const normalized = right / left;
+    return `1:${formatRatioNumber(normalized)}`;
   }
 
-  const numeric = Number(rawValue)
+  const numeric = Number(rawValue);
   if (!Number.isFinite(numeric) || numeric <= 0) {
-    return rawValue
+    return rawValue;
   }
 
-  return `1:${formatRatioNumber(numeric)}`
+  return `1:${formatRatioNumber(numeric)}`;
 }

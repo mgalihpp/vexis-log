@@ -7,14 +7,14 @@ import {
   STRATEGY_OPTIONS,
   TIMEFRAME_OPTIONS,
   TRADE_TYPE_OPTIONS,
-} from '../tradeFormFields'
-import { MARKET_BIAS_OPTIONS, SETUP_OPTIONS } from '../../constants/options'
-import type { UseFormReturn } from 'react-hook-form'
+} from "../tradeFormFields";
+import { MARKET_BIAS_OPTIONS, SETUP_OPTIONS } from "../../constants/options";
+import type { UseFormReturn } from "react-hook-form";
 import type {
   TradeFormInput,
   TradeFormValues,
-} from '@/utils/schema/tradeSchema'
-import { Input } from '@/components/ui/input'
+} from "@/utils/schema/tradeSchema";
+import { Input } from "@/components/ui/input";
 import {
   Combobox,
   ComboboxContent,
@@ -22,19 +22,19 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
-} from '@/components/ui/combobox'
+} from "@/components/ui/combobox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
 type TradeStepInfoProps = {
-  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>
-  showRequiredIndicators?: boolean
-}
+  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>;
+  showRequiredIndicators?: boolean;
+};
 
 export function TradeStepInfo({
   form,
@@ -85,7 +85,7 @@ export function TradeStepInfo({
             <Combobox
               items={MARKET_OPTIONS}
               value={field.value}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select market" />
@@ -130,8 +130,8 @@ export function TradeStepInfo({
             <FormLabel>Timeframe</FormLabel>
             <Combobox
               items={TIMEFRAME_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select timeframe" />
@@ -159,8 +159,8 @@ export function TradeStepInfo({
             <FormLabel>Session</FormLabel>
             <Combobox
               items={SESSION_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select session" />
@@ -188,8 +188,8 @@ export function TradeStepInfo({
             <FormLabel>Trade Type</FormLabel>
             <Combobox
               items={TRADE_TYPE_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select trade type" />
@@ -222,7 +222,7 @@ export function TradeStepInfo({
             <Combobox
               items={DIRECTION_OPTIONS}
               value={field.value}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select direction" />
@@ -250,8 +250,8 @@ export function TradeStepInfo({
             <FormLabel>Market Condition</FormLabel>
             <Combobox
               items={MARKET_CONDITION_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select condition" />
@@ -279,8 +279,8 @@ export function TradeStepInfo({
             <FormLabel>Market Bias</FormLabel>
             <Combobox
               items={MARKET_BIAS_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select bias" />
@@ -308,8 +308,8 @@ export function TradeStepInfo({
             <FormLabel>Strategy</FormLabel>
             <Combobox
               items={STRATEGY_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select strategy" />
@@ -337,8 +337,8 @@ export function TradeStepInfo({
             <FormLabel>Setup</FormLabel>
             <Combobox
               items={SETUP_OPTIONS}
-              value={field.value ?? ''}
-              onValueChange={(value) => field.onChange(value ?? '')}
+              value={field.value ?? ""}
+              onValueChange={(value) => field.onChange(value ?? "")}
             >
               <FormControl>
                 <ComboboxInput placeholder="Select setup" />
@@ -359,5 +359,5 @@ export function TradeStepInfo({
         )}
       />
     </div>
-  )
+  );
 }

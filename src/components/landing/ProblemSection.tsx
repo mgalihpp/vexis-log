@@ -1,33 +1,33 @@
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion";
 import {
   BrainCircuit,
   LineChart,
   ShieldCheck,
   TrendingDown,
-} from 'lucide-react'
-import { ScrollReveal } from '@/components/landing/ScrollReveal'
+} from "lucide-react";
+import { ScrollReveal } from "@/components/landing/ScrollReveal";
 
 export function ProblemSection() {
   const problems = [
     {
       icon: TrendingDown,
-      title: 'Emotional Execution',
+      title: "Emotional Execution",
       description:
-        'FOMO entries and panic exits destroy edge. Without a system, your PnL is just a reflection of your mood.',
+        "FOMO entries and panic exits destroy edge. Without a system, your PnL is just a reflection of your mood.",
     },
     {
       icon: BrainCircuit,
-      title: 'Cognitive Bias',
+      title: "Cognitive Bias",
       description:
-        'Recency bias makes you chase. Loss aversion makes you hold. You are wired to lose money in the markets.',
+        "Recency bias makes you chase. Loss aversion makes you hold. You are wired to lose money in the markets.",
     },
     {
       icon: LineChart,
-      title: 'Invisible Leaks',
+      title: "Invisible Leaks",
       description:
-        'Which setups actually pay? Which times of day drain your account? Without data, you are flying blind.',
+        "Which setups actually pay? Which times of day drain your account? Without data, you are flying blind.",
     },
-  ]
+  ];
 
   return (
     <section
@@ -48,7 +48,7 @@ export function ProblemSection() {
         <div className="text-center mb-20">
           <ScrollReveal>
             <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
-              The Market depends on your{' '}
+              The Market depends on your{" "}
               <span className="text-destructive">indiscipline</span>.
             </h2>
           </ScrollReveal>
@@ -93,7 +93,7 @@ export function ProblemSection() {
 
           <ScrollReveal delay={0.5}>
             <h3 className="text-2xl md:text-4xl font-bold text-foreground mb-6">
-              Turn your history into your{' '}
+              Turn your history into your{" "}
               <span className="text-primary">edge</span>.
             </h3>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-10">
@@ -114,5 +114,5 @@ export function ProblemSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

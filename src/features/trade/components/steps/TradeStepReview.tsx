@@ -1,23 +1,23 @@
-import { RequiredLabel } from '../tradeFormFields'
-import type { UseFormReturn } from 'react-hook-form'
+import { RequiredLabel } from "../tradeFormFields";
+import type { UseFormReturn } from "react-hook-form";
 import type {
   TradeFormInput,
   TradeFormValues,
-} from '@/utils/schema/tradeSchema'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
+} from "@/utils/schema/tradeSchema";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
 type TradeStepReviewProps = {
-  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>
-}
+  form: UseFormReturn<TradeFormInput, unknown, TradeFormValues>;
+};
 
 export function TradeStepReview({ form }: TradeStepReviewProps) {
   return (
@@ -101,5 +101,5 @@ export function TradeStepReview({ form }: TradeStepReviewProps) {
         )}
       />
     </div>
-  )
+  );
 }

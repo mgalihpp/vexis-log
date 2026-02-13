@@ -1,11 +1,11 @@
-import { Star } from 'lucide-react'
+import { Star } from "lucide-react";
 
 interface Testimonial {
-  id: number
-  quote: string
-  author: string
-  role: string
-  rating: number
+  id: number;
+  quote: string;
+  author: string;
+  role: string;
+  rating: number;
 }
 
 const testimonials: Array<Testimonial> = [
@@ -13,49 +13,49 @@ const testimonials: Array<Testimonial> = [
     id: 1,
     quote:
       "Finally stopped bleeding money on setups that weren't in my playbook.",
-    author: 'Alex M.',
-    role: 'Forex Trader, London',
+    author: "Alex M.",
+    role: "Forex Trader, London",
     rating: 5,
   },
   {
     id: 2,
     quote:
-      'The step-by-step form keeps my notes complete and finally makes review sessions useful.',
-    author: 'Sarah J.',
-    role: 'Fund Manager, NYC',
+      "The step-by-step form keeps my notes complete and finally makes review sessions useful.",
+    author: "Sarah J.",
+    role: "Fund Manager, NYC",
     rating: 5,
   },
   {
     id: 3,
     quote:
       "Vexis forces you to confront your worst habits. It's painful but necessary.",
-    author: 'David K.',
-    role: 'Crypto Scalper, Tokyo',
+    author: "David K.",
+    role: "Crypto Scalper, Tokyo",
     rating: 5,
   },
   {
     id: 4,
-    quote: 'My R-multiple went from 1.2 to 2.4 just by cutting out the noise.',
-    author: 'Michael R.',
-    role: 'Day Trader, Chicago',
+    quote: "My R-multiple went from 1.2 to 2.4 just by cutting out the noise.",
+    author: "Michael R.",
+    role: "Day Trader, Chicago",
     rating: 5,
   },
   {
     id: 5,
     quote:
-      'The only journal that actually feels like a professional tool, not a toy.',
-    author: 'Elena V.',
-    role: 'Prop Firm Trader',
+      "The only journal that actually feels like a professional tool, not a toy.",
+    author: "Elena V.",
+    role: "Prop Firm Trader",
     rating: 5,
   },
   {
     id: 6,
-    quote: 'I treat my trading like a business now. Vexis is my CFO.',
-    author: 'James L.',
-    role: 'Futures Trader',
+    quote: "I treat my trading like a business now. Vexis is my CFO.",
+    author: "James L.",
+    role: "Futures Trader",
     rating: 5,
   },
-]
+];
 
 export function TestimonialMarquee() {
   return (
@@ -112,5 +112,5 @@ export function TestimonialMarquee() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,16 +1,16 @@
-import type { ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface LandingLayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function LandingLayout({ children }: LandingLayoutProps) {
   return (
     <div
       className={cn(
-        'min-h-screen w-full relative font-sans antialiased selection:bg-primary selection:text-primary-foreground',
-        'bg-background text-foreground',
+        "min-h-screen w-full relative font-sans antialiased selection:bg-primary selection:text-primary-foreground",
+        "bg-background text-foreground",
       )}
     >
       {/* Atmospheric Glow */}
@@ -18,7 +18,7 @@ export function LandingLayout({ children }: LandingLayoutProps) {
         className="fixed inset-0 pointer-events-none z-0"
         style={{
           background:
-            'radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-primary) 16%, transparent) 0%, color-mix(in oklab, var(--color-primary) 7%, transparent) 35%, transparent 70%)',
+            "radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-primary) 16%, transparent) 0%, color-mix(in oklab, var(--color-primary) 7%, transparent) 35%, transparent 70%)",
         }}
       />
 
@@ -27,12 +27,12 @@ export function LandingLayout({ children }: LandingLayoutProps) {
         className="fixed inset-0 pointer-events-none z-0 opacity-[0.07]"
         style={{
           backgroundImage:
-            'linear-gradient(to right, color-mix(in oklab, var(--color-border) 45%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--color-border) 45%, transparent) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
+            "linear-gradient(to right, color-mix(in oklab, var(--color-border) 45%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--color-border) 45%, transparent) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
           maskImage:
-            'radial-gradient(circle at center, black 40%, transparent 100%)',
+            "radial-gradient(circle at center, black 40%, transparent 100%)",
           WebkitMaskImage:
-            'radial-gradient(circle at center, black 40%, transparent 100%)',
+            "radial-gradient(circle at center, black 40%, transparent 100%)",
         }}
       />
 
@@ -47,5 +47,5 @@ export function LandingLayout({ children }: LandingLayoutProps) {
       {/* Main Content */}
       <div className="relative z-10">{children}</div>
     </div>
-  )
+  );
 }

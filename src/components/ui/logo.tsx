@@ -1,8 +1,8 @@
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 interface LogoProps {
-  className?: string
-  size?: number | string
+  className?: string;
+  size?: number | string;
 }
 
 export function Logo({ className, size = 40 }: LogoProps) {
@@ -10,9 +10,9 @@ export function Logo({ className, size = 40 }: LogoProps) {
     <img
       src="/logo.png"
       alt="Vexis Logo"
-      className={cn('text-primary', className)}
+      className={cn("text-primary", className)}
       width={size}
       height={size}
     />
-  )
+  );
 }

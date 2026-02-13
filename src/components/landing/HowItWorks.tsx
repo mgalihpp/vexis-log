@@ -1,45 +1,45 @@
-import { useRef } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
-import { Import, Search, TrendingUp } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useRef } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { Import, Search, TrendingUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const steps = [
   {
     id: 1,
-    title: 'Journal',
+    title: "Journal",
     description:
-      'Record your trades with full context: setup, execution, psychology, and post-trade review.',
+      "Record your trades with full context: setup, execution, psychology, and post-trade review.",
     icon: Import,
-    color: 'text-primary',
-    bg: 'bg-primary/10',
-    border: 'border-primary/20',
+    color: "text-primary",
+    bg: "bg-primary/10",
+    border: "border-primary/20",
   },
   {
     id: 2,
-    title: 'Analyze',
+    title: "Analyze",
     description:
-      'Track win rate, net P&L, profit factor, equity curve, and behavior breakdowns from your data.',
+      "Track win rate, net P&L, profit factor, equity curve, and behavior breakdowns from your data.",
     icon: Search,
-    color: 'text-warning',
-    bg: 'bg-warning/10',
-    border: 'border-warning/20',
+    color: "text-warning",
+    bg: "bg-warning/10",
+    border: "border-warning/20",
   },
   {
     id: 3,
-    title: 'Improve',
+    title: "Improve",
     description:
-      'Use history filters, tags, and notes to tighten rules and build a repeatable trading process.',
+      "Use history filters, tags, and notes to tighten rules and build a repeatable trading process.",
     icon: TrendingUp,
-    color: 'text-success',
-    bg: 'bg-success/10',
-    border: 'border-success/20',
+    color: "text-success",
+    bg: "bg-success/10",
+    border: "border-success/20",
   },
-]
+];
 
 export function HowItWorks() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(containerRef, { once: true, margin: '-20%' })
-  const shouldReduceMotion = useReducedMotion()
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-20%" });
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section
@@ -94,7 +94,7 @@ export function HowItWorks() {
                 }
                 transition={{
                   duration: shouldReduceMotion ? 0 : 1.5,
-                  ease: 'easeInOut',
+                  ease: "easeInOut",
                   delay: 0.4,
                 }}
               />
@@ -132,10 +132,10 @@ export function HowItWorks() {
                 {/* Icon Circle */}
                 <div
                   className={cn(
-                    'relative w-24 h-24 rounded-2xl flex items-center justify-center mb-8 border transition-all duration-300 shadow-lg',
+                    "relative w-24 h-24 rounded-2xl flex items-center justify-center mb-8 border transition-all duration-300 shadow-lg",
                     step.bg,
                     step.border,
-                    'group-hover:scale-110 group-hover:shadow-primary/20',
+                    "group-hover:scale-110 group-hover:shadow-primary/20",
                   )}
                 >
                   <step.icon size={40} className={step.color} />
@@ -164,5 +164,5 @@ export function HowItWorks() {
         </div>
       </div>
     </section>
-  )
+  );
 }

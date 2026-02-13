@@ -1,13 +1,13 @@
 type FeedbackToastProps = {
-  kind: 'success' | 'error'
-  message: string
-  onDismiss?: () => void
-}
+  kind: "success" | "error";
+  message: string;
+  onDismiss?: () => void;
+};
 
-const kindStyles: Record<FeedbackToastProps['kind'], string> = {
-  success: 'bg-emerald-600 text-white',
-  error: 'bg-destructive text-destructive-foreground',
-}
+const kindStyles: Record<FeedbackToastProps["kind"], string> = {
+  success: "bg-emerald-600 text-white",
+  error: "bg-destructive text-destructive-foreground",
+};
 
 export function FeedbackToast({
   kind,
@@ -30,5 +30,5 @@ export function FeedbackToast({
         </button>
       ) : null}
     </div>
-  )
+  );
 }

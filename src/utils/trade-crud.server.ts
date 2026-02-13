@@ -209,8 +209,8 @@ const mapTradeInputToData = (
   const dateValue =
     data.date !== undefined
       ? data.time
-        ? new Date(`${data.date}T${data.time}`)
-        : new Date(`${data.date}T00:00:00`)
+        ? parse(`${data.date}T${data.time}`, `yyyy-MM-dd'T'HH:mm`, new Date())
+        : parse(`${data.date}T00:00:00`, `yyyy-MM-dd'T'HH:mm:ss`, new Date())
       : undefined;
   if (dateValue) {
     dateValue.setMinutes(
