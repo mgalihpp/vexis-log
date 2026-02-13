@@ -10,7 +10,7 @@ export function Splash({ zoomIn = true, isExiting = false }: Props) {
   return (
     <div
       className={cn(
-        "flex h-screen w-full flex-col items-center justify-center bg-background overflow-hidden relative transition-[opacity,filter] duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+        "flex h-screen w-full flex-col items-center justify-center bg-background overflow-visible relative transition-[opacity,filter] duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
         {
           "opacity-0 blur-[3px] pointer-events-none": isExiting,
         },
