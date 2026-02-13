@@ -6,6 +6,7 @@ import {
   updateTradeSchema,
 } from "@/utils/schema/tradeSchema";
 import { normalizeRrRatio } from "@/utils/rr-ratio";
+import { parse, format } from "date-fns";
 
 const parseNumber = (value?: string) => {
   if (value === undefined || value === "") {
@@ -209,8 +210,13 @@ const mapTradeInputToData = (
     data.date !== undefined
       ? data.time
         ? new Date(`${data.date}T${data.time}`)
-        : new Date(data.date)
+        : new Date(`${data.date}T00:00:00`)
       : undefined;
+  if (dateValue) {
+    dateValue.setMinutes(
+      dateValue.getMinutes() - dateValue.getTimezoneOffset(),
+    );
+  }
 
   return {
     date: dateValue,
