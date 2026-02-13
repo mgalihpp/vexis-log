@@ -148,7 +148,10 @@ export function TradeDetail({ trade, onClose }: TradeDetailProps) {
       ? Number((trade.actualRR * trade.riskPercent).toFixed(2))
       : (trade.profitLoss ?? 0);
 
-  const defaultValues = mapTradeToFormValues(trade);
+  const defaultValues = React.useMemo(
+    () => mapTradeToFormValues(trade),
+    [trade],
+  );
 
   const handleSave = async (data: TradeFormValues) => {
     await updateTrade({ data: { id: trade.id, data } });

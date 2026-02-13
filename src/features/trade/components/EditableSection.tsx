@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Edit, Loader2, Save, X } from "lucide-react";
 import type { DefaultValues, UseFormReturn } from "react-hook-form";
@@ -38,6 +38,12 @@ export function EditableSection({
   const form = useForm<TradeFormInput, unknown, TradeFormValues>({
     defaultValues,
   });
+
+  useEffect(() => {
+    if (!isEditing) {
+      form.reset(defaultValues);
+    }
+  }, [defaultValues, form, isEditing]);
 
   const handleSave = async (data: TradeFormValues) => {
     setIsSaving(true);
