@@ -4,6 +4,7 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "@/components/Theme-Provider";
+import { PosthogProvider } from "@/components/PosthogProvider";
 import {
   FeedbackToastHost,
   FeedbackToastProvider,
@@ -29,10 +30,12 @@ export function AppProviders({ children }: Props) {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <FeedbackToastProvider>
-          {children}
-          <FeedbackToastHost />
-        </FeedbackToastProvider>
+        <PosthogProvider>
+          <FeedbackToastProvider>
+            {children}
+            <FeedbackToastHost />
+          </FeedbackToastProvider>
+        </PosthogProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ThemeProvider>
