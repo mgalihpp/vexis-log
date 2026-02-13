@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import * as React from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 export function ThemeProvider({
   children,
@@ -8,7 +8,7 @@ export function ThemeProvider({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="dark"
       enableSystem
       storageKey="vite-ui-theme"
       disableTransitionOnChange
@@ -16,5 +16,5 @@ export function ThemeProvider({
     >
       {children}
     </NextThemesProvider>
-  )
+  );
 }
