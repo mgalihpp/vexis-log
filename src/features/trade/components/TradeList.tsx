@@ -1,4 +1,5 @@
 import {
+  Activity,
   ChevronRight,
   ClipboardList,
   Clock,
@@ -44,10 +45,14 @@ const resultConfig = {
     class: "bg-destructive/15 text-destructive border-destructive/30",
   },
   Pending: {
-    icon: Minus,
-    class: "bg-muted/15 text-foreground border-border",
+    icon: Clock,
+    class: "bg-muted/15 text-muted-foreground border-muted/30",
   },
-  BE: { icon: Clock, class: "bg-warning/15 text-warning border-warning/30" },
+  BE: { icon: Minus, class: "bg-warning/15 text-warning border-warning/30" },
+  Partial: {
+    icon: Activity,
+    class: "bg-info/15 text-info border-info/30",
+  },
 };
 
 const marketColors: Record<string, string> = {
