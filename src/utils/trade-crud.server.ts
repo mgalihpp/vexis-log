@@ -212,11 +212,6 @@ const mapTradeInputToData = (
         ? parse(`${data.date}T${data.time}`, `yyyy-MM-dd'T'HH:mm`, new Date())
         : parse(`${data.date}T00:00:00`, `yyyy-MM-dd'T'HH:mm:ss`, new Date())
       : undefined;
-  if (dateValue) {
-    dateValue.setMinutes(
-      dateValue.getMinutes() - dateValue.getTimezoneOffset(),
-    );
-  }
 
   return {
     date: dateValue,

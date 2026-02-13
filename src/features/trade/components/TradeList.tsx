@@ -102,7 +102,7 @@ export function TradeList({
     return trades.filter((trade) => {
       const result = trade.result ?? trade.outcome ?? "";
       const tradeDate = getTradeDate(trade);
-      const tradeDateKey = tradeDate.toISOString().slice(0, 10);
+      const tradeDateKey = format(tradeDate, "yyyy-MM-dd");
 
       const matchesSearch =
         normalizedSearch.length === 0 ||
@@ -167,7 +167,7 @@ export function TradeList({
 
     sortedTrades.forEach((trade) => {
       const tradeDate = getTradeDate(trade);
-      const dateKey = tradeDate.toISOString().slice(0, 10);
+      const dateKey = format(tradeDate, "yyyy-MM-dd");
 
       if (!grouped.has(dateKey)) {
         grouped.set(dateKey, {

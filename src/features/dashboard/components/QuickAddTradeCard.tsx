@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import type {
   QuickAddTradeFormInput,
@@ -42,7 +43,7 @@ import {
 } from "@/features/trade/components/tradeFormFields";
 
 const getDefaultValues = (): QuickAddTradeFormInput => ({
-  date: new Date().toISOString().slice(0, 10),
+  date: format(new Date(), "yyyy-MM-dd"),
   time: new Date().toTimeString().slice(0, 5),
   market: "",
   pair: "",
