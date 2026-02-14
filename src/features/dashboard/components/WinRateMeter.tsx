@@ -150,7 +150,7 @@ export function WinRateMeter({
                 {winRate.toFixed(0)}%
               </span>
               <span className="block text-sm text-muted-foreground leading-tight">
-                {resolvedTrades} trades of {totalTrades} total
+                {resolvedTrades} of {totalTrades} trades
               </span>
             </div>
 
