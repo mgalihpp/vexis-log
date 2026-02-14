@@ -43,6 +43,18 @@ describe("calculateDailyPnL", () => {
     expect(result[0].pnl).toBe(50);
     expect(result[0].tradeCount).toBe(3);
   });
+
+  it("groups date buckets by UTC day for boundary timestamps", () => {
+    const trades: Array<AnalyticsTrade> = [
+      { date: new Date("2026-02-13T23:30:00.000Z"), profitLoss: 50 },
+      { date: new Date("2026-02-14T00:15:00.000Z"), profitLoss: 25 },
+    ];
+
+    expect(calculateDailyPnL(trades)).toEqual([
+      { date: "2026-02-13", pnl: 50, tradeCount: 1 },
+      { date: "2026-02-14", pnl: 25, tradeCount: 1 },
+    ]);
+  });
 });
 
 describe("calculateEquityCurve", () => {

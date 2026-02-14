@@ -1,6 +1,5 @@
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { useMemo } from "react";
-import { format } from "date-fns";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { AnalyticsTrade } from "@/utils/dashboard.analytics";
 import {
@@ -21,6 +20,42 @@ const chartConfig = {
     color: "oklch(0.72 0.19 277)",
   },
 } satisfies ChartConfig;
+
+const MONTH_LABELS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
+
+function formatDateTick(value: string) {
+  const [yearPart, monthPart, dayPart] = value.split("-");
+  const year = Number(yearPart);
+  const month = Number(monthPart);
+  const day = Number(dayPart);
+
+  if (
+    !Number.isInteger(year) ||
+    !Number.isInteger(month) ||
+    !Number.isInteger(day) ||
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > 31
+  ) {
+    return value;
+  }
+
+  return `${MONTH_LABELS[month - 1]} ${String(day).padStart(2, "0")}`;
+}
 
 export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
   const chartData = useMemo(() => calculateEquityCurve(trades), [trades]);
@@ -53,7 +88,7 @@ export function EquityCurveCard({ trades, hasTrades }: EquityCurveCardProps) {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
-                tickFormatter={(value) => format(new Date(value), "MMM dd")}
+                tickFormatter={(value) => formatDateTick(String(value))}
               />
               <YAxis
                 fontSize={12}

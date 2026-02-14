@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { getTradeDateKey } from "@/utils/trade-date";
 
 export type AnalyticsTrade = {
   date: Date | string;
@@ -35,9 +35,7 @@ export function calculateDailyPnL(
   const dailyMap = new Map<string, { pnl: number; count: number }>();
 
   for (const trade of trades) {
-    const dateObj =
-      typeof trade.date === "string" ? new Date(trade.date) : trade.date;
-    const dateStr = format(dateObj, "yyyy-MM-dd");
+    const dateStr = getTradeDateKey(trade.date);
     const pnl = trade.profitLoss ?? 0;
 
     const current = dailyMap.get(dateStr) || { pnl: 0, count: 0 };
