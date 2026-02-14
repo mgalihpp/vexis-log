@@ -103,6 +103,7 @@ function BreakdownTable({ data }: { data: Array<BreakdownItem> }) {
             <TableHead className="text-right">Trades</TableHead>
             <TableHead className="text-right">Win</TableHead>
             <TableHead className="text-right">Loss</TableHead>
+            <TableHead className="text-right">Breakeven</TableHead>
             <TableHead className="text-right">Winrate</TableHead>
             <TableHead className="text-right">P&L</TableHead>
             <TableHead className="text-right">Avg RR</TableHead>
@@ -121,6 +122,7 @@ function BreakdownTable({ data }: { data: Array<BreakdownItem> }) {
               <TableCell className="text-right text-destructive">
                 {item.losses}
               </TableCell>
+              <TableCell className="text-right">{item.breakevens}</TableCell>
               <TableCell className="text-right">
                 {item.winrate.toFixed(1)}%
               </TableCell>

@@ -6,6 +6,7 @@ export interface BreakdownItem {
   trades: number;
   wins: number;
   losses: number;
+  breakevens: number;
   winrate: number;
   totalPL: number;
   avgRR: number;
@@ -16,6 +17,7 @@ const createBreakdownItem = (name: string): BreakdownItem => ({
   trades: 0,
   wins: 0,
   losses: 0,
+  breakevens: 0,
   winrate: 0,
   totalPL: 0,
   avgRR: 0,
@@ -60,6 +62,7 @@ const calculateBreakdownStats = (
       item.totalPL = Number(item.totalPL.toFixed(2));
       item.avgRR =
         item.trades > 0 ? Number((item.avgRR / item.trades).toFixed(2)) : 0;
+      item.breakevens = Math.max(0, item.trades - (item.wins + item.losses));
       return item;
     });
 };
