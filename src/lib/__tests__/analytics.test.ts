@@ -167,7 +167,7 @@ describe("getDayOfWeekBreakdown", () => {
     expect(friday?.trades).toBe(2);
     expect(friday?.wins).toBe(1);
     expect(friday?.losses).toBe(0);
-    expect(friday?.breakevens).toBe(1);
+    expect(friday?.breakevens).toBe(0);
     expect(friday?.winrate).toBe(100);
   });
 

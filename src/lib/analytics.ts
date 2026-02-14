@@ -38,11 +38,15 @@ const classifyTradeOutcome = (trade: TradeEntry) => {
     return "loss" as const;
   }
 
-  if (status === "Breakeven" || status === "Pending") {
-    return "neutral" as const;
+  if (status === "Breakeven") {
+    return "breakeven" as const;
   }
 
-  return "neutral" as const;
+  if (status === "Pending") {
+    return "pending" as const;
+  }
+
+  return "pending" as const;
 };
 
 const calculateBreakdownStats = (
@@ -57,7 +61,6 @@ const calculateBreakdownStats = (
       item.totalPL = Number(item.totalPL.toFixed(2));
       item.avgRR =
         item.trades > 0 ? Number((item.avgRR / item.trades).toFixed(2)) : 0;
-      item.breakevens = Math.max(0, item.trades - (item.wins + item.losses));
       return item;
     });
 };
@@ -70,6 +73,8 @@ const processTrade = (trade: TradeEntry, item: BreakdownItem) => {
     item.wins++;
   } else if (outcomeType === "loss") {
     item.losses++;
+  } else if (outcomeType === "breakeven") {
+    item.breakevens++;
   }
 
   item.totalPL += trade.profitLoss || 0;
