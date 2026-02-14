@@ -25,11 +25,6 @@ const createBreakdownItem = (name: string): BreakdownItem => ({
 
 const classifyTradeOutcome = (trade: TradeEntry) => {
   const status = trade.result ?? trade.outcome;
-  const pnl = trade.profitLoss;
-
-  if (typeof pnl === "number" && Number.isFinite(pnl) && pnl !== 0) {
-    return pnl > 0 ? ("win" as const) : ("loss" as const);
-  }
 
   if (status === "Win") {
     return "win" as const;

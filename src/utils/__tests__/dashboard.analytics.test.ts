@@ -99,6 +99,21 @@ describe("calculateRadarMetrics", () => {
     expect(winRate).toBeCloseTo(75, 1);
   });
 
+  it("uses outcome fallback and excludes pending from denominator", () => {
+    const trades: Array<AnalyticsTrade> = [
+      { date: "2023-01-01", result: null, outcome: "Win" },
+      { date: "2023-01-01", result: null, outcome: "Partial" },
+      { date: "2023-01-01", result: null, outcome: "Loss" },
+      { date: "2023-01-01", result: null, outcome: "Pending" },
+      { date: "2023-01-01", result: null, outcome: "Breakeven" },
+    ];
+
+    const result = calculateRadarMetrics(trades);
+    const winRate = result.find((m) => m.metric === "Win Rate")?.value;
+
+    expect(winRate).toBeCloseTo((2 / 3) * 100, 1);
+  });
+
   it("calculates profit factor correctly (caps at 100)", () => {
     const trades: Array<AnalyticsTrade> = [
       { date: "2023-01-01", profitLoss: 300 }, // Gross Profit: 300

@@ -4,11 +4,28 @@ export type AnalyticsTrade = {
   date: Date | string;
   profitLoss?: number | null;
   result?: string | null;
+  outcome?: string | null;
   discipline?: number | null;
   confidence?: number | null;
   planChange?: string | null;
   riskRewardRatio?: number | null;
 };
+
+function classifyTradeResult(
+  trade: AnalyticsTrade,
+): "win" | "loss" | "neutral" {
+  const result = (trade.result ?? trade.outcome)?.trim().toLowerCase();
+
+  if (result === "win" || result === "partial") {
+    return "win";
+  }
+
+  if (result === "loss") {
+    return "loss";
+  }
+
+  return "neutral";
+}
 
 export function calculateDailyPnL(
   trades: Array<AnalyticsTrade>,
@@ -82,14 +99,11 @@ export function calculateRadarMetrics(
 
   for (const trade of trades) {
     // Win Rate
-    const res = trade.result?.toLowerCase();
-    if (res === "win") {
+    const outcomeType = classifyTradeResult(trade);
+    if (outcomeType === "win") {
       wins++;
       resolvedCount++;
-    } else if (res === "partial") {
-      wins++;
-      resolvedCount++;
-    } else if (res === "loss") {
+    } else if (outcomeType === "loss") {
       resolvedCount++;
     }
 

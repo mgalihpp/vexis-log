@@ -146,6 +146,31 @@ describe("getDayOfWeekBreakdown", () => {
     expect(friday?.winrate).toBe(100);
   });
 
+  it("does not infer winrate from pnl when status is pending", () => {
+    const winTrade = createTrade({
+      date: new Date("2026-02-13T09:00:00.000Z"),
+      result: "Win",
+      outcome: "Win",
+      profitLoss: 120,
+    });
+    const pendingTrade = createTrade({
+      id: "65f1e7b1f0e4f2a9c8d7b6a0",
+      date: new Date("2026-02-13T11:00:00.000Z"),
+      result: "Pending",
+      outcome: "Pending",
+      profitLoss: 40,
+    });
+
+    const items = getDayOfWeekBreakdown([winTrade, pendingTrade]);
+    const friday = items.find((item) => item.name === "Friday");
+
+    expect(friday?.trades).toBe(2);
+    expect(friday?.wins).toBe(1);
+    expect(friday?.losses).toBe(0);
+    expect(friday?.breakevens).toBe(1);
+    expect(friday?.winrate).toBe(100);
+  });
+
   it("counts breakevens correctly in breakdown", () => {
     const breakevenTrade = createTrade({
       date: new Date("2026-02-13T11:00:00.000Z"),

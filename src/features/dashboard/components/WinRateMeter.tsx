@@ -97,8 +97,6 @@ export function WinRateMeter({
   resolvedTrades,
   totalTrades,
 }: WinRateMeterProps) {
-  const excludedTrades = Math.max(0, totalTrades - resolvedTrades);
-
   // Data for the gauge
   const gaugeData = [
     { value: winRate }, // Filled
